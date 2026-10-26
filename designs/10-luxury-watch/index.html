@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurelia — Haute Horlogerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070605;--bg2:#0e0c09;--gold:#c9a35b;--gold2:#e9cf94;--tx:#ece6da;--mu:#8d867a;--line:#c9a35b33;--m:clamp(18px,4vw,64px);
+  --ease:cubic-bezier(.16,1,.3,1);--gg:linear-gradient(100deg,#8a6a2f 0%,#f3dc9b 32%,#c9a35b 52%,#fff1c8 68%,#9b7838 100%)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--tx);font-family:Inter,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+.serif{font-family:'Cormorant Garamond',serif}
+.cap{font-size:11px;letter-spacing:.34em;text-transform:uppercase;font-weight:400}
+.goldtx{background:var(--gg);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 9s ease-in-out infinite}
+@keyframes sheen{50%{background-position:100% 0}}
+.wrap{width:min(1320px,100% - 2*var(--m));margin-inline:auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:500;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* intro loader */
+.loader{position:fixed;inset:0;z-index:600;background:var(--bg);display:grid;place-items:center;transition:opacity 1.6s var(--ease),visibility 1.6s}
+.loader.done{opacity:0;visibility:hidden}
+.loader div{text-align:center}
+.loader .serif{font-size:clamp(28px,4vw,44px);letter-spacing:.5em;text-indent:.5em;font-weight:400}
+.loader i{display:block;height:1px;width:min(260px,60vw);margin:22px auto 0;background:var(--line);position:relative;overflow:hidden}
+.loader i::after{content:"";position:absolute;inset:0;background:var(--gold);transform-origin:left;animation:load 2.2s var(--ease) forwards}
+@keyframes load{from{transform:scaleX(0)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px var(--m);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;transition:background .8s,padding .8s}
+nav.solid{background:#070605cc;backdrop-filter:blur(14px);padding-block:16px;border-bottom:1px solid #c9a35b1f}
+nav .l{display:flex;gap:clamp(18px,3vw,40px)}
+nav .l a,nav .r a{position:relative;opacity:.8;transition:opacity .5s}
+nav .l a:hover,nav .r a:hover{opacity:1}
+nav .l a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .9s var(--ease)}
+nav .l a:hover::after{transform:scaleX(1)}
+.logo{font-family:'Cormorant Garamond';font-weight:500;font-size:clamp(22px,2.2vw,28px);letter-spacing:.42em;text-indent:.42em}
+nav .r{display:flex;justify-content:flex-end}
+.btn{position:relative;display:inline-flex;align-items:center;gap:14px;padding:14px 26px;border:1px solid var(--gold);color:var(--gold2);overflow:hidden;cursor:pointer;background:none;transition:color .9s var(--ease)}
+.btn::before{content:"";position:absolute;inset:0;background:var(--gg);transform:translateY(101%);transition:transform .9s var(--ease)}
+.btn span{position:relative}
+.btn:hover{color:#0b0906}.btn:hover::before{transform:none}
+.btn.solid{background:var(--gold);color:#0b0906;border-color:var(--gold)}
+
+/* ---------- pinned 3D hero ---------- */
+#hero{height:280vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden;background:radial-gradient(45% 55% at 50% 52%,#2a2114 0%,#120f0a 45%,var(--bg) 80%)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2}
+.behind{position:absolute;inset:0;display:grid;place-items:center;z-index:1;pointer-events:none}
+.behind h1{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(70px,17vw,300px);letter-spacing:.14em;text-indent:.14em;line-height:1;opacity:.13;will-change:transform}
+.ha,.hb{position:absolute;z-index:3;will-change:opacity,transform}
+.ha{left:var(--m);right:var(--m);bottom:clamp(28px,6vh,64px);display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
+.ha .t h2{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(40px,5.6vw,92px);line-height:.95}
+.ha .t h2 em{font-weight:300}
+.ha .t p{max-width:380px;color:#bfb7a8;margin:18px 0 26px;line-height:1.7;font-size:15px}
+.ha .ref{text-align:right;color:var(--mu);line-height:2.1}
+.hb{left:var(--m);top:50%;transform:translateY(-50%);width:min(440px,40vw);opacity:0}
+.hb h2{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(40px,4.6vw,76px);line-height:1;margin:14px 0 26px}
+.spec{display:flex;justify-content:space-between;padding:15px 0;border-top:1px solid var(--line);font-size:14px}
+.spec:last-child{border-bottom:1px solid var(--line)}
+.spec b{font-weight:400;color:var(--gold2)}
+.scrollcue{position:absolute;z-index:3;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--mu)}
+.scrollcue i{width:1px;height:46px;background:linear-gradient(var(--gold),transparent);animation:cue 2.6s var(--ease) infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* manifesto: words light up as you scroll */
+.mani{padding:clamp(110px,16vw,220px) 0}
+.mani .cap{color:var(--gold);display:block;margin-bottom:30px}
+.mani p{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(30px,4.4vw,72px);line-height:1.12;max-width:1150px}
+.mani p span{opacity:.14;transition:opacity .6s}
+.mani p span.g{font-style:italic}
+
+/* collection */
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px 40px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,70px)}
+.hd h2{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(46px,6.4vw,104px);line-height:.95}
+.hd p{max-width:360px;color:var(--mu);line-height:1.7}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,30px)}
+.w{position:relative;border:1px solid #c9a35b1f;background:linear-gradient(180deg,#14110c,#0b0907);padding:clamp(24px,3vw,44px) clamp(20px,2.4vw,34px) 28px;overflow:hidden;transition:border-color 1.2s var(--ease)}
+.w::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 38%,var(--glow),transparent 70%);opacity:.5;transition:opacity 1.4s var(--ease)}
+.w:hover{border-color:#c9a35b77}.w:hover::before{opacity:1}
+.w svg{position:relative;width:78%;display:block;margin:0 auto 30px;filter:drop-shadow(0 30px 30px #000c);transition:transform 1.8s var(--ease)}
+.w:hover svg{transform:scale(1.06) rotate(-4deg)}
+.w .meta{position:relative;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:18px}
+.w h3{font-family:'Cormorant Garamond';font-weight:400;font-size:clamp(26px,2.4vw,34px)}
+.w small{display:block;color:var(--mu);margin-top:4px}
+.w .p{color:var(--gold2);font-size:14px;letter-spacing:.08em;white-space:nowrap;padding-left:12px}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(110px,14vw,200px);border-top:1px solid var(--line)}
+.nums div{padding:clamp(26px,3vw,44px) clamp(10px,2vw,28px) 0 0;border-right:1px solid var(--line)}
+.nums div:last-child{border-right:0}
+.nums div+div{padding-left:clamp(14px,2vw,28px)}
+.nums b{display:block;font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(52px,6.4vw,104px);line-height:1}
+.nums span{display:block;margin-top:12px;color:var(--mu)}
+
+/* quote */
+.quote{padding:clamp(120px,17vw,240px) 0;text-align:center;position:relative;overflow:hidden}
+.quote::before{content:"";position:absolute;left:50%;top:50%;width:min(900px,90vw);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(#c9a35b22,transparent 65%)}
+.quote blockquote{position:relative;font-family:'Cormorant Garamond';font-weight:300;font-style:italic;font-size:clamp(34px,5vw,84px);line-height:1.08;max-width:1100px;margin:0 auto 34px}
+.quote .cap{color:var(--gold)}
+.rule{display:block;width:1px;height:70px;margin:0 auto 40px;background:linear-gradient(transparent,var(--gold))}
+
+/* appointment */
+.appt{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,110px);padding:clamp(60px,8vw,110px) 0 clamp(80px,10vw,140px);border-top:1px solid var(--line)}
+.appt h2{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(44px,5.6vw,92px);line-height:.98;margin:18px 0 22px}
+.appt p{color:var(--mu);line-height:1.8;max-width:420px}
+form{display:grid;gap:26px;align-content:center}
+.f{position:relative}
+.f input,.f select{width:100%;background:none;border:0;border-bottom:1px solid #c9a35b44;padding:14px 0;font-size:17px;outline:0;color:var(--tx);border-radius:0;appearance:none}
+.f select option{background:#14110c}
+.f label{position:absolute;left:0;top:14px;color:var(--mu);pointer-events:none;transition:all .7s var(--ease)}
+.f input:focus+label,.f input:not(:placeholder-shown)+label{top:-10px;font-size:11px;letter-spacing:.24em;color:var(--gold)}
+.f::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 1.1s var(--ease)}
+.f:focus-within::after{transform:scaleX(1)}
+#msg{font-family:'Cormorant Garamond';font-style:italic;font-size:22px;color:var(--gold2);min-height:28px}
+
+footer{border-top:1px solid var(--line);padding:clamp(50px,7vw,90px) 0 30px}
+.fl{font-family:'Cormorant Garamond';font-weight:300;font-size:clamp(64px,16vw,260px);letter-spacing:.2em;text-indent:.2em;text-align:center;line-height:1;margin-bottom:34px}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 28px;color:var(--mu)}
+
+/* slow reveals */
+.rv{opacity:0;transform:translateY(40px);transition:opacity 1.8s var(--ease),transform 1.8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.18s}.rv.d2{transition-delay:.36s}
+
+@media(max-width:900px){
+  nav{grid-template-columns:1fr auto;background:linear-gradient(#070605f2,#07060500)}nav .l{display:none}.logo{justify-self:start;font-size:20px}
+  nav .r .btn{padding:10px 14px;white-space:nowrap;font-size:10px;letter-spacing:.24em}
+  .scrollcue{display:none}
+  .ha{flex-direction:column;align-items:flex-start}.ha .ref{display:none}
+  .hb{top:auto;bottom:28px;transform:none;width:auto;right:var(--m);background:#070605d9;padding:20px;border:1px solid var(--line)}
+  .hb h2{margin:8px 0 14px}
+  .cols{grid-template-columns:1fr}
+  .nums{grid-template-columns:1fr 1fr}.nums div{border-right:0;border-bottom:1px solid var(--line);padding:24px 0}.nums div+div{padding-left:0}
+  .appt{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="loader" id="loader"><div><div class="serif goldtx">AURELIA</div><i></i><p class="cap" style="color:var(--mu);margin-top:18px">Genève · Since 1891</p></div></div>
+
+<nav id="nav" class="cap">
+  <div class="l"><a href="#collection">Collection</a><a href="#craft">Craft</a><a href="#appointment">Boutiques</a></div>
+  <a class="logo goldtx" href="#">AURELIA</a>
+  <div class="r"><a class="btn" href="#appointment"><span>Private viewing</span></a></div>
+</nav>
+
+<section id="hero">
+  <div class="stage" id="stage">
+    <div class="behind"><h1 class="goldtx" id="bigword">AURELIA</h1></div>
+    <canvas id="gl"></canvas>
+    <div class="ha" id="ha">
+      <div class="t"><span class="cap" style="color:var(--gold)">The new Sovereign · Ref. AU-01</span>
+        <h2>Time, <em class="goldtx">mastered.</em></h2>
+        <p>Forty-one millimetres of hand-finished eighteen-carat gold, a sunburst emerald dial and a movement that will outlive us all.</p>
+        <a class="btn" href="#collection"><span>Discover the collection</span><span>→</span></a></div>
+      <div class="ref cap">41 mm · 18k yellow gold<br>Calibre AU-01 · Automatic<br>Limited to 188 pieces</div>
+    </div>
+    <div class="hb" id="hb">
+      <span class="cap" style="color:var(--gold)">Inside the case</span>
+      <h2>Calibre <em class="goldtx">AU-01</em></h2>
+      <div class="spec cap"><span>Power reserve</span><b>72 hours</b></div>
+      <div class="spec cap"><span>Components</span><b>348</b></div>
+      <div class="spec cap"><span>Frequency</span><b>28,800 vph</b></div>
+      <div class="spec cap"><span>Water resistance</span><b>100 m</b></div>
+      <div class="spec cap"><span>Crystal</span><b>Sapphire, AR</b></div>
+    </div>
+    <div class="scrollcue cap" id="cue">Scroll<i></i></div>
+  </div>
+</section>
+
+<section class="mani wrap" id="mani">
+  <span class="cap">Our philosophy</span>
+  <p id="maniP">We do not make watches for the moment. We make them for the generations who will inherit the moment — <span class="g">slowly, by hand, in silence,</span> until every gear is worthy of the gold that holds it.</p>
+</section>
+
+<section class="wrap" id="collection">
+  <div class="hd"><h2 class="rv">The <em class="goldtx">Collection</em></h2><p class="rv d1">Three dials. One obsession. Each piece is assembled, regulated and signed by a single master watchmaker.</p></div>
+  <div class="cols" id="cols"></div>
+
+  <div class="nums" id="craft">
+    <div class="rv"><b class="goldtx" data-n="1200">0</b><span class="cap">Hours per piece</span></div>
+    <div class="rv d1"><b class="goldtx" data-n="348">0</b><span class="cap">Components</span></div>
+    <div class="rv d2"><b class="goldtx" data-n="72">0</b><span class="cap">Hours reserve</span></div>
+    <div class="rv d2"><b class="goldtx" data-n="12">0</b><span class="cap">Master watchmakers</span></div>
+  </div>
+</section>
+
+<section class="quote">
+  <span class="rule"></span>
+  <blockquote class="rv">“A watch does not tell time. It keeps it — for you, and for whoever comes after.”</blockquote>
+  <span class="cap rv d1">— Élise Marchand, Maître Horloger</span>
+</section>
+
+<section class="wrap appt" id="appointment">
+  <div class="rv"><span class="cap" style="color:var(--gold)">By appointment</span><h2>A private<br><em class="goldtx">viewing.</em></h2>
+    <p>Visit one of our salons in Genève, Paris, Tokyo or New York. A watchmaker will guide you through every detail of the Sovereign.</p></div>
+  <form class="rv d1" id="f">
+    <div class="f"><input id="n" required placeholder=" "><label for="n">Full name</label></div>
+    <div class="f"><input id="e" type="email" required placeholder=" "><label for="e">Email address</label></div>
+    <div class="f"><select aria-label="Boutique"><option>Genève — Rue du Rhône</option><option>Paris — Place Vendôme</option><option>Tokyo — Ginza</option><option>New York — Madison Avenue</option></select></div>
+    <div><button class="btn solid" type="submit"><span>Request appointment</span><span>→</span></button></div>
+    <div id="msg"></div>
+  </form>
+</section>
+
+<footer class="wrap"><div class="fl goldtx">AURELIA</div>
+  <div class="frow cap"><span>© 2026 Aurelia Genève</span><span>Instagram · Journal · Boutiques</span><span>A portfolio design study</span></div></footer>
+
+<script type="module">
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+const $=id=>document.getElementById(id);
+const stage=$('stage'),canvas=$('gl');
+
+await Promise.race([document.fonts.load('500 60px "Cormorant Garamond"'),new Promise(r=>setTimeout(r,1500))]);
+
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(28,1,.1,100);
+
+// dark studio: black void with a few strip lights → dramatic reflections on gold
+const env=new THREE.Scene();
+env.add(new THREE.Mesh(new THREE.SphereGeometry(30,32,16),new THREE.MeshBasicMaterial({color:0x040302,side:THREE.BackSide})));
+const strip=(w,h,p,c)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));m.position.set(...p);m.lookAt(0,0,0);env.add(m)};
+strip(1.4,14,[-7,1,4],new THREE.Color(7,7,7));
+strip(2.2,10,[7,0,-3],new THREE.Color(7,5,2.6));
+strip(8,2.4,[0,9,3],new THREE.Color(3.2,3,2.8));
+strip(10,10,[0,-8,0],new THREE.Color(.35,.25,.15));
+strip(1,6,[3,4,8],new THREE.Color(4,4,4));
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(env,0).texture;
+const key=new THREE.DirectionalLight(0xfff1dc,2.2);key.position.set(-4,6,6);scene.add(key);
+const rim=new THREE.DirectionalLight(0xffc77a,2.4);rim.position.set(5,-2,-5);scene.add(rim);
+
+// ---------- textures (dial + ceramic bezel) ----------
+function canvasTex(size,draw){const c=document.createElement('canvas');c.width=c.height=size;draw(c.getContext('2d'),size);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t}
+const GOLD='#d8b469';
+const dialTex=canvasTex(2048,(x,s)=>{const c=s/2;
+  const g=x.createRadialGradient(c*.85,c*.8,0,c,c,c);g.addColorStop(0,'#1d4a3c');g.addColorStop(.55,'#0d2a22');g.addColorStop(1,'#03100c');x.fillStyle=g;x.fillRect(0,0,s,s);
+  // sunburst brushing
+  for(let i=0;i<720;i++){const a=i/720*Math.PI*2;x.strokeStyle=i%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.08)';x.lineWidth=2;x.beginPath();x.moveTo(c,c);x.lineTo(c+Math.cos(a)*c,c+Math.sin(a)*c);x.stroke()}
+  // minute track
+  x.strokeStyle=GOLD;for(let i=0;i<60;i++){const a=i/60*Math.PI*2-Math.PI/2,r1=c*.94,r2=i%5?c*.905:c*.88;x.lineWidth=i%5?3:6;x.beginPath();x.moveTo(c+Math.cos(a)*r1,c+Math.sin(a)*r1);x.lineTo(c+Math.cos(a)*r2,c+Math.sin(a)*r2);x.stroke()}
+  x.lineWidth=2;x.beginPath();x.arc(c,c,c*.945,0,7);x.stroke();
+  x.fillStyle=GOLD;x.textAlign='center';
+  x.letterSpacing='22px';x.font='500 96px "Cormorant Garamond"';x.fillText('AURELIA',c+11,c-c*.36);
+  x.letterSpacing='12px';x.font='400 34px "Cormorant Garamond"';x.fillText('GENÈVE',c+6,c-c*.27);
+  x.font='italic 400 40px "Cormorant Garamond"';x.letterSpacing='4px';x.fillText('Sovereign',c,c+c*.33);
+  x.font='400 24px Inter';x.letterSpacing='10px';x.fillText('AUTOMATIC · 72H',c+5,c+c*.42);
+  x.beginPath();x.arc(c,c-c*.48,10,0,7);x.fill();
+});
+const bezTex=canvasTex(2048,(x,s)=>{const c=s/2;x.fillStyle='#050505';x.fillRect(0,0,s,s);
+  x.fillStyle=GOLD;x.strokeStyle=GOLD;x.textAlign='center';x.textBaseline='middle';x.font='500 70px "Cormorant Garamond"';
+  const rIn=c*(1.36/1.52),rOut=c;
+  for(let i=0;i<60;i++){const a=i/60*Math.PI*2-Math.PI/2;
+    if(i%10===0){x.save();x.translate(c+Math.cos(a)*(rIn+rOut)/2,c+Math.sin(a)*(rIn+rOut)/2);x.rotate(a+Math.PI/2);x.fillText(i===0?'▼':String(i),0,0);x.restore()}
+    else{x.lineWidth=i%5?4:8;const r1=rOut*.985,r2=i%5?rOut*.955:rOut*.93;x.beginPath();x.moveTo(c+Math.cos(a)*r1,c+Math.sin(a)*r1);x.lineTo(c+Math.cos(a)*r2,c+Math.sin(a)*r2);x.stroke()}}
+});
+
+// ---------- materials ----------
+const M={
+  gold:new THREE.MeshPhysicalMaterial({color:0xe7bd67,metalness:1,roughness:.2,clearcoat:.4,clearcoatRoughness:.1}),
+  goldP:new THREE.MeshPhysicalMaterial({color:0xf0c879,metalness:1,roughness:.08,clearcoat:1,clearcoatRoughness:.04}),
+  steel:new THREE.MeshPhysicalMaterial({color:0xd9dade,metalness:1,roughness:.3}),
+  dial:new THREE.MeshPhysicalMaterial({map:dialTex,metalness:.35,roughness:.32,clearcoat:.6,clearcoatRoughness:.15}),
+  bezel:new THREE.MeshPhysicalMaterial({map:bezTex,metalness:.2,roughness:.18,clearcoat:1,clearcoatRoughness:.05}),
+  hand:new THREE.MeshPhysicalMaterial({color:0xf3d38f,metalness:1,roughness:.12,clearcoat:1}),
+  lume:new THREE.MeshStandardMaterial({color:0xeaf6e6,emissive:0x9fe3b8,emissiveIntensity:.25,roughness:.6}),
+  glass:new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:0,transparent:true,opacity:.07,depthWrite:false}),
+};
+const mk=(g,m)=>new THREE.Mesh(g,m);
+const lathe=(pts,seg=160)=>new THREE.LatheGeometry(pts.map(p=>new THREE.Vector2(p[0],p[1])),seg);
+
+// ---------- the watch (built face-up on +Y, then tipped toward camera) ----------
+const watch=new THREE.Group(),body=new THREE.Group();body.rotation.x=Math.PI/2;watch.add(body);scene.add(watch);
+body.add(mk(lathe([[0,-.28],[1.38,-.28],[1.56,-.22],[1.66,-.08],[1.67,.06],[1.62,.2],[1.54,.27],[1.3,.27],[1.28,.17],[0,.17]]),M.gold));
+body.add(mk(lathe([[1.3,.27],[1.54,.27],[1.6,.31],[1.56,.37],[1.5,.39],[1.34,.39],[1.3,.35]]),M.goldP));
+const insert=mk(new THREE.RingGeometry(1.36,1.52,160,1),M.bezel);insert.rotation.x=-Math.PI/2;insert.position.y=.395;body.add(insert);
+const dial=mk(new THREE.CircleGeometry(1.31,160),M.dial);dial.rotation.x=-Math.PI/2;dial.position.y=.2;body.add(dial);
+// rehaut ring
+const reh=mk(lathe([[1.24,.2],[1.31,.2],[1.33,.33],[1.29,.33]]),M.gold);body.add(reh);
+// applied indices
+for(let i=0;i<12;i++){const a=i/12*Math.PI*2;
+  const n=i===0?2:1;for(let k=0;k<n;k++){const b=mk(new RoundedBoxGeometry(.075,.05,i%3===0?.3:.22,3,.015),M.goldP);
+    const off=n===2?(k?.06:-.06):0,r=i%3===0?.97:1.01;
+    b.position.set(Math.sin(a)*r+Math.cos(a)*off,.23,-Math.cos(a)*r+Math.sin(a)*off);b.rotation.y=-a;body.add(b)}
+  const d=mk(new THREE.CylinderGeometry(.03,.03,.02,16),M.lume);d.position.set(Math.sin(a)*1.19,.215,-Math.cos(a)*1.19);body.add(d)}
+// hands
+function handGeo(w,len,tail){const s=new THREE.Shape();s.moveTo(-w*.7,-tail);s.lineTo(w*.7,-tail);s.lineTo(w*.55,len*.82);s.lineTo(0,len);s.lineTo(-w*.55,len*.82);s.closePath();
+  const g=new THREE.ExtrudeGeometry(s,{depth:.018,bevelEnabled:true,bevelThickness:.008,bevelSize:.008,bevelSegments:2});g.rotateX(-Math.PI/2);return g}
+const hH=mk(handGeo(.1,.66,.16),M.hand);hH.position.y=.25;body.add(hH);
+const hM=mk(handGeo(.075,1.02,.18),M.hand);hM.position.y=.28;body.add(hM);
+const sG=new THREE.BoxGeometry(.018,.012,1.38);sG.translate(0,0,-.39);
+const hS=new THREE.Group();hS.add(mk(sG,new THREE.MeshPhysicalMaterial({color:0xb8463a,metalness:.6,roughness:.25,clearcoat:1})));
+const cw=mk(new THREE.CylinderGeometry(.05,.05,.014,24),M.hand);cw.position.z=.22;hS.add(cw);hS.position.y=.31;body.add(hS);
+const cap=mk(new THREE.CylinderGeometry(.065,.075,.05,32),M.goldP);cap.position.y=.33;body.add(cap);
+// sapphire crystal
+const glass=mk(new THREE.CylinderGeometry(1.33,1.33,.05,128),M.glass);glass.position.y=.375;body.add(glass);
+// crown + guards
+const crown=mk(new THREE.CylinderGeometry(.2,.2,.26,28),M.goldP);crown.rotation.z=Math.PI/2;crown.position.set(1.83,0,0);body.add(crown);
+const crownCap=mk(new THREE.CylinderGeometry(.14,.16,.05,32),M.gold);crownCap.rotation.z=Math.PI/2;crownCap.position.set(1.97,0,0);body.add(crownCap);
+// lugs
+for(const sx of [-1,1])for(const sz of [-1,1]){const l=mk(new RoundedBoxGeometry(.34,.4,.82,4,.1),M.gold);l.position.set(sx*.74,-.02,sz*1.72);l.rotation.x=sz*.12;body.add(l)}
+// bracelet: polished gold centre links between brushed steel outer links, curving away and back
+const R=2.7;
+for(const s of [-1,1])for(let k=0;k<11;k++){const a=.1+k*.17;
+  const g=new THREE.Group();g.position.set(0,-.08-R*(1-Math.cos(a)),s*(2.02+R*Math.sin(a)));g.rotation.x=s*a;
+  const c=mk(new RoundedBoxGeometry(.5,.17,.4,3,.06),M.goldP);g.add(c);
+  for(const sx of [-1,1]){const o=mk(new RoundedBoxGeometry(.4,.15,.42,3,.05),M.steel);o.position.x=sx*.47;g.add(o)}
+  body.add(g)}
+
+// ---------- gold dust ----------
+const dustTex=canvasTex(64,(x,s)=>{const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,230,170,1)');g.addColorStop(.4,'rgba(255,200,110,.5)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,s,s)});
+const N=380,pos=new Float32Array(N*3),spd=new Float32Array(N);
+for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*16;pos[i*3+1]=(Math.random()-.5)*10;pos[i*3+2]=(Math.random()-.5)*8-1;spd[i]=.002+Math.random()*.006}
+const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const dust=new THREE.Points(dg,new THREE.PointsMaterial({size:.07,map:dustTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.75}));
+scene.add(dust);
+
+// ---------- sizing ----------
+let wide=true;
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();wide=camera.aspect>1}
+addEventListener('resize',resize);resize();
+
+// ---------- slow scroll choreography ----------
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ss=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+const hero=$('hero'),ha=$('ha'),hb=$('hb'),cue=$('cue'),big=$('bigword');
+let target=0,p=0,mx=0,my=0,tx=0,ty=0;
+const read=()=>{const r=hero.getBoundingClientRect();target=clamp(-r.top/(r.height-innerHeight))};
+addEventListener('scroll',read,{passive:true});read();p=target;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+
+const clock=new THREE.Clock();let first=true,visible=true;
+new IntersectionObserver(([e])=>visible=e.isIntersecting).observe(stage);
+(function loop(){
+  requestAnimationFrame(loop);
+  const t=clock.getElapsedTime();
+  // real time, with a smooth sweeping seconds hand
+  const d=new Date(),sec=d.getSeconds()+d.getMilliseconds()/1000,min=d.getMinutes()+sec/60,hr=(d.getHours()%12)+min/60;
+  hS.rotation.y=-sec/60*Math.PI*2;hM.rotation.y=-min/60*Math.PI*2;hH.rotation.y=-hr/12*Math.PI*2;
+  if(!visible&&!first)return;
+  p+=(target-p)*.045;mx+=(tx-mx)*.03;my+=(ty-my)*.03;
+  const turn=ss(.15,.75,p);
+  watch.rotation.y=-.42-turn*.8+Math.sin(t*.25)*.05+mx*.25;
+  watch.rotation.x=.32-turn*.22+Math.sin(t*.2)*.03+my*.15;
+  watch.rotation.z=-.08+turn*.12;
+  watch.position.x=wide?turn*1.45:0;
+  watch.position.y=wide?-.15:(.9-turn*.2);
+  const s=wide?1:.7;watch.scale.setScalar(s*(1+turn*.12));
+  camera.position.set(0,0,13.6-turn*1.8);camera.lookAt(0,0,0);
+  for(let i=0;i<N;i++){pos[i*3+1]+=spd[i];if(pos[i*3+1]>5)pos[i*3+1]=-5}
+  dg.attributes.position.needsUpdate=true;dust.rotation.y=t*.01;
+
+  // overlays
+  const a=1-ss(.05,.28,p);ha.style.opacity=a;ha.style.transform=`translateY(${(1-a)*-30}px)`;
+  const b=ss(.5,.72,p);hb.style.opacity=b;hb.style.translate=`0 ${(1-b)*30}px`;
+  cue.style.opacity=1-ss(0,.06,p);
+  big.style.transform=`scale(${1+p*.15}) translateY(${p*-40}px)`;big.style.opacity=.13*(1-ss(.5,.9,p))+.02;
+
+  renderer.render(scene,camera);
+  if(first){first=false;setTimeout(()=>$('loader').classList.add('done'),900)}
+})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+// nav becomes solid after hero
+addEventListener('scroll',()=>$('nav').classList.toggle('solid',scrollY>innerHeight*.6),{passive:true});
+// loader fallback if WebGL never paints
+setTimeout(()=>$('loader').classList.add('done'),6000);
+
+// manifesto: split words, light them up with scroll
+const mp=$('maniP');
+// the italic phrase is wrapped in § markers so every word inside it stays gold
+let inG=false;
+mp.innerHTML=mp.innerHTML.replace(/<span class="g">(.*?)<\/span>/,'§$1§').trim().split(/\s+/).map(w=>{
+  const opens=w.startsWith('§'),closes=w.endsWith('§')&&w.length>1;if(opens)inG=true;const g=inG;if(closes)inG=false;
+  return `<span${g?' class="g goldtx"':''}>${w.replace(/§/g,'')} </span>`}).join('');
+const words=[...mp.children];
+function mani(){const r=$('mani').getBoundingClientRect(),pr=Math.min(1,Math.max(0,(innerHeight*.85-r.top)/(r.height*.9)));
+  words.forEach((w,i)=>w.style.opacity=i/words.length<pr?1:.14)}
+addEventListener('scroll',mani,{passive:true});mani();
+
+// collection: SVG watches with live hands
+const coll=[['Sovereign','Emerald sunburst · 18k gold','CHF 38,500','#1d4a3c','#03100c','#c9a35b44'],
+  ['Nocturne','Midnight lacquer · platinum','CHF 52,000','#1b2a55','#05070f','#6b86d644'],
+  ['Aube','Champagne guilloché · rose gold','CHF 41,200','#d9c39a','#7d6440','#e9c99444']];
+const face=(c1,c2,i)=>`<svg viewBox="0 0 200 200"><defs>
+  <radialGradient id="dg${i}" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+  <linearGradient id="cg${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1c8"/><stop offset=".35" stop-color="#c9a35b"/><stop offset=".6" stop-color="#7d5f27"/><stop offset="1" stop-color="#f3dc9b"/></linearGradient></defs>
+  <rect x="78" y="0" width="44" height="40" rx="6" fill="url(#cg${i})"/><rect x="78" y="160" width="44" height="40" rx="6" fill="url(#cg${i})"/>
+  <rect x="181" y="92" width="12" height="16" rx="3" fill="url(#cg${i})"/>
+  <circle cx="100" cy="100" r="84" fill="url(#cg${i})"/><circle cx="100" cy="100" r="74" fill="#0a0806"/><circle cx="100" cy="100" r="70" fill="url(#dg${i})"/>
+  ${Array.from({length:12},(_,k)=>`<rect x="98" y="${k%3?36:34}" width="4" height="${k%3?10:14}" rx="1" fill="#e9cf94" transform="rotate(${k*30} 100 100)"/>`).join('')}
+  <text x="100" y="72" text-anchor="middle" font-family="Cormorant Garamond" font-size="9" letter-spacing="3" fill="#e9cf94">AURELIA</text>
+  <g class="hh"><rect x="97.5" y="62" width="5" height="42" rx="2.5" fill="#f3dc9b"/></g>
+  <g class="mh"><rect x="98.3" y="44" width="3.4" height="60" rx="1.7" fill="#f3dc9b"/></g>
+  <g class="sh"><rect x="99.4" y="38" width="1.2" height="76" fill="#c9533f"/></g>
+  <circle cx="100" cy="100" r="4" fill="#f3dc9b"/></svg>`;
+$('cols').innerHTML=coll.map((c,i)=>`<article class="w rv${i?' d'+i:''}" style="--glow:${c[5]}">${face(c[3],c[4],i)}<div class="meta"><div><h3>${c[0]}</h3><small class="cap">${c[1]}</small></div><span class="p">${c[2]}</span></div></article>`).join('');
+(function tick(){const d=new Date(),s=d.getSeconds()+d.getMilliseconds()/1000,m=d.getMinutes()+s/60,h=d.getHours()%12+m/60;
+  document.querySelectorAll('.w svg').forEach(v=>{v.querySelector('.sh').setAttribute('transform',`rotate(${s*6} 100 100)`);
+    v.querySelector('.mh').setAttribute('transform',`rotate(${m*6} 100 100)`);v.querySelector('.hh').setAttribute('transform',`rotate(${h*30} 100 100)`)});
+  requestAnimationFrame(tick)})();
+
+// slow reveals + slow count-up
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);
+  const b=e.target.querySelector('[data-n]');if(b){const n=+b.dataset.n,t0=performance.now();
+    (function f(t){const p=Math.min((t-t0)/2600,1);b.textContent=Math.round(n*(1-Math.pow(1-p,4))).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)})(t0)}}),{threshold:.2});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+$('f').onsubmit=e=>{e.preventDefault();$('msg').textContent='Thank you. A concierge will contact you within 24 hours.'};
+</script>
+</body>
+</html>

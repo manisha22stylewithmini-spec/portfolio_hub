@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>halo* one — noise off, vibes on</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--sec:clamp(64px,9vw,128px);--gap:clamp(12px,1.6vw,20px);--pad:clamp(18px,2.2vw,28px);--bg:#e9e4ff;--ink:#0d0d10;--lime:#d4ff3a;--c:#ff5a3c;--card:#ffffff;--mu:#5e5a6e;--line:#0d0d1022}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:'Inter Tight',sans-serif}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:lowercase}
+.disp{font-family:Anton,sans-serif;text-transform:uppercase;letter-spacing:-.01em;line-height:.86}
+.ser{font-family:'Instrument Serif',serif;font-style:italic;text-transform:none;letter-spacing:-.02em;font-weight:400}
+.wrap{width:min(1240px,100% - clamp(24px,5vw,64px));margin-inline:auto}
+::selection{background:var(--lime)}
+
+/* film grain over everything */
+body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:300;opacity:.16;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .9s steps(4) infinite}
+@keyframes grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:200;width:min(1240px,100% - 24px);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pillbar{display:flex;align-items:center;gap:4px;padding:6px;border-radius:99px;background:#ffffffa8;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #ffffff;box-shadow:0 8px 30px -12px #0003}
+.logo{font-weight:700;font-size:20px;letter-spacing:-.04em;padding:6px 14px}
+.logo sup{color:var(--c);font-size:16px;transition:color .4s}
+.pillbar a.lk{padding:9px 16px;border-radius:99px;font-size:14px;font-weight:500;transition:background .25s}
+.pillbar a.lk:hover{background:var(--ink);color:#fff}
+.tag{background:var(--lime);border-radius:99px;padding:8px 14px;font-weight:600}
+.cart{background:var(--ink);color:#fff;border-radius:99px;padding:10px 18px;font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center}
+.cart b{background:var(--lime);color:var(--ink);border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;transition:transform .4s cubic-bezier(.34,1.8,.64,1)}
+.cart b.bump{transform:scale(1.6) rotate(-12deg)}
+
+/* ---------- pinned 3D stage ---------- */
+#show{height:700vh;position:relative}
+
+/* final "feel every beat" card (last scroll step) */
+.final-bg,.final-tx{position:absolute;top:100px;bottom:96px;left:max(12px,calc((100vw - 1240px)/2));right:max(12px,calc((100vw - 1240px)/2));border-radius:40px;pointer-events:none}
+.final-bg{background:radial-gradient(42% 62% at 27% 58%,color-mix(in srgb,var(--c) 45%,transparent),transparent 70%),radial-gradient(30% 40% at 85% 15%,#d4ff3a14,transparent 70%),#121214;
+  clip-path:inset(48% 48% round 40px);visibility:hidden}
+.final-tx{z-index:4;color:#fff;display:grid;align-content:center;padding:0 5% 0 52%}
+.final-tx>*{opacity:0}
+.final-tx .mono{color:var(--lime);margin-bottom:18px}
+.final-tx h2{font-size:clamp(64px,8.5vw,140px);line-height:.85}
+.brush{display:block;font-family:'Permanent Marker',cursive;color:var(--c);font-size:clamp(52px,7vw,118px);line-height:.95;transform:rotate(-3deg);margin:4px 0 22px -6px;transition:color .4s;text-transform:uppercase;letter-spacing:-.01em}
+.final-tx p{font-size:clamp(15px,1.3vw,19px);line-height:1.5;color:#d9d6e2;max-width:430px}
+.feats{display:flex;gap:clamp(18px,3.5vw,48px);margin:34px 0 30px}
+.feat{display:flex;flex-direction:column;align-items:center;gap:10px;font-weight:600;font-size:14px;text-align:center}
+.feat svg{width:52px;height:40px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.feat svg .ani{animation:bar 1s ease-in-out infinite alternate;transform-origin:center;transform-box:fill-box}
+@keyframes bar{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
+.final-tx .btn{justify-self:start;pointer-events:auto;font-size:16px;padding:14px 14px 14px 24px}
+.final-tx .btn i{width:34px;height:34px}
+.sticky{position:sticky;top:0;height:100vh;overflow:hidden;
+  background:radial-gradient(55% 55% at 50% 52%,color-mix(in srgb,var(--c) 30%,#fff) 0%,var(--bg) 62%);transition:background .6s}
+.bigs{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.big{grid-area:1/1;text-align:center;font-size:clamp(96px,19.5vw,330px);opacity:0;will-change:transform,opacity}
+.big .ser{display:block;font-size:.62em;line-height:.8;color:var(--c);transition:color .4s}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.2s ease}
+#gl.ready{opacity:1}
+.loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;transition:opacity .6s}
+
+/* story progress bar (ig-stories style) */
+.stories{position:absolute;z-index:5;top:84px;left:50%;transform:translateX(-50%);width:min(1240px,100% - 24px);display:flex;gap:6px}
+.stories i{flex:1;height:4px;border-radius:9px;background:#0d0d1018;overflow:hidden}
+.stories i b{display:block;height:100%;width:0;background:var(--ink);border-radius:9px}
+
+/* caption card */
+.capbox{position:absolute;z-index:6;left:max(12px,calc((100vw - 1240px)/2));bottom:28px;width:min(400px,calc(100% - 24px));
+  padding:22px;border-radius:28px;background:#ffffffb8;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid #fff;box-shadow:0 20px 50px -24px #0004}
+.capbox .chip{display:inline-flex;gap:8px;align-items:center;background:var(--ink);color:#fff;border-radius:99px;padding:6px 12px;margin-bottom:14px}
+.capbox .chip i{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px #d4ff3a44;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px #d4ff3a00}}
+.caps{position:relative;height:108px}
+.cap{position:absolute;inset:0;opacity:0}
+.cap h2{font-size:34px;line-height:.95;margin-bottom:8px}
+.cap p{color:var(--mu);font-size:15px;line-height:1.5}
+
+/* floating stickers */
+.badge{position:absolute;z-index:4;right:max(16px,calc((100vw - 1240px)/2));top:118px;width:128px;height:128px}
+.badge svg{width:100%;height:100%;animation:spin 14s linear infinite}
+.badge span{position:absolute;inset:0;display:grid;place-items:center;font-size:30px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sticker{position:absolute;z-index:4;background:var(--lime);border:2px solid var(--ink);border-radius:14px;padding:8px 14px;font-weight:700;font-size:15px;box-shadow:4px 4px 0 var(--ink);transform:rotate(-8deg)}
+.st1{left:12%;top:24%}
+.st2{right:16%;bottom:26%;background:#fff;transform:rotate(6deg)}
+
+/* 3D hotspot labels */
+.hot{position:absolute;left:0;top:0;z-index:5;pointer-events:none;opacity:0;display:flex;align-items:center;gap:8px;will-change:transform}
+.hot i{width:14px;height:14px;border-radius:50%;background:var(--lime);border:3px solid var(--ink);flex:0 0 auto}
+.hot span{background:var(--ink);color:#fff;padding:7px 12px;border-radius:99px;white-space:nowrap}
+
+/* swatches */
+.vibes{position:absolute;z-index:6;right:max(12px,calc((100vw - 1240px)/2));bottom:28px;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:99px;background:#ffffffb8;backdrop-filter:blur(20px);border:1px solid #fff}
+.vibes .nm{min-width:62px;font-weight:600}
+.sw{display:flex;gap:6px}
+.sw button{width:30px;height:30px;border-radius:50%;background:var(--k);border:3px solid #fff;box-shadow:0 0 0 1px #0002;transition:transform .35s cubic-bezier(.34,1.8,.64,1)}
+.sw button:hover{transform:scale(1.18) rotate(-10deg)}
+.sw button.on{box-shadow:0 0 0 2px var(--ink);transform:scale(1.12)}
+.scrollhint{position:absolute;z-index:5;left:50%;bottom:36px;transform:translateX(-50%);display:flex;align-items:center;gap:8px}
+.scrollhint i{width:22px;height:34px;border:2px solid var(--ink);border-radius:20px;position:relative}
+.scrollhint i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;border-radius:4px;background:var(--ink);transform:translateX(-50%);animation:wheel 1.4s infinite}
+@keyframes wheel{to{transform:translate(-50%,10px);opacity:0}}
+
+/* ---------- marquee ---------- */
+.mq{background:var(--lime);border-block:2px solid var(--ink);overflow:hidden;white-space:nowrap;transform:rotate(-2.5deg) scale(1.04);margin:var(--sec) 0 0;position:relative;z-index:2}
+.mq.alt{background:var(--ink);color:var(--lime);transform:rotate(2deg) scale(1.04);margin:-30px 0 0;z-index:1}
+.mq div{display:inline-flex;gap:28px;padding:14px 0;font-size:clamp(28px,4vw,46px);animation:mq 26s linear infinite}
+.mq.alt div{animation-direction:reverse}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ---------- bento specs ---------- */
+.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 40px;margin:0 0 clamp(28px,4vw,48px);flex-wrap:wrap}
+#specs{padding-top:var(--sec)}
+#reviews{padding-top:var(--sec)}
+#buy{padding-top:var(--sec)}
+.sec-h h2{font-size:clamp(52px,8.5vw,120px);line-height:.9}
+.sec-h p{max-width:300px;color:var(--mu);line-height:1.5}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(clamp(200px,19vw,250px),auto);gap:var(--gap)}
+.b{border-radius:clamp(24px,2.6vw,36px);padding:var(--pad);position:relative;overflow:hidden;background:var(--card);transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.b:hover{transform:translateY(-6px) rotate(-.6deg)}
+.b .mono{display:block;margin-bottom:10px;opacity:.7}
+.b h3{font-size:clamp(44px,5vw,72px);line-height:.9}
+.b p{font-size:15px;line-height:1.45;max-width:260px}
+.w2{grid-column:span 2}.h2{grid-row:span 2}
+.reveal{opacity:0;transform:translateY(50px) scale(.96);transition:opacity .8s,transform .9s cubic-bezier(.2,.9,.3,1.15)}
+.reveal.in{opacity:1;transform:none}
+
+.anc{background:var(--ink);color:#fff;display:flex;flex-direction:column}
+.anc canvas{flex:1;width:100%;min-height:120px;margin:14px 0}
+.anc h3{font-size:clamp(56px,7vw,104px)}
+.tg{display:flex;align-items:center;gap:14px;font-weight:600}
+.switch{width:76px;height:40px;border-radius:99px;background:#3a3a44;position:relative;transition:background .35s}
+.switch::after{content:"";position:absolute;left:4px;top:4px;width:32px;height:32px;border-radius:50%;background:#fff;transition:transform .45s cubic-bezier(.34,1.7,.64,1)}
+.switch.on{background:var(--lime)}.switch.on::after{transform:translateX(36px);background:var(--ink)}
+
+.batt{background:var(--lime)}
+.cells{position:absolute;right:22px;bottom:22px;display:flex;gap:5px;padding:6px;border:3px solid var(--ink);border-radius:12px}
+.cells::after{content:"";position:absolute;right:-9px;top:50%;width:6px;height:16px;background:var(--ink);border-radius:0 4px 4px 0;transform:translateY(-50%)}
+.cells i{width:16px;height:34px;border-radius:5px;background:var(--ink);opacity:.12;animation:fill 3s infinite}
+.cells i:nth-child(2){animation-delay:.3s}.cells i:nth-child(3){animation-delay:.6s}.cells i:nth-child(4){animation-delay:.9s}.cells i:nth-child(5){animation-delay:1.2s}
+@keyframes fill{30%,85%{opacity:1}}
+
+.light{background:#fff}
+.feather{position:absolute;right:20px;top:20px;font-size:52px;animation:float 3.4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-14px) rotate(14deg)}}
+
+.spatial{background:#c9bcff;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.orbit{position:relative;width:170px;height:170px;flex:0 0 auto}
+.orbit .hd{position:absolute;inset:0;display:grid;place-items:center;font-size:50px}
+.orbit i{position:absolute;inset:0;border:2px dashed #0d0d1040;border-radius:50%;animation:spin 6s linear infinite}
+.orbit i:nth-child(2){inset:24px;animation-duration:4s;animation-direction:reverse}
+.orbit i::after{content:"♪";position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-size:14px}
+.orbit i:nth-child(2)::after{background:var(--lime);color:var(--ink);content:"♫"}
+
+.lossless{background:var(--c);transition:background .5s}
+.eq{position:absolute;left:24px;right:24px;bottom:22px;height:70px;display:flex;align-items:flex-end;gap:5px}
+.eq i{flex:1;background:var(--ink);border-radius:5px 5px 2px 2px;animation:eq 1s ease-in-out infinite alternate}
+@keyframes eq{from{height:12%}to{height:100%}}
+
+.apps{background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chips span{border:2px solid var(--ink);border-radius:99px;padding:9px 16px;font-weight:600;transition:background .2s,transform .35s cubic-bezier(.34,1.8,.64,1)}
+.chips span:hover{background:var(--lime);transform:rotate(-5deg) scale(1.08)}
+
+/* ---------- reviews ---------- */
+.reviews{overflow:hidden;padding:4px 0;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.rtrack{display:flex;gap:var(--gap);width:max-content;animation:mq 50s linear infinite}
+.reviews:hover .rtrack{animation-play-state:paused}
+.rv{width:clamp(260px,26vw,340px);background:#fff;border-radius:26px;padding:20px;flex:0 0 auto;transition:transform .4s cubic-bezier(.34,1.7,.64,1)}
+.rv:hover{transform:rotate(-2deg) scale(1.03)}
+.rv header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px}
+.rv b{display:block;font-size:15px}.rv small{color:var(--mu)}
+.rv p{font-size:16px;line-height:1.45}
+.stars{color:var(--c);letter-spacing:2px;margin-left:auto;transition:color .4s}
+
+/* ---------- CTA ---------- */
+.cta{margin:0 auto;background:var(--ink);color:#fff;border-radius:clamp(28px,4vw,48px);padding:clamp(56px,8vw,110px) clamp(20px,5vw,80px) clamp(40px,6vw,80px);position:relative;overflow:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,2.4vw,30px)}
+.cta h2{font-size:clamp(72px,12.5vw,190px);line-height:.95;padding-bottom:.08em}
+.cta h2 .ser{color:var(--lime)}
+.price{position:absolute;right:clamp(14px,4vw,56px);top:clamp(14px,3vw,40px);width:clamp(84px,9vw,124px);height:clamp(84px,9vw,124px);border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-family:Anton;font-size:clamp(24px,2.8vw,36px);transform:rotate(14deg);animation:wob 3s ease-in-out infinite}
+.price small{display:block;font-family:'JetBrains Mono';font-size:11px;text-align:center;line-height:1}
+@keyframes wob{50%{transform:rotate(-6deg) scale(1.06)}}
+.cta .row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--lime);color:var(--ink);font-weight:700;font-size:clamp(15px,1.4vw,18px);padding:14px 14px 14px 26px;border-radius:99px;transition:transform .4s cubic-bezier(.34,1.7,.64,1)}
+.btn i{width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-style:normal;transition:transform .4s cubic-bezier(.34,1.7,.64,1)}
+.btn:hover{transform:scale(1.05) rotate(-2deg)}.btn:hover i{transform:rotate(-45deg)}
+.btn:active{transform:scale(.95)}
+.btn.ghost{background:transparent;color:#fff;border:2px solid #ffffff40;padding:16px 28px}
+.cta .mono{opacity:.65;line-height:1.6;max-width:54ch}
+.cta>.mono:first-of-type{background:#ffffff14;border-radius:99px;padding:8px 16px;opacity:1;color:var(--lime);max-width:none}
+
+footer{padding:var(--sec) 0 28px}
+.fbig{font-family:Anton;font-size:clamp(120px,31vw,520px);line-height:.8;text-align:center;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:2px var(--ink);transition:color .5s}
+.fbig:hover{color:var(--c)}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+
+@media(max-width:900px){
+  .pillbar .lk,.tag{display:none}
+  .bento{grid-template-columns:1fr 1fr}.spatial{flex-direction:column;align-items:flex-start}.spatial .orbit{width:120px;height:120px;position:absolute;right:20px;top:20px}
+  .st1,.st2,.badge{display:none}
+  .capbox{bottom:96px}.vibes{left:12px;right:12px;justify-content:space-between}
+  .scrollhint{display:none}
+  .final-bg,.final-tx{bottom:132px}.final-tx{padding:0 7% 26px;align-content:end}.feats{margin:16px 0}
+  .final-tx h2{font-size:clamp(56px,16vw,96px)}.brush{font-size:clamp(40px,12vw,76px);margin-bottom:12px}
+  .vibes .mono{display:none}.vibes{justify-content:center;gap:10px;padding:8px 12px;bottom:18px}.sw button{width:28px;height:28px}.vibes .nm{min-width:0}.price{width:96px;height:96px;font-size:28px;right:5%;top:6%}
+}
+@media(max-width:900px){.cta{padding-top:clamp(120px,26vw,150px)}.price{right:50%;transform:translateX(50%) rotate(-8deg);top:22px;animation:none}.sec-h p{max-width:none}}
+@media(max-width:560px){.bento{grid-template-columns:1fr}.w2{grid-column:auto}.h2{grid-row:auto}.anc{min-height:340px}.spatial{min-height:260px}.cta .row{flex-direction:column;width:100%}.cta .btn{justify-content:space-between;width:100%}.cta .btn.ghost{justify-content:center}.frow{flex-direction:column}}
+@media(min-width:1500px){.wrap{width:min(1360px,100% - 96px)}.bento{grid-auto-rows:minmax(260px,auto)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<nav>
+  <div class="pillbar"><a class="logo" href="#">halo<sup>*</sup></a><a class="lk" href="#show">product</a><a class="lk" href="#specs">specs</a><a class="lk" href="#reviews">reviews</a></div>
+  <div class="pillbar"><span class="tag mono">drop 001 ✶ live</span><a class="cart" href="#buy">bag <b id="bag">0</b></a></div>
+</nav>
+
+<section id="show">
+  <div class="sticky" id="sticky">
+    <div class="bigs" id="bigs">
+      <div class="big disp">noise off<span class="ser">vibes on.</span></div>
+      <div class="big disp">hits diff<span class="ser">deep bass.</span></div>
+      <div class="big disp">so soft<span class="ser">like a hug.</span></div>
+      <div class="big disp">60 hours<span class="ser">no cap.</span></div>
+    </div>
+    <div class="loading mono" id="loading">loading the vibes…</div>
+    <div class="final-bg" id="fbg"></div>
+    <canvas id="gl"></canvas>
+    <div class="final-tx" id="ftx">
+      <span class="mono">05 — the feeling</span>
+      <h2 class="disp">feel<span class="brush">every beat</span></h2>
+      <p>Immersive audio that moves with you. Engineered for clarity, balance and all-day comfort.</p>
+      <div class="feats">
+        <div class="feat"><svg viewBox="0 0 52 40"><path class="ani" d="M6 16v8"/><path class="ani" style="animation-delay:-.2s" d="M13 10v20"/><path class="ani" style="animation-delay:-.5s" d="M20 4v32"/><path class="ani" style="animation-delay:-.3s" d="M27 12v16"/><path class="ani" style="animation-delay:-.7s" d="M34 6v28"/><path class="ani" style="animation-delay:-.1s" d="M41 14v12"/><path class="ani" style="animation-delay:-.6s" d="M47 18v4"/></svg>deep bass</div>
+        <div class="feat"><svg viewBox="0 0 52 40"><path d="M15 32h24a9 9 0 0 0 0-18 13 13 0 0 0-25-2A10 10 0 0 0 15 32z"/></svg>all-day comfort</div>
+        <div class="feat"><svg viewBox="0 0 52 40"><path d="M8 4v32"/><path class="ani" d="M16 10v20"/><path class="ani" style="animation-delay:-.4s" d="M24 14v12"/><path class="ani" style="animation-delay:-.7s" d="M32 17v6"/><path d="M40 19v2"/></svg>noise isolation</div>
+      </div>
+      <a class="btn" href="#buy">cop yours <i>→</i></a>
+    </div>
+
+    <div class="stories"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    <div class="badge"><svg viewBox="0 0 100 100"><defs><path id="cp" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs>
+      <text font-family="JetBrains Mono" font-size="9.4" letter-spacing="2"><textPath href="#cp">• NOISE OFF • VIBES ON • HALO ONE • 2026 </textPath></text></svg><span>🎧</span></div>
+    <div class="sticker st1" id="st1">new drop ✶</div>
+    <div class="sticker st2" id="st2">60h battery 🔋</div>
+
+    <div class="hot" data-h="0"><i></i><span class="mono">aluminium cap · tap to pause</span></div>
+    <div class="hot" data-h="1"><i></i><span class="mono">40mm beryllium driver</span></div>
+    <div class="hot" data-h="2"><i></i><span class="mono">memory-foam cushion</span></div>
+    <div class="hot" data-h="3"><i></i><span class="mono">telescoping steel slider</span></div>
+
+    <div class="capbox">
+      <div class="chip mono"><i></i><span id="step">01 / 04</span></div>
+      <div class="caps">
+        <div class="cap"><h2 class="disp">sound, <span class="ser">sculpted</span></h2><p>wireless over-ears that disappear on your head so only the music stays. main character energy, on demand.</p></div>
+        <div class="cap"><h2 class="disp">bass that <span class="ser">hits</span></h2><p>40mm beryllium drivers. crispy highs, chest-rattling lows, basically zero distortion.</p></div>
+        <div class="cap"><h2 class="disp">cloud-soft <span class="ser">cushions</span></h2><p>memory foam wrapped in vegan leather. 10-hour flight? you'll forget they're on.</p></div>
+        <div class="cap"><h2 class="disp">60h. <span class="ser">fr fr.</span></h2><p>5 min of charge = 3 hrs of play. your charger can finally take a vacation.</p></div>
+      </div>
+    </div>
+
+    <div class="scrollhint mono" id="hint"><i></i>scroll</div>
+    <div class="vibes"><span class="mono">pick ur vibe:</span><span class="nm" id="vname">ember</span><div class="sw" id="sw"></div></div>
+  </div>
+</section>
+
+<div class="mq"><div class="disp" id="mq1"></div></div>
+<div class="mq alt"><div class="disp" id="mq2"></div></div>
+
+<section class="wrap" id="specs">
+  <div class="sec-h"><h2 class="disp">the <span class="ser">specs</span><br>no fluff</h2><p class="mono">everything packed inside 250 grams of pure intent. tap, toggle, play around.</p></div>
+  <div class="bento">
+    <div class="b anc w2 h2 reveal"><span class="mono">active noise cancel</span><h3 class="disp">-45<span style="text-transform:none">dB</span></h3>
+      <canvas id="wave"></canvas>
+      <div class="tg"><button class="switch on" id="anc" aria-label="Toggle noise cancelling"></button><span id="ancT">anc on — world on mute 🤫</span></div></div>
+    <div class="b batt reveal"><span class="mono">battery</span><h3 class="disp">60h</h3><p>one charge.<br>all week.</p><div class="cells"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="b light reveal"><span class="mono">weight</span><h3 class="disp">250g</h3><p>lighter than your phone + its case.</p><span class="feather">🪶</span></div>
+    <div class="b lossless reveal"><span class="mono">audio</span><h3 class="disp">24-bit</h3><p>lossless, wireless.</p><div class="eq" id="eq"></div></div>
+    <div class="b spatial reveal"><div><span class="mono">spatial audio</span><h3 class="disp">360°</h3><p>sound that moves when you move.</p></div><div class="orbit"><i></i><i></i><div class="hd">🙂</div></div></div>
+    <div class="b apps w2 reveal"><span class="mono">plays nice with</span><h3 class="disp" style="font-size:44px">all ur apps</h3>
+      <div class="chips"><span>spotify</span><span>apple music</span><span>tidal</span><span>youtube</span><span>soundcloud</span><span>ios</span><span>android</span></div></div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap sec-h"><h2 class="disp">the <span class="ser">reviews</span><br>are in</h2><p class="mono">4.9 ★ from 12k+ people who stopped hearing their roommates.</p></div>
+  <div class="reviews"><div class="rtrack" id="rtrack"></div></div>
+</section>
+
+<section class="wrap" id="buy">
+  <div class="cta reveal">
+    <div class="price">$349<small>free ship</small></div>
+    <span class="mono">limited first drop · 2,000 units</span>
+    <h2 class="disp">cop <span class="ser">yours</span></h2>
+    <div class="row"><button class="btn" id="add">add to bag <i>→</i></button><a class="btn ghost" href="#specs">compare specs</a></div>
+    <span class="mono">free shipping · 60-day vibe check · 2-yr warranty · klarna ok</span>
+  </div>
+</section>
+
+<footer class="wrap"><div class="fbig">halo*</div>
+  <div class="frow mono"><span>© 2026 halo audio</span><span>instagram · tiktok · discord</span><span>a portfolio design study</span></div></footer>
+
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const $=id=>document.getElementById(id);
+const canvas=$('gl'),sticky=$('sticky'),show=$('show');
+
+// ---------- renderer / scene ----------
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=.95;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+const scene=new THREE.Scene();
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(renderer),0.04).texture;
+const camera=new THREE.PerspectiveCamera(30,1,0.1,200);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x8a80b0,0.5));
+const key=new THREE.DirectionalLight(0xffffff,2.4);
+key.position.set(6,14,10);key.castShadow=true;
+key.shadow.mapSize.set(2048,2048);
+Object.assign(key.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:1,far:50});
+key.shadow.bias=-0.0004;
+scene.add(key);
+const rim=new THREE.DirectionalLight(0xff5a3c,3);rim.position.set(-9,5,-10);scene.add(rim);
+const back=new THREE.DirectionalLight(0xd4ff3a,1.4);back.position.set(9,6,-8);scene.add(back);
+
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({color:0x2a1f5c,opacity:.22}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-6.6;ground.receiveShadow=true;scene.add(ground);
+
+// ---------- procedural textures ----------
+function canvasTex(size,draw,repeat){
+  const c=document.createElement('canvas');c.width=c.height=size;const x=c.getContext('2d');draw(x,size);
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeat,repeat);t.anisotropy=8;return t;
+}
+const grain=canvasTex(512,(x,s)=>{x.fillStyle='#808080';x.fillRect(0,0,s,s);
+  for(let i=0;i<9000;i++){const g=90+Math.random()*80|0;x.fillStyle=`rgba(${g},${g},${g},.55)`;x.beginPath();x.arc(Math.random()*s,Math.random()*s,1+Math.random()*2.6,0,7);x.fill()}},6);
+const weave=canvasTex(256,(x,s)=>{x.fillStyle='#777';x.fillRect(0,0,s,s);
+  for(let i=0;i<s;i+=4){x.fillStyle=i%8?'#999':'#555';x.fillRect(i,0,2,s);x.fillStyle=i%8?'#555':'#999';x.fillRect(0,i,s,2)}},10);
+const brushed=canvasTex(512,(x,s)=>{x.fillStyle='#888';x.fillRect(0,0,s,s);
+  for(let i=0;i<2500;i++){const g=110+Math.random()*60|0;x.strokeStyle=`rgba(${g},${g},${g},.35)`;x.beginPath();const y=Math.random()*s;x.moveTo(0,y);x.lineTo(s,y+Math.random()*2);x.stroke()}},1);
+
+// ---------- materials ----------
+const accent=new THREE.Color('#ff5a3c');
+const M={
+  paint:new THREE.MeshPhysicalMaterial({color:accent,metalness:0,roughness:.3,clearcoat:1,clearcoatRoughness:.05,envMapIntensity:.55}),
+  band:new THREE.MeshPhysicalMaterial({color:0x1a1a20,metalness:.2,roughness:.42,clearcoat:.7,clearcoatRoughness:.2}),
+  metal:new THREE.MeshPhysicalMaterial({color:0xd6d8dc,metalness:1,roughness:.24,roughnessMap:brushed}),
+  dark:new THREE.MeshStandardMaterial({color:0x2a2c31,metalness:.85,roughness:.32}),
+  glass:new THREE.MeshPhysicalMaterial({color:0x0c0c10,metalness:.3,roughness:.08,clearcoat:1,clearcoatRoughness:.02}),
+  leather:new THREE.MeshPhysicalMaterial({color:0x1d1d22,roughness:.62,bumpMap:grain,bumpScale:.6,sheen:1,sheenColor:new THREE.Color(0x6a6a74),sheenRoughness:.45}),
+  fabric:new THREE.MeshStandardMaterial({color:0x121215,roughness:1,bumpMap:weave,bumpScale:.8,side:THREE.DoubleSide}),
+  cone:new THREE.MeshPhysicalMaterial({color:0x26262b,metalness:.6,roughness:.35,clearcoat:.5,side:THREE.DoubleSide}),
+  glow:new THREE.MeshStandardMaterial({color:0xd4ff3a,emissive:0xd4ff3a,emissiveIntensity:1.8}),
+};
+const mesh=(g,m,cast=true)=>{const o=new THREE.Mesh(g,m);o.castShadow=cast;o.receiveShadow=true;return o};
+const lathe=(pts,seg=128)=>new THREE.LatheGeometry(pts.map(p=>new THREE.Vector2(p[0],p[1])),seg);
+
+// ---------- ear cup (local +Y = outward axis) ----------
+function makeCup(dir){
+  const cup=new THREE.Group();
+  const inner=new THREE.Group();inner.scale.set(1.2,1,1);inner.position.y=-.6;cup.add(inner);
+
+  inner.add(mesh(lathe([[2.42,0],[2.56,.14],[2.63,.48],[2.61,.95],[2.5,1.3],[2.3,1.52],[2.1,1.6],[0,1.6]]),M.paint));
+  const trim=mesh(new THREE.TorusGeometry(2.45,.09,24,160),M.dark);trim.rotation.x=Math.PI/2;trim.position.y=.02;inner.add(trim);
+
+  const plate=new THREE.Group();
+  const disc=mesh(new THREE.CylinderGeometry(2.04,2.1,.12,128),M.metal);disc.position.y=1.64;plate.add(disc);
+  const bevel=mesh(new THREE.TorusGeometry(2.07,.05,16,160),M.metal);bevel.rotation.x=Math.PI/2;bevel.position.y=1.7;plate.add(bevel);
+  const gl=mesh(new THREE.CylinderGeometry(1.45,1.45,.05,128),M.glass);gl.position.y=1.72;plate.add(gl);
+  const ring=mesh(new THREE.TorusGeometry(.56,.04,16,128),M.glow,false);ring.rotation.x=Math.PI/2;ring.position.y=1.76;plate.add(ring);
+  const dot=mesh(new THREE.CylinderGeometry(.09,.09,.04,32),M.glow,false);dot.position.set(0,1.76,-1.05);plate.add(dot);
+  for(let i=0;i<3;i++){const h=mesh(new THREE.CylinderGeometry(.06,.06,.04,16),M.dark,false);const a=2.2+i*.22;h.position.set(Math.cos(a)*1.78,1.71,Math.sin(a)*1.78);plate.add(h)}
+  const plateAnchor=new THREE.Object3D();plateAnchor.position.y=1.8;plate.add(plateAnchor);
+  inner.add(plate);
+
+  const driver=new THREE.Group();
+  driver.add(mesh(new THREE.CylinderGeometry(1.55,1.55,.16,128),M.dark));
+  driver.add(mesh(lathe([[.3,-.04],[.65,-.12],[1.05,-.24],[1.35,-.32],[1.45,-.32]]),M.cone));
+  const cap=mesh(new THREE.SphereGeometry(.34,48,24,0,Math.PI*2,0,Math.PI/2),M.paint);cap.rotation.x=Math.PI;cap.scale.y=.55;cap.position.y=-.04;driver.add(cap);
+  const dring=mesh(new THREE.TorusGeometry(1.47,.035,12,128),M.glow,false);dring.rotation.x=Math.PI/2;dring.position.y=-.32;driver.add(dring);
+  const drvAnchor=new THREE.Object3D();drvAnchor.position.set(0,-.2,1.3);driver.add(drvAnchor);
+  driver.position.y=-.1;inner.add(driver);
+
+  const cush=new THREE.Group();
+  const pad=mesh(new THREE.TorusGeometry(1.95,.62,64,180),M.leather);pad.scale.set(1,1,.74);pad.rotation.x=Math.PI/2;pad.position.y=-.45;cush.add(pad);
+  const face=mesh(new THREE.CircleGeometry(1.5,96),M.fabric,false);face.rotation.x=Math.PI/2;face.position.y=-.32;cush.add(face);
+  const cushAnchor=new THREE.Object3D();cushAnchor.position.set(0,-.45,-2.3);cush.add(cushAnchor);
+  inner.add(cush);
+
+  const yoke=mesh(new THREE.TorusGeometry(3.45,.13,24,160,Math.PI),M.metal);yoke.rotation.y=Math.PI/2;
+  const yokeG=new THREE.Group();yokeG.add(yoke);
+  for(const z of [-1,1]){
+    const pin=mesh(new THREE.CylinderGeometry(.17,.17,.95,32),M.dark);pin.rotation.x=Math.PI/2;pin.position.z=z*3.05;yokeG.add(pin);
+    const nub=mesh(new THREE.SphereGeometry(.2,32,16),M.metal);nub.position.z=z*3.5;yokeG.add(nub);
+  }
+  const hinge=mesh(new THREE.CylinderGeometry(.22,.22,.4,32),M.dark);hinge.position.y=3.55;yokeG.add(hinge);
+  const slider=mesh(new THREE.CylinderGeometry(.1,.1,2.4,24),M.metal);slider.position.y=4.8;yokeG.add(slider);
+  const sliderAnchor=new THREE.Object3D();sliderAnchor.position.y=4.3;yokeG.add(sliderAnchor);
+
+  const axis=new THREE.Group();axis.add(inner);axis.rotation.z=dir>0?-Math.PI/2:Math.PI/2;
+  cup.add(axis);cup.add(yokeG);
+  cup.position.x=dir*4.25;
+  return {cup,plate,driver,cush,dir,anchors:{plate:plateAnchor,driver:drvAnchor,cush:cushAnchor,slider:sliderAnchor}};
+}
+
+// ---------- headband ----------
+function makeBand(){
+  const g=new THREE.Group();
+  const pts=[[-4.25,4.3],[-4.42,5.9],[-3.65,7.6],[-1.9,8.5],[0,8.78],[1.9,8.5],[3.65,7.6],[4.42,5.9],[4.25,4.3]];
+  const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],p[1],0)));
+  const outer=mesh(new THREE.TubeGeometry(curve,240,.3,32),M.band);outer.scale.z=2.5;g.add(outer);
+  const stripe=mesh(new THREE.TubeGeometry(curve,240,.07,12),M.glow,false);stripe.scale.set(1.012,1.012,1);stripe.position.y=-.1;g.add(stripe);
+  const c=new THREE.Vector3(0,4.6,0);
+  const padCurve=new THREE.CatmullRomCurve3(pts.slice(1,8).map(p=>new THREE.Vector3(p[0],p[1],0).sub(c).multiplyScalar(.95).add(c)));
+  const pad=mesh(new THREE.TubeGeometry(padCurve,200,.28,32),M.leather);pad.scale.z=2.1;pad.position.y=-.18;g.add(pad);
+  for(const s of [-1,1]){const capm=mesh(new THREE.CylinderGeometry(.38,.42,.5,48),M.dark);capm.position.set(s*4.27,4.35,0);g.add(capm)}
+  return g;
+}
+
+// ---------- assemble ----------
+const pivot=new THREE.Group(),model=new THREE.Group();
+model.position.y=-2.8;pivot.add(model);scene.add(pivot);
+const cups=[makeCup(-1),makeCup(1)];cups.forEach(c=>model.add(c.cup));
+const band=makeBand();model.add(band);
+
+// hotspot anchors: right cap, right driver, left cushion, right slider
+const anchors=[cups[1].anchors.plate,cups[1].anchors.driver,cups[0].anchors.cush,cups[1].anchors.slider];
+const hots=[...document.querySelectorAll('.hot')];
+
+// ---------- colour swatches ----------
+const cols=[['#ff5a3c','ember'],['#3c6bff','cobalt'],['#ff4fb6','bubblegum'],['#7a5cff','grape'],['#f2efe6','oat'],['#1f1f24','void']];
+const sw=$('sw');const targetCol=accent.clone();
+cols.forEach(([c,n],i)=>{const b=document.createElement('button');b.style.setProperty('--k',c);b.title=n;b.setAttribute('aria-label',n);if(!i)b.className='on';
+  b.onclick=()=>{document.documentElement.style.setProperty('--c',c);$('vname').textContent=n;[...sw.children].forEach(x=>x.classList.toggle('on',x===b));targetCol.set(c)};sw.appendChild(b)});
+
+// ---------- sizing ----------
+function resize(){
+  const w=sticky.clientWidth,h=sticky.clientHeight;
+  renderer.setSize(w,h,false);camera.aspect=w/h;
+  const d=Math.max(32,36/camera.aspect);
+  camera.position.set(0,1.2,d);camera.lookAt(0,0,0);camera.updateProjectionMatrix();
+}
+addEventListener('resize',resize);resize();
+
+// ---------- scroll choreography ----------
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const smooth=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+const keys=(k,p)=>{for(let i=1;i<k.length;i++)if(p<=k[i][0]){const a=k[i-1],b=k[i];return a[1]+(b[1]-a[1])*smooth(a[0],b[0],p)}return k[k.length-1][1]};
+const caps=[...document.querySelectorAll('.cap')],bigs=[...document.querySelectorAll('.big')],bars=[...document.querySelectorAll('.stories b')];
+const deg=Math.PI/180,v3=new THREE.Vector3();
+const capbox=document.querySelector('.capbox'),badge=document.querySelector('.badge'),fbg=$('fbg'),ftxItems=[...$('ftx').children];
+let target=0,cur=0,mx=0,my=0,tmx=0,tmy=0;
+const read=()=>{const r=show.getBoundingClientRect();target=clamp(-r.top/(r.height-innerHeight))};
+addEventListener('scroll',read,{passive:true});read();cur=target;
+addEventListener('pointermove',e=>{tmx=e.clientX/innerWidth-.5;tmy=e.clientY/innerHeight-.5});
+
+const clock=new THREE.Clock();let first=true;
+function frame(){
+  const t=clock.getElapsedTime();
+  cur+=(target-cur)*.08;mx+=(tmx-mx)*.05;my+=(tmy-my)*.05;
+  // p = whole pinned scroll; q = the four product chapters; f = final "feel every beat" card
+  const p=cur,q=clamp(p/.8),f=smooth(.8,.93,p);
+  const mix=(a,b)=>a+(b-a)*f;
+  const wide=camera.aspect>1,halfH=camera.position.z*Math.tan(15*deg),halfW=halfH*camera.aspect;
+
+  pivot.rotation.y=(mix(keys([[0,-32],[.3,38],[.55,72],[.8,34],[1,-20]],q),-38)+mx*22)*deg;
+  pivot.rotation.x=(mix(keys([[0,8],[.5,16],[1,6]],q),4)+my*12)*deg;
+  pivot.position.x=wide?-halfW*.46*f:0;
+  pivot.position.y=Math.sin(t*1.2)*.18+keys([[0,0],[.5,.4],[1,0]],q)+(wide?0:halfH*.42*f);
+  pivot.scale.setScalar(mix(keys([[0,.92],[.5,1.04],[1,.95]],q),wide?1:.62));
+  ground.material.opacity=.22*(1-f);
+
+  const e=smooth(.22,.5,q)*(1-smooth(.78,.95,q));
+  cups.forEach(({cup,plate,driver,cush,dir})=>{
+    cup.position.x=dir*(4.25+1.1*e);plate.position.y=1.9*e;driver.position.y=-.1-1.3*e;cush.position.y=-2.6*e;
+  });
+  band.position.y=1.5*e;
+
+  M.paint.color.lerp(targetCol,.08);rim.color.copy(M.paint.color);
+
+  // story step (4 chapters)
+  const step=f>.5?4:Math.min(3,Math.floor(q*4));
+  bars.forEach((b,i)=>b.style.width=(i<4?clamp(q*4-i):f)*100+'%');
+  $('step').textContent=`0${step+1} / 05`;
+  caps.forEach((c,i)=>{const o=clamp(1-Math.abs(q*4-i-.5)*1.6+.4);c.style.opacity=o;c.style.transform=`translateY(${(1-o)*14}px)`});
+  bigs.forEach((b,i)=>{const o=clamp(1.3-Math.abs(q*4-i-.5)*1.9)*(1-f);b.style.opacity=o;b.style.transform=`scale(${.9+o*.1}) translateY(${(1-o)*40}px)`});
+  $('hint').style.opacity=1-smooth(.01,.06,p);
+  $('st1').style.opacity=$('st2').style.opacity=1-smooth(.05,.15,p);
+  capbox.style.opacity=1-smooth(.78,.86,p);badge.style.opacity=1-f;
+
+  // final card grows from the centre, then its text staggers in
+  fbg.style.visibility=f>0?'visible':'hidden';
+  fbg.style.clipPath=`inset(${(1-f)*48}% ${(1-f)*48}% round 40px)`;
+  ftxItems.forEach((el,i)=>{const o=smooth(.4+i*.08,.6+i*.08,f);el.style.opacity=o;el.style.transform=`translateY(${(1-o)*30}px)`});
+
+  // project 3D anchors to screen for hotspot labels
+  model.updateMatrixWorld();
+  const w=sticky.clientWidth,h=sticky.clientHeight;
+  hots.forEach((el,i)=>{anchors[i].getWorldPosition(v3).project(camera);
+    el.style.transform=`translate(${(v3.x*.5+.5)*w-7}px,${(-v3.y*.5+.5)*h-7}px)`;
+    el.style.opacity=smooth(.55,.85,e)});
+
+  renderer.render(scene,camera);
+  if(first){first=false;canvas.classList.add('ready');$('loading').style.opacity=0}
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+
+<script>
+// ---------- page interactions (non-3D) ----------
+const $=id=>document.getElementById(id);
+
+// marquees
+const m1=['noise off','✶','vibes on','✶','60h battery','✶','drop 001','✶'],m2=['main character audio','●','zero distortion','●','hug-level comfort','●'];
+$('mq1').innerHTML=[...m1,...m1,...m1,...m1].map(w=>`<span>${w}</span>`).join('');
+$('mq2').innerHTML=[...m2,...m2,...m2,...m2].map(w=>`<span>${w}</span>`).join('');
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach((e,i)=>{e.style.transitionDelay=(i%4)*.07+'s';io.observe(e)});
+
+// eq bars
+$('eq').innerHTML=Array.from({length:18},(_,i)=>`<i style="animation-delay:${-(i*.13)%1}s;animation-duration:${.6+(i%5)*.12}s"></i>`).join('');
+
+// ANC waveform: calm when on, chaotic when off
+const wv=$('wave'),wx=wv.getContext('2d');let ancOn=true,amp=.15;
+function sizeW(){wv.width=wv.clientWidth*devicePixelRatio;wv.height=wv.clientHeight*devicePixelRatio}
+addEventListener('resize',sizeW);sizeW();
+$('anc').onclick=()=>{ancOn=!ancOn;$('anc').classList.toggle('on',ancOn);$('ancT').textContent=ancOn?'anc on — world on mute 🤫':'anc off — hello, chaos 😵‍💫'};
+(function draw(t){
+  amp+=((ancOn?.12:1)-amp)*.06;
+  const W=wv.width,H=wv.height;wx.clearRect(0,0,W,H);
+  [['#d4ff3a',1,0],['#ffffff55',.6,1.7],['#ffffff22',.35,3.1]].forEach(([c,k,o])=>{
+    wx.beginPath();wx.lineWidth=3*devicePixelRatio;wx.strokeStyle=c;
+    for(let x=0;x<=W;x+=4){const n=x/W;
+      const y=H/2+Math.sin(n*14+t/300+o)*H*.3*amp*k+Math.sin(n*41-t/170+o)*H*.15*amp*k*(ancOn?0:1)+Math.sin(n*6+t/600)*H*.06*k;
+      x?wx.lineTo(x,y):wx.moveTo(x,y)}
+    wx.stroke()});
+  requestAnimationFrame(draw)})(0);
+
+// reviews
+const R=[['maya.wav','🫠','#ffd1ec','my commute is literally a concert now. the bass?? unreal.'],
+  ['dev_noah','🧃','#d4ff3a','wore them on a 9h flight and forgot they were on. no notes.'],
+  ['lil.studio','🎨','#c9bcff','the oat colorway is giving quiet luxury. obsessed fr.'],
+  ['kai.codes','💻','#bfe0ff','anc turned my open office into a library. productivity +200%.'],
+  ['jaz','🌙','#ffe27a','battery lasted my entire festival weekend. iconic behaviour.'],
+  ['ollie.mp3','🎧','#ffb48a','sound stage is wild — I heard stuff in songs I\'ve played 1000x.']];
+const card=([h,e,c,t])=>`<article class="rv"><header><div class="av" style="background:${c}">${e}</div><div><b>@${h}</b><small>verified buyer</small></div><span class="stars">★★★★★</span></header><p>${t}</p></article>`;
+$('rtrack').innerHTML=[...R,...R].map(card).join('');
+
+// add to bag
+let n=0;$('add').onclick=()=>{n++;const b=$('bag');b.textContent=n;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');setTimeout(()=>b.classList.remove('bump'),400);
+  $('add').firstChild.textContent=n===1?'added ✓ ':`added ×${n} `};
+</script>
+</body>
+</html>

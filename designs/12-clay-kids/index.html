@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puffle — Learning that feels like play</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fdf5ec;--ink:#3b2f5c;--mu:#7a6f96;--lil:#c9b6ff;--mint:#a8ecd0;--peach:#ffc9a8;--sky:#a9d8ff;--lem:#ffe98a;--pink:#ffb8d2;--m:clamp(16px,3.6vw,56px);
+  --clay:inset 6px 6px 12px #ffffffb0,inset -8px -8px 16px #0000001a,0 18px 32px -16px #5a3e8f55}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--ink);font-family:Nunito,sans-serif;font-weight:700}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+h1,h2,h3,.f{font-family:Fredoka,sans-serif}
+.wrap{width:min(1240px,100% - 2*var(--m));margin-inline:auto}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(40% 40% at 8% 10%,#ffe0ef 0,#0000 70%),radial-gradient(40% 40% at 95% 20%,#e3f2ff 0,#0000 70%),radial-gradient(50% 50% at 50% 100%,#efe7ff 0,#0000 70%)}
+
+/* clay primitives */
+.clay{border-radius:32px;box-shadow:var(--clay)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 28px;border-radius:999px;font-family:Fredoka;font-weight:600;font-size:18px;color:#fff;
+  background:#8f6bff;box-shadow:inset 4px 4px 8px #ffffff66,inset -6px -6px 10px #00000026,0 10px 0 #6a49d8,0 18px 24px -8px #6a49d877;
+  transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-3px) scale(1.03)}
+.btn:active{transform:translateY(8px);box-shadow:inset 4px 4px 8px #ffffff66,inset -6px -6px 10px #00000026,0 2px 0 #6a49d8,0 6px 10px -6px #6a49d877}
+.btn.w{background:#fff;color:var(--ink);box-shadow:inset 4px 4px 8px #fff,inset -6px -6px 10px #0000000f,0 10px 0 #e3d8f5,0 18px 24px -10px #6a49d844}
+.btn.w:active{box-shadow:inset 4px 4px 8px #fff,inset -6px -6px 10px #0000000f,0 2px 0 #e3d8f5}
+.btn.sm{padding:11px 20px;font-size:15px}
+
+/* nav */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;width:min(1240px,100% - 24px);display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:10px 10px 10px 20px;border-radius:999px;background:#ffffffd9;backdrop-filter:blur(14px);box-shadow:inset 4px 4px 8px #fff,inset -5px -5px 10px #0000000d,0 14px 30px -18px #5a3e8f66}
+.logo{display:flex;align-items:center;gap:10px;font-family:Fredoka;font-weight:700;font-size:24px}
+.logo i{width:34px;height:34px;border-radius:50%;background:var(--lil);box-shadow:inset 3px 3px 6px #ffffffaa,inset -4px -4px 8px #0000001f;position:relative}
+.logo i::before,.logo i::after{content:"";position:absolute;top:12px;width:6px;height:7px;border-radius:50%;background:var(--ink)}
+.logo i::before{left:10px}.logo i::after{right:10px}
+nav ul{display:flex;gap:6px;list-style:none}
+nav ul a{display:block;padding:10px 16px;border-radius:999px;transition:background .2s,transform .2s}
+nav ul a:hover{background:#f1eaff;transform:translateY(-2px)}
+
+/* hero */
+.hero{position:relative;min-height:max(720px,100vh);display:grid;align-items:center;overflow:hidden;padding:120px 0 60px}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;opacity:0;transition:opacity 1s}
+#gl.ready{opacity:1}
+.hero-in{position:relative;z-index:2;pointer-events:none}
+.hero-in a,.hero-in button{pointer-events:auto}
+.copy{max-width:min(560px,48vw)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:#fff;box-shadow:inset 3px 3px 6px #fff,inset -4px -4px 8px #0000000f,0 8px 18px -10px #5a3e8f55;font-size:14px;margin-bottom:20px}
+.chip b{background:var(--mint);border-radius:999px;padding:2px 10px;font-size:12px}
+.hero h1{font-size:clamp(46px,6.6vw,104px);line-height:.98;font-weight:700;letter-spacing:-.02em}
+.hero h1 .hl{display:inline-block;padding:0 .18em;border-radius:.3em;background:var(--lem);box-shadow:inset 4px 4px 8px #ffffffaa,inset -5px -5px 10px #0000001a;transform:rotate(-3deg)}
+.hero h1 .hl2{background:var(--pink);transform:rotate(2deg)}
+.hero p{font-size:clamp(17px,1.5vw,21px);line-height:1.5;color:var(--mu);margin:22px 0 30px;max-width:470px}
+.ctas{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.proof{display:flex;align-items:center;gap:14px;margin-top:30px;font-size:15px;color:var(--mu)}
+.avs{display:flex}.avs i{width:38px;height:38px;border-radius:50%;border:3px solid var(--bg);margin-left:-10px;box-shadow:inset 3px 3px 5px #ffffffaa,inset -3px -3px 6px #0000001a;display:grid;place-items:center;font-style:normal;font-size:18px}
+.avs i:first-child{margin-left:0}
+.stars{color:#ffb800;letter-spacing:2px}
+.hint{position:absolute;z-index:3;right:8%;bottom:14%;padding:8px 16px;border-radius:999px;background:#fff;font-family:Fredoka;transform:rotate(6deg);box-shadow:0 10px 20px -10px #5a3e8f66;animation:wob 2.4s ease-in-out infinite}
+@keyframes wob{50%{transform:rotate(-3deg) translateY(-6px)}}
+
+/* sections */
+section.s{padding-top:clamp(80px,10vw,140px)}
+.hd{text-align:center;max-width:720px;margin:0 auto clamp(36px,5vw,64px)}
+.hd .chip{margin-bottom:16px}
+.hd h2{font-size:clamp(36px,5vw,72px);line-height:1.02;letter-spacing:-.02em}
+.hd p{color:var(--mu);margin-top:14px;font-size:18px;line-height:1.5}
+
+/* subjects */
+.subj{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
+.sc{padding:clamp(22px,2.6vw,34px);background:var(--c);transition:transform .45s cubic-bezier(.34,1.8,.5,1);cursor:pointer}
+.sc:hover{transform:translateY(-8px) rotate(-1.5deg) scale(1.02)}
+.sc:active{transform:scale(.96,.92)}
+.ico{width:78px;height:78px;border-radius:26px;display:grid;place-items:center;font-size:40px;background:#ffffff99;box-shadow:inset 4px 4px 8px #fff,inset -5px -5px 10px #00000014,0 10px 18px -10px #0004;margin-bottom:22px;transition:transform .5s cubic-bezier(.34,1.8,.5,1)}
+.sc:hover .ico{transform:rotate(-10deg) scale(1.12)}
+.sc h3{font-size:clamp(24px,2.2vw,30px);margin-bottom:6px}
+.sc p{color:#5a4f7a;line-height:1.5}
+.sc .lv{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:14px}
+.prog{flex:1;height:14px;margin-right:12px;border-radius:99px;background:#ffffff80;box-shadow:inset 2px 2px 4px #0000001a;overflow:hidden}
+.prog i{display:block;height:100%;width:0;border-radius:99px;background:#fff;box-shadow:inset -2px -2px 4px #00000014;transition:width 1.4s cubic-bezier(.3,1.4,.5,1)}
+.in .prog i{width:var(--w)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,3vw,44px);position:relative}
+.steps::before{content:"";position:absolute;left:16%;right:16%;top:54px;border-top:5px dotted #d9ccf7;z-index:0}
+.st{position:relative;text-align:center;z-index:1}
+.num{width:108px;height:108px;margin:0 auto 22px;border-radius:44% 56% 52% 48%/50% 44% 56% 50%;display:grid;place-items:center;font-family:Fredoka;font-weight:700;font-size:44px;color:#fff;background:var(--c);box-shadow:var(--clay);animation:blob 6s ease-in-out infinite}
+.st:nth-child(2) .num{animation-delay:-2s}.st:nth-child(3) .num{animation-delay:-4s}
+@keyframes blob{50%{border-radius:56% 44% 46% 54%/46% 56% 44% 54%;transform:translateY(-6px)}}
+.st h3{font-size:26px;margin-bottom:8px}
+.st p{color:var(--mu);line-height:1.5;max-width:300px;margin:0 auto}
+
+/* quiz */
+.quiz{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(20px,4vw,60px);align-items:center;padding:clamp(26px,4vw,56px);background:linear-gradient(135deg,#efe7ff,#e3f2ff)}
+.quiz h2{font-size:clamp(34px,4.4vw,60px);line-height:1.02;margin-bottom:14px}
+.quiz .l p{color:var(--mu);line-height:1.6;font-size:18px}
+.board{background:#fff;padding:clamp(20px,3vw,34px);text-align:center}
+.qtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:15px;color:var(--mu)}
+.dots{display:flex;gap:6px}.dots i{width:14px;height:14px;border-radius:50%;background:#eee6fb;box-shadow:inset 2px 2px 3px #0000001a}
+.dots i.ok{background:var(--mint)}.dots i.cur{background:var(--lil)}
+.q{font-family:Fredoka;font-size:clamp(26px,3vw,40px);margin:8px 0 6px}
+.qv{font-size:clamp(30px,4vw,48px);min-height:1.3em;letter-spacing:4px}
+.ans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.ans button{padding:18px 0;border-radius:24px;font-family:Fredoka;font-weight:700;font-size:30px;background:var(--c);box-shadow:inset 4px 4px 8px #ffffff99,inset -5px -5px 10px #0000001f,0 8px 0 color-mix(in srgb,var(--c) 70%,#000 12%);transition:transform .12s}
+.ans button:hover{transform:translateY(-3px)}
+.ans button:active{transform:translateY(6px)}
+.ans button.no{animation:no .4s}
+@keyframes no{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.fb{min-height:30px;margin-top:16px;font-family:Fredoka;font-size:20px}
+
+/* parents */
+.par{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,60px);align-items:center}
+.phone{width:min(330px,80%);margin:0 auto;aspect-ratio:9/17;border-radius:48px;background:#fff;padding:14px;box-shadow:inset 6px 6px 12px #fff,inset -10px -10px 18px #0000001a,0 30px 50px -24px #5a3e8f88;transform:rotate(-4deg);transition:transform .6s cubic-bezier(.34,1.6,.5,1)}
+.phone:hover{transform:rotate(0) scale(1.03)}
+.scr{height:100%;border-radius:36px;background:linear-gradient(180deg,#f3ecff,#fff);padding:22px 18px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.scr .hi{font-family:Fredoka;font-size:22px}
+.scr .mini{border-radius:22px;padding:14px;background:var(--c);box-shadow:inset 3px 3px 6px #ffffffaa,inset -4px -4px 8px #0000001a}
+.bars{display:flex;align-items:flex-end;gap:8px;height:110px;margin-top:8px}
+.bars i{flex:1;border-radius:10px 10px 6px 6px;background:#8f6bff;box-shadow:inset 3px 3px 5px #ffffff66,inset -3px -3px 6px #0000002a;height:0;transition:height 1.2s cubic-bezier(.3,1.5,.5,1)}
+.in .bars i{height:var(--h)}
+.feat{display:grid;gap:16px;margin-top:26px}
+.feat div{display:flex;gap:16px;align-items:center;padding:16px 20px;background:#fff}
+.feat b{width:52px;height:52px;flex:0 0 auto;border-radius:18px;display:grid;place-items:center;font-size:26px;background:var(--c);box-shadow:inset 3px 3px 6px #ffffffaa,inset -4px -4px 8px #0000001a}
+.feat span{color:var(--mu);font-weight:600;line-height:1.4}
+.feat strong{display:block;color:var(--ink);font-family:Fredoka;font-weight:600;font-size:19px}
+
+/* pricing */
+.tog{display:flex;justify-content:center;margin-bottom:34px}
+.tog div{display:flex;padding:6px;border-radius:999px;background:#efe7ff;box-shadow:inset 4px 4px 8px #0000001a,inset -4px -4px 8px #fff}
+.tog button{padding:12px 24px;border-radius:999px;background:none;font-family:Fredoka;font-size:16px;transition:all .3s cubic-bezier(.34,1.6,.5,1)}
+.tog button.on{background:#fff;box-shadow:inset 3px 3px 6px #fff,inset -4px -4px 8px #0000000f,0 8px 16px -8px #5a3e8f66}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);align-items:stretch}
+.pl{padding:clamp(24px,3vw,38px);background:#fff;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.34,1.8,.5,1)}
+.pl:hover{transform:translateY(-8px)}
+.pl.pop{background:var(--lil);transform:scale(1.04)}
+.pl.pop:hover{transform:scale(1.04) translateY(-8px)}
+.pl h3{font-size:26px}
+.pl .pr{font-family:Fredoka;font-size:56px;margin:12px 0 4px}
+.pl .pr small{font-size:18px;color:var(--mu)}
+.pl ul{list-style:none;display:grid;gap:12px;margin:18px 0 28px;flex:1}
+.pl li{display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.pl li::before{content:"✓";flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--mint);box-shadow:inset 2px 2px 3px #ffffffaa,inset -2px -2px 4px #0000001a}
+.pl .btn{justify-content:center}
+.badge{align-self:flex-start;background:var(--lem);border-radius:999px;padding:4px 12px;font-size:13px;margin-bottom:10px;box-shadow:inset 2px 2px 4px #ffffffaa,inset -2px -2px 4px #0000001a}
+
+/* reviews */
+.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
+.rv-c{padding:26px;background:var(--c)}
+.rv-c p{font-size:18px;line-height:1.5;margin:12px 0 18px}
+.who{display:flex;align-items:center;gap:12px}
+.who i{width:46px;height:46px;border-radius:50%;background:#ffffffaa;display:grid;place-items:center;font-size:22px;font-style:normal;box-shadow:inset 3px 3px 6px #fff,inset -3px -3px 6px #0000001a}
+.who small{display:block;color:#5a4f7a;font-weight:600}
+
+/* cta */
+.cta{margin-top:clamp(80px,10vw,140px);padding:clamp(40px,7vw,90px) var(--m);text-align:center;background:linear-gradient(135deg,#ffd7e7,#ffe9c7);position:relative;overflow:hidden}
+.cta h2{font-size:clamp(38px,6vw,86px);line-height:1;margin-bottom:16px}
+.cta p{color:#6b5a72;font-size:19px;margin-bottom:30px}
+.blobs i{position:absolute;border-radius:50%;box-shadow:var(--clay);animation:blob 7s ease-in-out infinite}
+footer{padding:clamp(50px,7vw,90px) 0 30px;text-align:center;color:var(--mu)}
+footer .logo{justify-content:center;font-size:30px;margin-bottom:12px;color:var(--ink)}
+
+#conf{position:fixed;inset:0;pointer-events:none;z-index:200}
+.rv{opacity:0;transform:translateY(40px) scale(.95);transition:opacity .7s,transform .8s cubic-bezier(.34,1.5,.5,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav ul{display:none}
+  .hero{align-items:end;padding-top:min(50vh,420px);text-align:center}.copy{max-width:none}.hero p{margin-inline:auto}.ctas,.proof{justify-content:center}
+  .hint{right:auto;left:6%;top:16%;bottom:auto}
+  .subj,.plans,.revs{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr}.steps::before{display:none}
+  .quiz,.par{grid-template-columns:1fr}
+  .pl.pop{transform:none}
+}
+@media(max-width:600px){.subj,.plans,.revs{grid-template-columns:1fr}.ans button{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<canvas id="conf"></canvas>
+<nav><a class="logo" href="#"><i></i>puffle</a>
+  <ul><li><a href="#subjects">Subjects</a></li><li><a href="#play">Try it</a></li><li><a href="#parents">Parents</a></li><li><a href="#pricing">Pricing</a></li></ul>
+  <a class="btn sm" href="#pricing">Start free</a></nav>
+
+<header class="hero">
+  <canvas id="gl"></canvas>
+  <div class="hero-in wrap"><div class="copy">
+    <span class="chip">Ages 3–9 <b>NEW</b> 400+ lessons</span>
+    <h1>Learning that feels like <span class="hl">play</span> <span class="hl hl2">all day!</span></h1>
+    <p>Puffle turns maths, reading and science into squishy little games. Kids giggle, parents relax, and everyone learns something new.</p>
+    <div class="ctas"><a class="btn" href="#pricing">Start free trial →</a><a class="btn w" href="#play">Try a lesson</a></div>
+    <div class="proof"><div class="avs"><i style="background:var(--pink)">🐻</i><i style="background:var(--mint)">🦊</i><i style="background:var(--sky)">🐼</i><i style="background:var(--lem)">🐯</i></div><div><span class="stars">★★★★★</span><br>Loved by 2M+ families</div></div>
+  </div></div>
+  <div class="hint f">tap the shapes! 👆</div>
+</header>
+
+<section class="s wrap" id="subjects">
+  <div class="hd rv"><span class="chip">📚 Subjects</span><h2>Six worlds to explore</h2><p>Every subject is a squishy little planet full of games, songs and surprises.</p></div>
+  <div class="subj">
+    <article class="sc clay rv" style="--c:#ffd9c4"><div class="ico">🔢</div><h3>Maths</h3><p>Count, add and share cookies with friendly numbers.</p><div class="lv"><div class="prog"><i style="--w:72%"></i></div>120 games</div></article>
+    <article class="sc clay rv" style="--c:#d9ccff"><div class="ico">📖</div><h3>Reading</h3><p>Phonics, stories and first words read aloud together.</p><div class="lv"><div class="prog"><i style="--w:58%"></i></div>95 stories</div></article>
+    <article class="sc clay rv" style="--c:#c8f2de"><div class="ico">🔬</div><h3>Science</h3><p>Grow plants, mix colours and launch tiny rockets.</p><div class="lv"><div class="prog"><i style="--w:44%"></i></div>60 labs</div></article>
+    <article class="sc clay rv" style="--c:#cfe8ff"><div class="ico">🎨</div><h3>Art</h3><p>Paint, sculpt and stamp — with no mess on the sofa.</p><div class="lv"><div class="prog"><i style="--w:66%"></i></div>48 studios</div></article>
+    <article class="sc clay rv" style="--c:#fff1b0"><div class="ico">🎵</div><h3>Music</h3><p>Rhythm, rhymes and a puffy little piano.</p><div class="lv"><div class="prog"><i style="--w:38%"></i></div>40 songs</div></article>
+    <article class="sc clay rv" style="--c:#ffd0e1"><div class="ico">🧩</div><h3>Coding</h3><p>Guide Puff through puzzles with drag-and-drop blocks.</p><div class="lv"><div class="prog"><i style="--w:52%"></i></div>70 puzzles</div></article>
+  </div>
+</section>
+
+<section class="s wrap">
+  <div class="hd rv"><span class="chip">✨ How it works</span><h2>Three tiny steps</h2></div>
+  <div class="steps">
+    <div class="st rv"><div class="num" style="--c:#b49bff">1</div><h3>Pick a buddy</h3><p>Your child chooses a puffy pal who guides every lesson.</p></div>
+    <div class="st rv"><div class="num" style="--c:#7fd8b2">2</div><h3>Play 10 minutes</h3><p>Short, bouncy sessions that fit between snacks and naps.</p></div>
+    <div class="st rv"><div class="num" style="--c:#ffa77d">3</div><h3>Watch them grow</h3><p>Stars, stickers and progress reports you'll actually read.</p></div>
+  </div>
+</section>
+
+<section class="s wrap" id="play">
+  <div class="quiz clay rv">
+    <div class="l"><span class="chip">🎮 Try it now</span><h2>Can you beat Puff's mini quiz?</h2><p>Three quick counting questions — just like the real app. Tap an answer and see what happens!</p></div>
+    <div class="board clay">
+      <div class="qtop"><span id="qn">Question 1 of 3</span><div class="dots" id="dots"><i class="cur"></i><i></i><i></i></div></div>
+      <div class="q" id="qt">How many stars?</div>
+      <div class="qv" id="qv"></div>
+      <div class="ans" id="ans"></div>
+      <div class="fb" id="fb"></div>
+    </div>
+  </div>
+</section>
+
+<section class="s wrap" id="parents">
+  <div class="par">
+    <div class="phone rv"><div class="scr">
+      <div class="hi">Hi, Mia's mum 👋</div>
+      <div class="mini" style="--c:#efe7ff"><span style="font-size:13px;color:var(--mu)">This week</span><div class="bars"><i style="--h:40%"></i><i style="--h:65%"></i><i style="--h:50%"></i><i style="--h:85%"></i><i style="--h:70%"></i><i style="--h:95%"></i><i style="--h:60%"></i></div></div>
+      <div class="mini" style="--c:#c8f2de"><b class="f" style="font-size:18px">⭐ 42 stars earned</b><br><span style="font-size:13px;color:#4e6b5f">Best week ever!</span></div>
+      <div class="mini" style="--c:#ffe5d6"><b class="f" style="font-size:18px">📖 New word: "rainbow"</b></div>
+    </div></div>
+    <div class="rv"><span class="chip">👨‍👩‍👧 For parents</span><h2 class="f" style="font-size:clamp(34px,4.6vw,64px);line-height:1.02">Peace of mind, built in.</h2>
+      <div class="feat">
+        <div class="clay"><b style="--c:#d9ccff">🛡️</b><span><strong>100% ad-free & safe</strong>No ads, no chats, no surprises. Certified kid-safe.</span></div>
+        <div class="clay"><b style="--c:#c8f2de">⏰</b><span><strong>Gentle screen-time limits</strong>Puff yawns and says goodnight when it's time.</span></div>
+        <div class="clay"><b style="--c:#ffe5d6">📊</b><span><strong>Weekly progress reports</strong>See exactly what clicked and what needs a cuddle.</span></div>
+      </div></div>
+  </div>
+</section>
+
+<section class="s wrap" id="pricing">
+  <div class="hd rv"><span class="chip">💜 Pricing</span><h2>Simple, squishy plans</h2></div>
+  <div class="tog"><div id="tog"><button class="on" data-y="0">Monthly</button><button data-y="1">Yearly · save 40%</button></div></div>
+  <div class="plans">
+    <div class="pl clay rv"><h3>Free</h3><div class="pr">$0</div><span style="color:var(--mu)">forever</span><ul><li>3 lessons a day</li><li>2 subjects</li><li>1 child profile</li></ul><a class="btn w" href="#">Get started</a></div>
+    <div class="pl pop clay rv"><span class="badge">Most loved</span><h3>Family</h3><div class="pr">$<span data-p="9.99">9.99</span><small>/mo</small></div><span style="color:#5a4f7a">up to 4 kids</span><ul><li>Unlimited lessons</li><li>All 6 subjects</li><li>Offline mode</li><li>Parent reports</li></ul><a class="btn" href="#">Start free trial</a></div>
+    <div class="pl clay rv"><h3>Classroom</h3><div class="pr">$<span data-p="29">29</span><small>/mo</small></div><span style="color:var(--mu)">up to 30 kids</span><ul><li>Everything in Family</li><li>Teacher dashboard</li><li>Lesson plans</li></ul><a class="btn w" href="#">Talk to us</a></div>
+  </div>
+</section>
+
+<section class="s wrap">
+  <div class="hd rv"><span class="chip">💬 Families say</span><h2>Giggles guaranteed</h2></div>
+  <div class="revs">
+    <div class="rv-c clay rv" style="--c:#ffe5d6"><span class="stars">★★★★★</span><p>"My 5-year-old asks to do maths now. MATHS. I don't know who this child is."</p><div class="who"><i>👩</i><div>Priya S.<small>mum of two</small></div></div></div>
+    <div class="rv-c clay rv" style="--c:#e3f2ff"><span class="stars">★★★★★</span><p>"No ads, no weird videos, and he learned to read his first book in a month."</p><div class="who"><i>👨</i><div>Tom R.<small>dad of Leo, 6</small></div></div></div>
+    <div class="rv-c clay rv" style="--c:#efe7ff"><span class="stars">★★★★★</span><p>"We use Puffle in class every morning. The kids cheer when Puff appears."</p><div class="who"><i>👩‍🏫</i><div>Ms. Alvarez<small>Year 1 teacher</small></div></div></div>
+  </div>
+  <div class="cta clay rv"><div class="blobs"><i style="width:120px;height:120px;left:-30px;top:-30px;background:var(--lil)"></i><i style="width:80px;height:80px;right:6%;top:18%;background:var(--mint);animation-delay:-2s"></i><i style="width:60px;height:60px;left:12%;bottom:12%;background:var(--sky);animation-delay:-4s"></i><i style="width:140px;height:140px;right:-40px;bottom:-50px;background:var(--lem);animation-delay:-3s"></i></div>
+    <h2 style="position:relative">Ready to play &amp; learn?</h2><p style="position:relative">7 days free. Cancel anytime. Hugs included.</p>
+    <div class="ctas" style="justify-content:center;position:relative"><a class="btn" href="#">Start free trial →</a><a class="btn w" href="#">📱 Get the app</a></div></div>
+</section>
+<footer class="wrap"><div class="logo"><i></i>puffle</div><p>© 2026 Puffle Learning · Made with clay &amp; love · A portfolio design study</p></footer>
+
+<script type="module">
+// ---------- 3D clay hero ----------
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+const canvas=document.getElementById('gl'),hero=canvas.parentElement;
+await Promise.race([document.fonts.load('700 100px Fredoka'),new Promise(r=>setTimeout(r,1500))]);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer),.04).texture;
+const camera=new THREE.PerspectiveCamera(32,1,.1,100);camera.position.set(0,1.2,14);camera.lookAt(0,0,0);
+
+scene.add(new THREE.HemisphereLight(0xfff7f0,0xc9b6ff,1.5));
+const key=new THREE.DirectionalLight(0xfff2e6,1.8);key.position.set(-4,8,6);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.radius=6;key.shadow.bias=-.0005;
+Object.assign(key.shadow.camera,{left:-10,right:10,top:10,bottom:-10});scene.add(key);
+const fill=new THREE.DirectionalLight(0xd9eaff,.6);fill.position.set(6,2,4);scene.add(fill);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({color:0x6a49d8,opacity:.16}));ground.rotation.x=-Math.PI/2;ground.position.y=-2.6;ground.receiveShadow=true;scene.add(ground);
+
+// fingerprint-ish clay grain
+const gc=document.createElement('canvas');gc.width=gc.height=256;const gx=gc.getContext('2d');gx.fillStyle='#808080';gx.fillRect(0,0,256,256);
+for(let i=0;i<2600;i++){const g=100+Math.random()*60|0;gx.fillStyle=`rgba(${g},${g},${g},.5)`;gx.beginPath();gx.arc(Math.random()*256,Math.random()*256,Math.random()*2.2+.4,0,7);gx.fill()}
+const grain=new THREE.CanvasTexture(gc);grain.wrapS=grain.wrapT=THREE.RepeatWrapping;grain.repeat.set(3,3);
+const clay=c=>new THREE.MeshPhysicalMaterial({color:new THREE.Color(c),roughness:.62,metalness:0,sheen:.7,sheenColor:new THREE.Color('#ffffff'),sheenRoughness:.7,clearcoat:.12,clearcoatRoughness:.6,bumpMap:grain,bumpScale:.35,envMapIntensity:.45});
+const mesh=(g,m)=>{const o=new THREE.Mesh(g,m);o.castShadow=true;o.receiveShadow=true;return o};
+
+// --- Puff the mascot ---
+const puff=new THREE.Group(),bodyG=new THREE.Group();puff.add(bodyG);
+const body=mesh(new THREE.SphereGeometry(1.35,96,64),clay('#b9a2ff'));body.scale.set(1,.9,.95);bodyG.add(body);
+const belly=mesh(new THREE.SphereGeometry(.9,64,48),clay('#ece4ff'));belly.scale.set(1,.85,.4);belly.position.set(0,-.38,1.02);bodyG.add(belly);
+const eyeW=clay('#ffffff'),eyeB=new THREE.MeshPhysicalMaterial({color:0x2d2147,roughness:.15,clearcoat:1});
+const eyes=[];
+for(const s of [-1,1]){const e=new THREE.Group();e.position.set(s*.42,.28,1.05);
+  const w=mesh(new THREE.SphereGeometry(.27,48,32),eyeW);w.scale.z=.6;e.add(w);
+  const p=mesh(new THREE.SphereGeometry(.15,32,24),eyeB);p.position.z=.14;e.add(p);
+  const hl=mesh(new THREE.SphereGeometry(.045,16,12),new THREE.MeshBasicMaterial({color:0xffffff}));hl.position.set(.05,.06,.27);e.add(hl);
+  bodyG.add(e);eyes.push({e,p})}
+const cheekM=clay('#ffb3cf');for(const s of [-1,1]){const c=mesh(new THREE.SphereGeometry(.17,32,24),cheekM);c.scale.set(1,.65,.4);c.position.set(s*.78,-.05,1.0);bodyG.add(c)}
+const mouth=mesh(new THREE.TorusGeometry(.17,.05,16,40,Math.PI),clay('#5b3f8f'));mouth.rotation.z=Math.PI;mouth.position.set(0,-.06,1.22);bodyG.add(mouth);
+const ant=mesh(new THREE.CylinderGeometry(.05,.06,.55,16),clay('#b9a2ff'));ant.position.set(.15,1.42,0);ant.rotation.z=-.25;bodyG.add(ant);
+const antB=mesh(new THREE.SphereGeometry(.18,32,24),clay('#ffe27a'));antB.position.set(.23,1.72,0);bodyG.add(antB);
+for(const s of [-1,1]){const a=mesh(new THREE.CapsuleGeometry(.17,.42,8,24),clay('#b9a2ff'));a.position.set(s*1.3,-.25,.2);a.rotation.z=s*.9;bodyG.add(a);a.userData.s=s;puff.userData['arm'+s]=a;
+  const f=mesh(new THREE.SphereGeometry(.3,32,24),clay('#a58cf5'));f.scale.set(1,.55,1.2);f.position.set(s*.55,-1.22,.25);puff.add(f)}
+
+// --- letter blocks ---
+function letterTex(ch,bg){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,256,256);
+  x.font='700 190px Fredoka';x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';x.lineWidth=18;x.strokeStyle='rgba(60,30,90,.28)';x.strokeText(ch,128,142);x.fillStyle='#fffdf8';x.fillText(ch,128,138);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t}
+function block(ch,col){const m=clay(col);const front=clay(col);front.map=letterTex(ch,col);
+  return mesh(new RoundedBoxGeometry(1.1,1.1,1.1,6,.24),front)}
+
+// --- star, cloud, ring, pencil ---
+const ss=new THREE.Shape();for(let i=0;i<10;i++){const a=i/10*Math.PI*2+Math.PI/2,r=i%2?.42:.95;i?ss.lineTo(Math.cos(a)*r,Math.sin(a)*r):ss.moveTo(Math.cos(a)*r,Math.sin(a)*r)}
+const starG=new THREE.ExtrudeGeometry(ss,{depth:.22,bevelEnabled:true,bevelThickness:.22,bevelSize:.18,bevelSegments:10,curveSegments:24});starG.center();
+const cloud=new THREE.Group();[[0,0,.7],[.7,-.1,.55],[-.7,-.1,.55],[.35,.35,.5],[-.3,.3,.45]].forEach(([x,y,r])=>{const s=mesh(new THREE.SphereGeometry(r,48,32),clay('#ffffff'));s.position.set(x,y,0);cloud.add(s)});
+const pencil=new THREE.Group();{const b=mesh(new THREE.CylinderGeometry(.22,.22,1.6,6),clay('#ffd36e'));pencil.add(b);
+  const tip=mesh(new THREE.ConeGeometry(.22,.45,6),clay('#ffe2c4'));tip.position.y=-1.02;tip.rotation.x=Math.PI;pencil.add(tip);
+  const lead=mesh(new THREE.ConeGeometry(.08,.16,12),clay('#4b3a6e'));lead.position.y=-1.2;lead.rotation.x=Math.PI;pencil.add(lead);
+  const er=mesh(new THREE.CylinderGeometry(.22,.22,.3,24),clay('#ff9fc2'));er.position.y=.95;pencil.add(er)}
+
+const objs=[
+  {o:puff,w:[2.4,-.55,0],n:[0,.9,0],s:1},
+  {o:block('A','#ff9f80'),w:[.2,1.85,-.6],n:[-1.5,2.85,-.6],s:1},
+  {o:block('B','#7fd8b2'),w:[4.6,1.6,-.4],n:[1.6,3.0,-.4],s:.95},
+  {o:block('C','#7fb8ff'),w:[5.0,-1.5,.6],n:[1.7,-.5,.6],s:.9},
+  {o:mesh(starG,clay('#ffd84d')),w:[.4,-1.75,.8],n:[-1.6,-.55,.8],s:.8},
+  {o:cloud,w:[2.6,2.85,-1.6],n:[0,3.7,-1.6],s:.9},
+  {o:mesh(new THREE.TorusGeometry(.55,.26,32,64),clay('#ff9fc2')),w:[6.1,.4,-1.2],n:[-1.9,1.2,-1.2],s:.85},
+  {o:pencil,w:[6.4,2.7,-2.2],n:[2.0,1.6,-1.8],s:.85},
+];
+objs.forEach((d,i)=>{d.o.scale.setScalar(d.s);d.base=d.s;d.ph=i*1.3;d.jump=0;d.v=0;d.o.rotation.set(Math.random()*.4,Math.random()*.6-.3,Math.random()*.3);scene.add(d.o)});
+
+let wide=true;
+function resize(){const w=hero.clientWidth,h=hero.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;wide=camera.aspect>=1.05;
+  camera.position.z=wide?14:Math.max(14,11/camera.aspect);camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+
+// tap to make things jump and squish
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
+hero.addEventListener('pointerdown',e=>{if(e.target.closest('a,button'))return;const r=canvas.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+  ray.setFromCamera(ptr,camera);const hit=ray.intersectObjects(objs.map(d=>d.o),true)[0];if(!hit)return;
+  const d=objs.find(d=>{let o=hit.object;while(o){if(o===d.o)return true;o=o.parent}return false});if(d){d.v=.16;if(d.o===puff)wave=1}});
+let tx=0,ty=0,mx=0,my=0,wave=0,blink=0,nextBlink=2,visible=true;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+new IntersectionObserver(([e])=>visible=e.isIntersecting).observe(hero);
+const clock=new THREE.Clock();let first=true;
+(function loop(){requestAnimationFrame(loop);if(!visible)return;
+  const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta?.()||.016,.05);
+  mx+=(tx-mx)*.06;my+=(ty-my)*.06;
+  const sp=Math.min(1,scrollY/hero.clientHeight);
+  objs.forEach((d,i)=>{const P=wide?d.w:d.n;
+    d.v-=.012;d.jump=Math.max(0,d.jump+d.v);if(d.jump===0&&d.v<0)d.v=0;
+    const bob=Math.sin(t*1.2+d.ph)*.12;
+    d.o.position.set(P[0]+mx*(.3+i*.05),P[1]+bob+d.jump+sp*(i%2?1.5:-1.2),P[2]);
+    const sq=d.jump>0?1+d.v*1.2:1;d.o.scale.set(d.base/Math.sqrt(sq),d.base*sq,d.base/Math.sqrt(sq));
+    if(d.o!==puff){d.o.rotation.y+=.004;d.o.rotation.x=Math.sin(t*.7+d.ph)*.18}});
+  // Puff: breathing, looking at cursor, blinking, waving
+  const br=1+Math.sin(t*2.2)*.025;bodyG.scale.set(1/br,br,1/br);
+  puff.rotation.y=mx*.9-(wide?.25:0);puff.rotation.x=my*.35;
+  eyes.forEach(({p})=>{p.position.x=mx*.12;p.position.y=-my*.1});
+  if(t>nextBlink){blink=1;nextBlink=t+2+Math.random()*3}
+  blink=Math.max(0,blink-.12);eyes.forEach(({e})=>e.scale.y=1-Math.sin(blink*Math.PI)*.9);
+  wave=Math.max(0,wave-.008);const arm=puff.userData['arm1'];arm.rotation.z=.9+Math.sin(t*14)*.5*wave-wave*1.6;
+  renderer.render(scene,camera);
+  if(first){first=false;canvas.classList.add('ready')}
+})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach((e,i)=>{e.style.transitionDelay=(i%3)*.08+'s';io.observe(e)});
+
+// confetti
+const cv=$('conf'),cx=cv.getContext('2d');let parts=[];
+const fit=()=>{cv.width=innerWidth;cv.height=innerHeight};fit();addEventListener('resize',fit);
+const COL=['#b49bff','#7fd8b2','#ffa77d','#7fb8ff','#ffd84d','#ff9fc2'];
+function burst(x,y,n=60){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=4+Math.random()*8;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-6,r:4+Math.random()*6,c:COL[i%6],l:1})}
+  if(parts.length===n)requestAnimationFrame(draw)}
+function draw(){cx.clearRect(0,0,cv.width,cv.height);parts.forEach(p=>{p.vy+=.3;p.x+=p.vx;p.y+=p.vy;p.vx*=.98;p.l-=.012;cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()});
+  parts=parts.filter(p=>p.l>0);if(parts.length)requestAnimationFrame(draw);else cx.clearRect(0,0,cv.width,cv.height)}
+
+// mini quiz
+const Q=[{t:'How many stars?',e:'⭐',n:4},{t:'How many apples?',e:'🍎',n:6},{t:'How many balloons?',e:'🎈',n:3}];
+const CC=['#ffd9c4','#c8f2de','#d9ccff'];let qi=0;
+function render(){if(qi>=Q.length){$('qn').textContent='All done!';$('qt').textContent='🎉 You did it!';$('qv').textContent='🏆';$('ans').innerHTML='';
+    $('fb').innerHTML='<button class="btn sm" id="again">Play again</button>';$('again').onclick=()=>{qi=0;[...$('dots').children].forEach((d,k)=>d.className=k?'':'cur');render()};
+    const r=$('qv').getBoundingClientRect();burst(r.left+r.width/2,r.top,120);return}
+  const q=Q[qi];$('qn').textContent=`Question ${qi+1} of 3`;$('qt').textContent=q.t;$('qv').textContent=q.e.repeat(q.n);$('fb').textContent='';
+  const opts=[q.n,q.n+1,q.n-1].sort(()=>Math.random()-.5);
+  $('ans').innerHTML=opts.map((o,i)=>`<button style="--c:${CC[i]}">${o}</button>`).join('');
+  [...$('ans').children].forEach(b=>b.onclick=e=>{
+    if(+b.textContent===q.n){$('fb').textContent=['Yay! 🎉','Super! ⭐','Brilliant! 💜'][qi];burst(e.clientX,e.clientY);
+      const d=$('dots').children;d[qi].className='ok';if(d[qi+1])d[qi+1].className='cur';qi++;setTimeout(render,900)}
+    else{b.classList.remove('no');void b.offsetWidth;b.classList.add('no');$('fb').textContent='Oops! Try again 🙈'}})}
+render();
+
+// pricing toggle
+[...$('tog').children].forEach(b=>b.onclick=()=>{[...$('tog').children].forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('[data-p]').forEach(s=>s.textContent=b.dataset.y==='1'?(s.dataset.p*.6).toFixed(2).replace(/\.00$/,''):s.dataset.p)});
+
+// squish sound-free feedback on subject cards
+document.querySelectorAll('.sc').forEach(c=>c.addEventListener('click',e=>burst(e.clientX,e.clientY,24)));
+</script>
+</body>
+</html>

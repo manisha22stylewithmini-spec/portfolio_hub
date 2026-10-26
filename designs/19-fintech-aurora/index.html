@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kova — Money, beautifully handled</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050816;--tx:#eef2ff;--mu:#97a0c3;--g1:#3cf2a5;--g2:#2bd4ff;--g3:#8b5cff;--g4:#ff6bd6;--glass:rgba(255,255,255,.06);--gb:rgba(255,255,255,.12);--m:clamp(16px,4vw,60px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--tx);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;border:0;background:none}
+.ser{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{width:min(1220px,100% - 2*var(--m));margin-inline:auto}
+.grad{background:linear-gradient(90deg,var(--g1),var(--g2) 35%,var(--g3) 70%,var(--g4));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* aurora backdrop */
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;filter:blur(70px) saturate(1.3);opacity:.75}
+.aurora i{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 22s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:60vw;height:38vw;left:-10vw;top:-12vw;background:radial-gradient(closest-side,#3cf2a5aa,transparent);animation-duration:24s}
+.aurora i:nth-child(2){width:55vw;height:42vw;right:-12vw;top:-6vw;background:radial-gradient(closest-side,#8b5cffbb,transparent);animation-duration:28s;animation-delay:-8s}
+.aurora i:nth-child(3){width:50vw;height:30vw;left:20vw;top:20vw;background:radial-gradient(closest-side,#2bd4ff88,transparent);animation-duration:32s;animation-delay:-14s}
+.aurora i:nth-child(4){width:40vw;height:30vw;right:5vw;bottom:-10vw;background:radial-gradient(closest-side,#ff6bd666,transparent);animation-duration:26s;animation-delay:-4s}
+@keyframes drift{50%{transform:translate(8vw,6vw) scale(1.15) rotate(10deg)}100%{transform:translate(-6vw,10vw) scale(.95) rotate(-8deg)}}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 0%,transparent 30%,#050816cc 80%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.glass{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--gb);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border-radius:26px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 30px 60px -30px #0009}
+
+/* nav */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;width:min(1220px,100% - 24px);display:flex;justify-content:space-between;align-items:center;padding:10px 10px 10px 20px;border-radius:999px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo i{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 200deg,var(--g1),var(--g2),var(--g3),var(--g4),var(--g1));box-shadow:0 0 18px #2bd4ff88}
+nav ul{display:flex;gap:4px;list-style:none;font-size:14px;font-weight:500}
+nav ul a{display:block;padding:9px 14px;border-radius:999px;color:#c9cfea;transition:background .3s,color .3s}
+nav ul a:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;font-weight:600;font-size:15px;transition:transform .4s cubic-bezier(.2,.9,.3,1.3),box-shadow .4s}
+.btn.pri{background:#fff;color:#070a1c;box-shadow:0 10px 40px -10px #2bd4ff99}
+.btn.pri:hover{transform:translateY(-2px);box-shadow:0 16px 50px -10px #8b5cffcc}
+.btn.gl{background:rgba(255,255,255,.08);border:1px solid var(--gb);backdrop-filter:blur(10px)}
+.btn.gl:hover{background:rgba(255,255,255,.14)}
+.btn.sm{padding:10px 18px;font-size:14px}
+
+/* hero */
+.hero{position:relative;min-height:max(760px,100vh);display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:20px;padding:120px var(--m) 60px;max-width:1400px;margin:0 auto}
+.copy{position:relative;z-index:2}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;font-size:14px;margin-bottom:24px}
+.pill b{padding:4px 10px;border-radius:999px;background:linear-gradient(90deg,var(--g1),var(--g2));color:#04121a;font-size:12px}
+h1{font-size:clamp(46px,6.2vw,96px);line-height:1;letter-spacing:-.045em;font-weight:700}
+h1 .ser{font-size:1.08em;letter-spacing:-.02em}
+.copy p{font-size:18px;color:var(--mu);max-width:470px;margin:24px 0 32px;line-height:1.6}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:clamp(20px,4vw,48px);margin-top:44px}
+.stats b{display:block;font-size:28px;font-weight:700;letter-spacing:-.03em}
+.stats span{color:var(--mu);font-size:14px}
+.cardzone{position:relative;height:min(620px,70vh);min-height:420px}
+#gl{position:absolute;inset:-10% -10% -6%;width:120%;height:116%;display:block;cursor:grab}
+.ways{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;gap:8px;padding:6px;border-radius:999px;z-index:2}
+.ways button{padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#c9cfea;cursor:pointer;transition:all .3s}
+.ways button.on{background:#fff;color:#070a1c}
+.float{position:absolute;z-index:2;padding:12px 16px;border-radius:18px;display:flex;align-items:center;gap:12px;font-size:14px;animation:bob 6s ease-in-out infinite}
+.float b{display:block;font-size:16px}
+.float small{color:var(--mu)}
+.float .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,#3cf2a533,#2bd4ff33)}
+.f1{left:0;top:10%}.f2{right:2%;bottom:12%;animation-delay:-3s}
+@keyframes bob{50%{transform:translateY(-12px)}}
+
+/* logos */
+.logos{display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(24px,5vw,64px);padding:40px 0;color:#8088ad;font-weight:700;letter-spacing:.06em}
+
+section.s{padding-top:clamp(90px,11vw,150px)}
+.hd{text-align:center;max-width:760px;margin:0 auto clamp(40px,5vw,64px)}
+.hd .tag{display:inline-block;padding:6px 14px;border-radius:999px;font-size:13px;color:var(--g2);margin-bottom:16px}
+.hd h2{font-size:clamp(38px,5vw,72px);line-height:1.04;letter-spacing:-.04em;font-weight:700}
+.hd p{color:var(--mu);font-size:18px;margin-top:14px;line-height:1.6}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(260px,auto);gap:16px}
+.b{padding:26px;position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.2,.9,.3,1.2),border-color .4s}
+.b:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.25)}
+.b h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.b p{color:var(--mu);font-size:15px;margin-top:6px;line-height:1.5}
+.s4{grid-column:span 4}.s2{grid-column:span 2}.s3{grid-column:span 3}
+.chart{margin-top:18px;position:relative}
+.chart svg{width:100%;height:170px;overflow:visible}
+.chart .ln{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.2s cubic-bezier(.3,.8,.2,1)}
+.in .chart .ln{stroke-dashoffset:0}
+.chart .pt{opacity:0;transition:opacity .3s}.chart .pt:hover,.chart g:hover .pt{opacity:1}
+.tip{position:absolute;padding:6px 10px;border-radius:10px;font-size:13px;pointer-events:none;opacity:0;transform:translate(-50%,-130%);transition:opacity .2s;white-space:nowrap}
+.ring{display:grid;place-items:center;margin-top:12px;position:relative}
+.ring svg{width:170px;height:170px;transform:rotate(-90deg)}
+.ring .arc{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2s cubic-bezier(.3,.8,.2,1) .2s}
+.in .ring .arc{stroke-dashoffset:.28}
+.ring .c{position:absolute;text-align:center}.ring .c b{display:block;font-size:30px;font-weight:700}.ring .c span{color:var(--mu);font-size:13px}
+.people{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-weight:700;cursor:pointer;position:relative;transition:transform .3s;border:2px solid rgba(255,255,255,.2)}
+.av:hover{transform:translateY(-4px) scale(1.06)}
+.av small{position:absolute;bottom:-20px;font-size:12px;color:var(--mu);font-weight:500}
+.toast{margin-top:36px;padding:12px 16px;border-radius:14px;font-size:14px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:all .4s}
+.toast.on{opacity:1;transform:none}
+.coin{position:fixed;z-index:200;pointer-events:none;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 0 18px var(--g1);display:grid;place-items:center;font-size:13px;font-weight:800;color:#04121a}
+.conv{display:grid;gap:10px;margin-top:18px}
+.conv .row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid var(--gb)}
+.conv input{flex:1;font-size:26px;font-weight:700;outline:0;min-width:0;letter-spacing:-.02em}
+.conv select{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.08);font-weight:600;outline:0}
+.conv select option{background:#0d1230}
+.swap{align-self:center;justify-self:center;width:38px;height:38px;border-radius:50%;background:#fff;color:#070a1c;font-weight:800;cursor:pointer;transition:transform .5s;margin:-14px 0;z-index:2}
+.conv .rate{color:var(--mu);font-size:13px}
+.freeze{display:flex;align-items:center;gap:16px;margin-top:20px}
+.mini{width:150px;aspect-ratio:1.586;border-radius:12px;background:linear-gradient(135deg,#1b1f3b,#3a2b7a 50%,#0f5c6b);position:relative;transition:filter .6s,transform .6s;box-shadow:0 14px 30px -14px #000}
+.mini::after{content:"❄";position:absolute;inset:0;display:grid;place-items:center;font-size:40px;opacity:0;transition:opacity .5s;color:#dff8ff}
+.mini.frozen{filter:saturate(.2) brightness(1.4) blur(.4px);transform:scale(.97)}.mini.frozen::after{opacity:1}
+.sw{width:58px;height:32px;border-radius:99px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:background .3s}
+.sw::after{content:"";position:absolute;left:4px;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .4s cubic-bezier(.3,1.5,.5,1)}
+.sw.on{background:var(--g2)}.sw.on::after{transform:translateX(26px)}
+.big{font-size:clamp(44px,5vw,64px);font-weight:700;letter-spacing:-.04em;margin-top:22px}
+
+/* app */
+.app{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,90px);align-items:center}
+.phone{width:min(340px,86%);margin:0 auto;aspect-ratio:9/18.5;border-radius:48px;padding:12px;background:linear-gradient(160deg,#2a2f55,#0b0f24);box-shadow:0 50px 90px -40px #000,inset 0 0 0 2px #ffffff22;position:relative}
+.scr{height:100%;border-radius:38px;overflow:hidden;padding:46px 18px 18px;position:relative;background:radial-gradient(120% 60% at 50% 0%,#3a2b7a,#0b0f24 60%)}
+.scr::before{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:90px;height:24px;border-radius:99px;background:#000}
+.bal{color:var(--mu);font-size:13px}.bal b{display:block;font-size:34px;color:#fff;letter-spacing:-.03em;margin-top:4px}
+.acts{display:flex;gap:8px;margin:16px 0}
+.acts span{flex:1;padding:10px 0;border-radius:14px;text-align:center;font-size:12px;background:rgba(255,255,255,.08);border:1px solid var(--gb)}
+.tx{display:grid;gap:8px}
+.tx div{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06);opacity:0;transform:translateX(20px);transition:all .6s}
+.in .tx div{opacity:1;transform:none}
+.tx i{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-style:normal;background:rgba(255,255,255,.1)}
+.tx b{font-size:13px;flex:1}.tx b small{display:block;color:var(--mu);font-weight:400;font-size:11px}
+.tx span{font-size:13px;font-weight:700}
+.feat{display:grid;gap:14px;margin-top:28px}
+.feat div{display:flex;gap:14px;align-items:flex-start;padding:16px 18px}
+.feat .ic{width:42px;height:42px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;font-size:20px;background:linear-gradient(135deg,#3cf2a533,#8b5cff33)}
+.feat b{display:block;font-size:16px}.feat span{color:var(--mu);font-size:14px}
+.app h2{font-size:clamp(36px,4.4vw,64px);line-height:1.04;letter-spacing:-.04em;font-weight:700}
+
+/* pricing */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tier{padding:28px;display:flex;flex-direction:column;transition:transform .5s}
+.tier:hover{transform:translateY(-6px)}
+.tier.pop{border-color:#2bd4ff88;box-shadow:0 0 60px -20px #2bd4ffaa,inset 0 1px 0 rgba(255,255,255,.2)}
+.tc{aspect-ratio:1.586;border-radius:14px;margin-bottom:22px;position:relative;overflow:hidden;background:var(--cg);box-shadow:0 18px 30px -18px #000}
+.tc::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 45%,transparent 60%);transform:translateX(-100%);transition:transform 1s}
+.tier:hover .tc::after{transform:translateX(100%)}
+.tc span{position:absolute;left:14px;bottom:12px;font-weight:700;letter-spacing:.1em;font-size:12px}
+.tier h3{font-size:22px}.tier .pr{font-size:44px;font-weight:700;letter-spacing:-.04em;margin:8px 0}.tier .pr small{font-size:15px;color:var(--mu);font-weight:500}
+.tier ul{list-style:none;display:grid;gap:10px;color:#c9cfea;font-size:15px;margin:10px 0 24px;flex:1}
+.tier li::before{content:"✓";color:var(--g1);margin-right:10px;font-weight:700}
+.tier .btn{justify-content:center}
+
+/* faq */
+.faq{max-width:820px;margin:0 auto;display:grid;gap:10px}
+.q{padding:0;border-radius:20px;overflow:hidden}
+.q button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:20px 24px;font-weight:600;font-size:17px;cursor:pointer;text-align:left}
+.q button i{font-style:normal;transition:transform .4s;font-size:22px;color:var(--g2)}
+.q.open button i{transform:rotate(45deg)}
+.q .a{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.3,.8,.2,1);color:var(--mu);line-height:1.6}
+.q .a p{padding:0 24px 20px}
+.q.open .a{max-height:200px}
+
+.cta{margin-top:clamp(90px,11vw,150px);text-align:center;padding:clamp(40px,7vw,90px) var(--m);position:relative;overflow:hidden}
+.cta h2{font-size:clamp(40px,6vw,88px);line-height:1;letter-spacing:-.045em;font-weight:700}
+.cta p{color:var(--mu);font-size:18px;margin:16px 0 30px}
+footer{padding:50px 0 30px;color:var(--mu);font-size:14px}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;border-top:1px solid var(--gb);padding-top:20px}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity 1s,transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(max-width:960px){
+  nav ul{display:none}
+  .hero{grid-template-columns:1fr;padding-top:110px}.cardzone{order:-1;height:380px;min-height:0}.f1{top:4%}.f2{bottom:16%}
+  .bento{grid-template-columns:1fr}.s4,.s2,.s3{grid-column:auto}
+  .app,.tiers{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="aurora"><i></i><i></i><i></i><i></i></div>
+
+<nav class="glass"><a class="logo" href="#"><i></i>kova</a>
+  <ul><li><a href="#features">Features</a></li><li><a href="#app">App</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">FAQ</a></li></ul>
+  <a class="btn pri sm" href="#pricing">Get Kova</a></nav>
+
+<header class="hero">
+  <div class="copy">
+    <span class="pill glass"><b>NEW</b>Kova Metal is here — 2% cashback</span>
+    <h1>Money,<br><span class="ser grad">beautifully</span> handled.</h1>
+    <p>One card for every currency, instant transfers to anyone and savings that grow while you sleep. Banking that finally feels as good as it looks.</p>
+    <div class="ctas"><a class="btn pri" href="#pricing">Open an account →</a><a class="btn gl" href="#features">See how it works</a></div>
+    <div class="stats"><div><b>4.2M</b><span>members</span></div><div><b>150+</b><span>currencies</span></div><div><b>4.9★</b><span>App Store</span></div></div>
+  </div>
+  <div class="cardzone" id="cz">
+    <canvas id="gl"></canvas>
+    <div class="float glass f1"><div class="ic">⚡</div><div><b>+ £1,240.00</b><small>Salary · just now</small></div></div>
+    <div class="float glass f2"><div class="ic">🌍</div><div><b>¥18,400</b><small>Tokyo · 0% fees</small></div></div>
+    <div class="ways glass" id="ways"><button class="on" data-w="0">Obsidian</button><button data-w="1">Aurora</button><button data-w="2">Titanium</button></div>
+  </div>
+</header>
+
+<div class="wrap logos"><span>FORBES</span><span>WIRED</span><span>TechCrunch</span><span>The Verge</span><span>FT</span></div>
+
+<section class="s wrap" id="features">
+  <div class="hd rv"><span class="tag glass">Features</span><h2>Everything your bank<br>should <span class="ser grad">have done.</span></h2><p>Thoughtful tools that make every pound, euro and yen work harder.</p></div>
+  <div class="bento">
+    <div class="b glass s4 rv"><h3>Spending insights</h3><p>See where your money goes, with smart categories and gentle nudges.</p>
+      <div class="chart" id="chart"><svg viewBox="0 0 600 170" preserveAspectRatio="none"></svg><div class="tip glass" id="tip"></div></div></div>
+    <div class="b glass s2 rv"><h3>Savings goals</h3><p>Trip to Tokyo 🗼</p><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="9"/>
+      <circle class="arc" cx="50" cy="50" r="42" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" pathLength="1"/><defs><linearGradient id="rg"><stop offset="0" stop-color="#3cf2a5"/><stop offset="1" stop-color="#8b5cff"/></linearGradient></defs></svg>
+      <div class="c"><b>72%</b><span>£3,600 / £5,000</span></div></div></div>
+    <div class="b glass s3 rv"><h3>Instant send</h3><p>Tap a friend. Money arrives before they finish saying thanks.</p>
+      <div class="people" id="people"></div><div class="toast glass" id="toast"></div></div>
+    <div class="b glass s3 rv"><h3>Real exchange rate</h3><p>Spend abroad like a local, with no hidden markup.</p>
+      <div class="conv"><div class="row"><input id="amt" value="1000" inputmode="decimal" aria-label="Amount"><select id="from"></select></div>
+        <button class="swap" id="swap" aria-label="Swap currencies">⇅</button>
+        <div class="row"><input id="out" readonly aria-label="Converted"><select id="to"></select></div><span class="rate" id="rate"></span></div></div>
+    <div class="b glass s2 rv"><h3>Freeze in a tap</h3><p>Lost your card? Lock it instantly. Found it? Unlock.</p>
+      <div class="freeze"><div class="mini" id="mini"></div><div class="sw" id="sw" role="switch" aria-checked="false" tabindex="0"></div></div></div>
+    <div class="b glass s4 rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap"><div><h3>Cashback, automatically</h3><p>Up to 2% back on everything with Kova Metal. Paid out every Friday.</p><div class="big grad" id="cash">£0.00</div></div>
+      <a class="btn gl" href="#pricing">Compare plans</a></div>
+  </div>
+</section>
+
+<section class="s wrap" id="app">
+  <div class="app">
+    <div class="phone rv"><div class="scr">
+      <div class="bal">Total balance<b id="bal">£0.00</b></div>
+      <div class="acts"><span>＋ Add</span><span>↗ Send</span><span>⇄ Exchange</span></div>
+      <div class="tx" id="tx"></div></div></div>
+    <div class="rv"><span class="tag glass" style="display:inline-block;padding:6px 14px;border-radius:999px;font-size:13px;color:var(--g2);margin-bottom:16px">The app</span>
+      <h2>Your whole financial life,<br><span class="ser grad">in one calm place.</span></h2>
+      <div class="feat"><div class="glass"><div class="ic">🔐</div><div><b>Bank-grade security</b><span>Biometric login, real-time alerts and FSCS protection up to £85,000.</span></div></div>
+        <div class="glass"><div class="ic">📈</div><div><b>Savings at 4.6% AER</b><span>Interest paid daily, withdraw any time. No lock-ins, no small print.</span></div></div>
+        <div class="glass"><div class="ic">🧾</div><div><b>Bills, split and sorted</b><span>Share costs with housemates and settle up in one tap.</span></div></div></div></div>
+  </div>
+</section>
+
+<section class="s wrap" id="pricing">
+  <div class="hd rv"><span class="tag glass">Pricing</span><h2>Pick the card<br>that <span class="ser grad">fits you.</span></h2></div>
+  <div class="tiers">
+    <div class="tier glass rv" style="--cg:linear-gradient(135deg,#1b1f3b,#2c335f)"><div class="tc"><span>STANDARD</span></div><h3>Standard</h3><div class="pr">£0<small>/month</small></div><ul><li>Free UK account</li><li>Real exchange rate up to £1k</li><li>Savings goals</li></ul><a class="btn gl" href="#">Get started</a></div>
+    <div class="tier glass pop rv" style="--cg:linear-gradient(135deg,#3cf2a5,#2bd4ff 40%,#8b5cff 75%,#ff6bd6);transition-delay:.12s"><div class="tc"><span style="color:#04121a">AURORA</span></div><h3>Plus</h3><div class="pr">£7<small>/month</small></div><ul><li>Everything in Standard</li><li>Unlimited free exchange</li><li>1% cashback</li><li>Travel insurance</li></ul><a class="btn pri" href="#">Choose Plus</a></div>
+    <div class="tier glass rv" style="--cg:linear-gradient(135deg,#8a8f99,#e4e7ec 45%,#7a808b);transition-delay:.24s"><div class="tc"><span style="color:#111">TITANIUM</span></div><h3>Metal</h3><div class="pr">£15<small>/month</small></div><ul><li>Everything in Plus</li><li>2% cashback</li><li>Airport lounge access</li><li>Titanium card</li></ul><a class="btn gl" href="#">Go Metal</a></div>
+  </div>
+</section>
+
+<section class="s wrap" id="faq">
+  <div class="hd rv"><span class="tag glass">FAQ</span><h2>Questions, <span class="ser grad">answered.</span></h2></div>
+  <div class="faq" id="faqs"></div>
+  <div class="cta glass rv"><h2>Your money deserves<br><span class="ser grad">better.</span></h2><p>Open an account in under 5 minutes. No paperwork, no branch visits.</p>
+    <div class="ctas" style="justify-content:center"><a class="btn pri" href="#">Download for iOS</a><a class="btn gl" href="#">Get it on Android</a></div></div>
+</section>
+<footer class="wrap"><div class="frow"><span>© 2026 Kova Financial Ltd</span><span>Privacy · Terms · Security</span><span>A portfolio design study — not a real bank</span></div></footer>
+
+<script type="module">
+// ---------- 3D credit card ----------
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+const cz=document.getElementById('cz'),canvas=document.getElementById('gl');
+await Promise.race([document.fonts.load('700 40px "Plus Jakarta Sans"'),new Promise(r=>setTimeout(r,1500))]);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer),.03).texture;
+const camera=new THREE.PerspectiveCamera(30,1,.1,100);camera.position.set(0,0,12);
+const k1=new THREE.DirectionalLight(0x9fe9ff,2);k1.position.set(-4,4,6);scene.add(k1);
+const k2=new THREE.DirectionalLight(0xc6a8ff,2);k2.position.set(5,-3,4);scene.add(k2);
+
+const WAYS=[{n:'Obsidian',bg:['#0b0d1a','#1d2140','#0b0d1a'],ink:'#e8ecff',acc:'#2bd4ff',met:.5,rough:.35,iri:0},
+  {n:'Aurora',bg:['#0f2b3a','#3a2b7a','#5a1f5c'],ink:'#ffffff',acc:'#3cf2a5',met:.3,rough:.22,iri:1},
+  {n:'Titanium',bg:['#9aa0aa','#e6e9ee','#8c929c'],ink:'#14161c',acc:'#14161c',met:.95,rough:.28,iri:0}];
+const W=1712,H=1080;
+function face(w){const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,W,H);w.bg.forEach((col,i)=>g.addColorStop(i/(w.bg.length-1),col));x.fillStyle=g;x.fillRect(0,0,W,H);
+  // guilloché waves
+  x.strokeStyle=w.n==='Titanium'?'rgba(0,0,0,.08)':'rgba(255,255,255,.07)';x.lineWidth=2;
+  for(let k=0;k<26;k++){x.beginPath();for(let i=0;i<=W;i+=8){const y=H*.62+Math.sin(i/170+k*.35)*90+Math.sin(i/60+k)*10-k*16;i?x.lineTo(i,y):x.moveTo(i,y)}x.stroke()}
+  x.fillStyle=w.ink;x.font='800 92px "Plus Jakarta Sans"';x.fillText('kova',110,190);
+  // logo mark
+  const lg=x.createConicGradient(0,1560,150);['#3cf2a5','#2bd4ff','#8b5cff','#ff6bd6','#3cf2a5'].forEach((c,i)=>lg.addColorStop(i/4,c));x.fillStyle=lg;x.beginPath();x.roundRect(1490,85,130,130,34);x.fill();
+  // chip
+  const cg=x.createLinearGradient(0,380,0,560);cg.addColorStop(0,'#f4dc9a');cg.addColorStop(.5,'#c9a54e');cg.addColorStop(1,'#f0d58a');x.fillStyle=cg;x.beginPath();x.roundRect(120,370,210,165,26);x.fill();
+  x.strokeStyle='rgba(90,60,10,.55)';x.lineWidth=4;[[120,425,330,425],[120,480,330,480],[195,370,195,535],[255,370,255,535]].forEach(([a,b,c2,d])=>{x.beginPath();x.moveTo(a,b);x.lineTo(c2,d);x.stroke()});
+  // contactless
+  x.strokeStyle=w.ink;x.lineWidth=9;x.lineCap='round';for(let i=0;i<4;i++){x.beginPath();x.arc(400,452,22+i*22,-.75,.75);x.stroke()}
+  x.fillStyle=w.ink;x.font='500 78px "JetBrains Mono"';x.fillText('4829  0461  2210  7731',120,760);
+  x.font='600 40px "Plus Jakarta Sans"';x.globalAlpha=.75;x.fillText('VALID THRU',120,860);x.globalAlpha=1;x.font='600 52px "JetBrains Mono"';x.fillText('08/30',420,862);
+  x.font='700 54px "Plus Jakarta Sans"';x.fillText('ALEX MORGAN',120,960);
+  x.font='800 56px "Plus Jakarta Sans"';x.textAlign='right';x.fillStyle=w.acc;x.fillText(w.n.toUpperCase(),W-110,960);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t}
+function back(w){const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const g=x.createLinearGradient(W,0,0,H);w.bg.forEach((col,i)=>g.addColorStop(i/(w.bg.length-1),col));x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle='#050505';x.fillRect(0,110,W,190);
+  x.fillStyle='#f2f2ee';x.fillRect(110,400,1050,140);x.fillStyle='#bfc3cc';for(let i=0;i<30;i++)x.fillRect(110,400+i*5,1050,1);
+  x.fillStyle='#222';x.font='italic 600 58px "Instrument Serif"';x.fillText('Alex Morgan',140,490);
+  x.fillStyle='#fff';x.fillRect(1190,400,200,140);x.fillStyle='#111';x.font='700 64px "JetBrains Mono"';x.fillText('382',1225,495);
+  const hg=x.createLinearGradient(1450,400,1600,540);['#3cf2a5','#2bd4ff','#8b5cff','#ff6bd6'].forEach((c2,i)=>hg.addColorStop(i/3,c2));x.fillStyle=hg;x.beginPath();x.roundRect(1440,390,170,160,20);x.fill();
+  x.fillStyle=w.ink;x.globalAlpha=.7;x.font='500 34px "Plus Jakarta Sans"';
+  ['This card is issued by Kova Financial Ltd. If found, please return it to any Kova partner','or call +44 20 0000 0000. Use of this card is subject to the cardholder agreement.'].forEach((l,i)=>x.fillText(l,110,700+i*52));
+  x.globalAlpha=1;x.font='800 72px "Plus Jakarta Sans"';x.fillText('kova',110,960);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t}
+const faces=WAYS.map(w=>({f:face(w),b:back(w)}));
+const mk=(map,w)=>new THREE.MeshPhysicalMaterial({map,metalness:w.met,roughness:w.rough,clearcoat:1,clearcoatRoughness:.08,iridescence:w.iri,iridescenceIOR:1.4,iridescenceThicknessRange:[100,600]});
+const edge=new THREE.MeshPhysicalMaterial({color:0x2a2e45,metalness:.9,roughness:.3});
+const geo=new RoundedBoxGeometry(4.28,2.7,.06,6,.24);
+const card=new THREE.Mesh(geo,[edge,edge,edge,edge,mk(faces[0].f,WAYS[0]),mk(faces[0].b,WAYS[0])]);
+const pivot=new THREE.Group();pivot.add(card);scene.add(pivot);
+// soft glow shadow under the card
+const sh=new THREE.Mesh(new THREE.PlaneGeometry(6,2),new THREE.MeshBasicMaterial({transparent:true,depthWrite:false,map:(()=>{const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');
+  const g=x.createRadialGradient(128,64,0,128,64,128);g.addColorStop(0,'rgba(43,212,255,.35)');g.addColorStop(1,'rgba(43,212,255,0)');x.fillStyle=g;x.fillRect(0,0,256,128);return new THREE.CanvasTexture(c)})()}));
+sh.position.set(0,-2.4,-1);sh.rotation.x=-1.2;scene.add(sh);
+
+function setWay(i){const w=WAYS[i];card.material[4].dispose();card.material[5].dispose();card.material[4]=mk(faces[i].f,w);card.material[5]=mk(faces[i].b,w);
+  edge.color.set(i===2?0xb8bcc4:i===1?0x3a2b7a:0x2a2e45)}
+document.querySelectorAll('#ways button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#ways button').forEach(x=>x.classList.toggle('on',x===b));setWay(+b.dataset.w);spin+=Math.PI*2});
+
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.position.z=camera.aspect<.9?13.5:10.4;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+
+// interaction: drag to spin, mouse tilt, scroll flips to the back
+let mx=0,my=0,tx=0,ty=0,spin=0,spinCur=0,drag=null,vis=true;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5;if(drag!==null){spin+=(e.clientX-drag)*.012;drag=e.clientX}});
+canvas.addEventListener('pointerdown',e=>{drag=e.clientX;canvas.style.cursor='grabbing'});
+addEventListener('pointerup',()=>{if(drag!==null){spin=Math.round(spin/Math.PI)*Math.PI}drag=null;canvas.style.cursor='grab'});
+new IntersectionObserver(([e])=>vis=e.isIntersecting).observe(cz);
+const clock=new THREE.Clock();
+(function loop(){requestAnimationFrame(loop);if(!vis)return;const t=clock.getElapsedTime();
+  mx+=(tx-mx)*.06;my+=(ty-my)*.06;spinCur+=(spin-spinCur)*.08;
+  const sc=Math.min(1,scrollY/(innerHeight*.8));
+  pivot.rotation.y=-.35+mx*.6+spinCur+sc*Math.PI;pivot.rotation.x=.18+my*.4+Math.sin(t*.8)*.04;pivot.rotation.z=-.12+Math.sin(t*.5)*.03;
+  pivot.position.y=Math.sin(t*1.1)*.12;sh.material.opacity=.8+Math.sin(t*1.1)*.2;
+  renderer.render(scene,camera)})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);if(e.target.querySelector('#cash'))cash();if(e.target.querySelector('#bal'))bal()}),{threshold:.2});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+const count=(el,to,dur,fmt)=>{const t0=performance.now();(function f(t){const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,4);el.textContent=fmt(to*e);if(p<1)requestAnimationFrame(f)})(t0)};
+const gbp=v=>'£'+v.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+function cash(){count($('cash'),482.36,2200,gbp)}
+function bal(){count($('bal'),24860.52,2000,gbp)}
+
+// spending chart
+const pts=[38,52,44,70,58,86,64,92,80,110,96,128];const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const X=i=>i*600/11,Y=v=>160-v;
+let d=`M${X(0)} ${Y(pts[0])}`;pts.forEach((v,i)=>{if(i){const x0=X(i-1),x1=X(i);d+=` C${x0+25} ${Y(pts[i-1])} ${x1-25} ${Y(v)} ${x1} ${Y(v)}`}});
+$('chart').querySelector('svg').innerHTML=`<defs><linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2bd4ff" stop-opacity=".35"/><stop offset="1" stop-color="#2bd4ff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="cl" x1="0" x2="1"><stop offset="0" stop-color="#3cf2a5"/><stop offset=".5" stop-color="#2bd4ff"/><stop offset="1" stop-color="#8b5cff"/></linearGradient></defs>
+  <path d="${d} L600 170 L0 170Z" fill="url(#cf)"/><path class="ln" pathLength="1" d="${d}" fill="none" stroke="url(#cl)" stroke-width="3.5" vector-effect="non-scaling-stroke"/>
+  ${pts.map((v,i)=>`<g data-i="${i}"><rect x="${X(i)-25}" y="0" width="50" height="170" fill="transparent"/><circle class="pt" cx="${X(i)}" cy="${Y(v)}" r="6" fill="#fff" stroke="#2bd4ff" stroke-width="3" vector-effect="non-scaling-stroke"/></g>`).join('')}`;
+$('chart').querySelectorAll('g[data-i]').forEach(g=>{g.addEventListener('pointerenter',()=>{const i=+g.dataset.i,r=$('chart').getBoundingClientRect(),c=g.querySelector('circle').getBoundingClientRect();
+  $('tip').textContent=`${M[i]} · £${(pts[i]*21).toLocaleString()}`;$('tip').style.left=c.left-r.left+c.width/2+'px';$('tip').style.top=c.top-r.top+'px';$('tip').style.opacity=1});
+  g.addEventListener('pointerleave',()=>$('tip').style.opacity=0)});
+
+// instant send
+const P=[['Mia','#ff6bd6'],['Leo','#2bd4ff'],['Ava','#3cf2a5'],['Sam','#8b5cff'],['Kai','#ffb86b']];
+$('people').innerHTML=P.map(([n,c])=>`<div class="av" style="background:linear-gradient(135deg,${c},${c}66)">${n[0]}<small>${n}</small></div>`).join('');
+document.querySelectorAll('.av').forEach((a,i)=>a.onclick=e=>{const r=a.getBoundingClientRect(),c=document.createElement('div');c.className='coin';c.textContent='£';
+  c.style.left=innerWidth/2+'px';c.style.top=innerHeight-60+'px';document.body.appendChild(c);
+  c.animate([{transform:'translate(-50%,-50%) scale(.6)',offset:0},{transform:`translate(${r.left+r.width/2-innerWidth/2-14}px,${r.top+r.height/2-innerHeight+46}px) scale(1.2)`}],{duration:700,easing:'cubic-bezier(.3,.8,.3,1)'}).onfinish=()=>{c.remove();
+    a.animate([{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:300});const t=$('toast');t.innerHTML=`✅ <span>Sent <b>£20.00</b> to ${P[i][0]} in 0.4s</span>`;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400)}});
+
+// converter
+const R={GBP:1,EUR:1.17,USD:1.27,JPY:191.4,INR:106.2,AUD:1.93};
+['from','to'].forEach((id,k)=>$(id).innerHTML=Object.keys(R).map(c=>`<option ${k===0&&c==='GBP'||k===1&&c==='JPY'?'selected':''}>${c}</option>`).join(''));
+function conv(){const a=parseFloat($('amt').value.replace(/,/g,''))||0,f=$('from').value,t=$('to').value,v=a/R[f]*R[t];
+  $('out').value=v.toLocaleString('en-GB',{maximumFractionDigits:t==='JPY'?0:2});$('rate').textContent=`1 ${f} = ${(R[t]/R[f]).toFixed(4)} ${t} · mid-market rate · £0 fees`}
+['amt','from','to'].forEach(id=>$(id).addEventListener('input',conv));conv();
+let rot=0;$('swap').onclick=()=>{const f=$('from').value;$('from').value=$('to').value;$('to').value=f;rot+=180;$('swap').style.transform=`rotate(${rot}deg)`;conv()};
+
+// freeze
+$('sw').onclick=()=>{const on=$('sw').classList.toggle('on');$('mini').classList.toggle('frozen',on);$('sw').setAttribute('aria-checked',on)};
+
+// app transactions
+const TX=[['☕','Blue Bottle','Coffee · 09:12','-£4.20'],['✈️','Japan Airlines','Travel · Yesterday','-£612.00'],['💼','Salary','Income · Mon','+£3,240.00'],['🎵','Spotify','Subscription · Sun','-£11.99'],['🍣','Sushi Kanda','Dining · Sat','-£38.50']];
+$('tx').innerHTML=TX.map(([i,n,s,a],k)=>`<div style="transition-delay:${.3+k*.12}s"><i>${i}</i><b>${n}<small>${s}</small></b><span style="color:${a[0]==='+'?'#3cf2a5':'#fff'}">${a}</span></div>`).join('');
+
+// faq
+const FQ=[['Is my money safe with Kova?','Yes. Eligible deposits are protected by the FSCS up to £85,000, and we use biometric login and real-time fraud monitoring.'],
+  ['How long does it take to open an account?','Most people are set up in under five minutes. You just need a photo ID and a selfie.'],
+  ['Are there fees for spending abroad?','Standard includes the real exchange rate on your first £1,000 each month. Plus and Metal have no limits.'],
+  ['Can I cancel my plan anytime?','Absolutely. Switch or cancel in the app whenever you like — no calls, no forms.']];
+$('faqs').innerHTML=FQ.map(([q,a])=>`<div class="q glass rv"><button>${q}<i>+</i></button><div class="a"><p>${a}</p></div></div>`).join('');
+document.querySelectorAll('.q').forEach(q=>{io.observe(q);q.querySelector('button').onclick=()=>q.classList.toggle('open')});
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odyssey — Interplanetary Voyages</title>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#02030a;--tx:#eef2ff;--mu:#9aa3c7;--ac:#7cc4ff;--ac2:#ffb36b;--line:#ffffff1f;--m:clamp(18px,4vw,64px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--tx);font-family:Inter,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;border:0;background:none}
+.disp{font-family:Syncopate,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.wrap{width:min(1320px,100% - 2*var(--m));margin-inline:auto}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+main,footer,nav{position:relative;z-index:2}
+
+/* loader */
+.load{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity 1.4s,visibility 1.4s}
+.load.done{opacity:0;visibility:hidden}
+.load .ring{width:70px;height:70px;border-radius:50%;border:1px solid #ffffff22;border-top-color:var(--ac);animation:spin 1.2s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px var(--m)}
+.logo{font-family:Syncopate;font-weight:700;letter-spacing:.32em;font-size:16px;display:flex;align-items:center;gap:12px}
+.logo i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--tx);position:relative}
+.logo i::after{content:"";position:absolute;width:34px;height:10px;border:1.5px solid var(--ac);border-radius:50%;left:-7px;top:4px;transform:rotate(-20deg)}
+nav ul{display:flex;gap:clamp(18px,3vw,40px);list-style:none}
+nav ul a{opacity:.75;transition:opacity .3s}nav ul a:hover{opacity:1}
+.btn{display:inline-flex;align-items:center;gap:12px;padding:14px 24px;border-radius:999px;border:1px solid #ffffff44;backdrop-filter:blur(10px);background:#ffffff0d;transition:background .4s,border-color .4s,transform .4s;cursor:pointer}
+.btn:hover{background:#ffffff1f;border-color:#fff;transform:translateY(-2px)}
+.btn.pri{background:var(--tx);color:#02030a;border-color:var(--tx);font-weight:500}
+.btn.pri:hover{background:var(--ac);border-color:var(--ac)}
+
+/* HUD */
+.track{position:fixed;left:var(--m);top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:22px}
+.track a{display:flex;align-items:center;gap:14px;opacity:.45;transition:opacity .5s}
+.track a i{width:9px;height:9px;border-radius:50%;border:1px solid var(--tx);transition:all .5s}
+.track a span{opacity:0;transform:translateX(-6px);transition:all .5s}
+.track a.on{opacity:1}.track a.on i{background:var(--ac);border-color:var(--ac);box-shadow:0 0 12px var(--ac);transform:scale(1.4)}
+.track a.on span,.track:hover a span{opacity:1;transform:none}
+.track::before{content:"";position:absolute;left:4px;top:4px;bottom:4px;width:1px;background:var(--line);z-index:-1}
+.tele{position:fixed;right:var(--m);bottom:26px;z-index:40;text-align:right;line-height:1.9;color:var(--mu)}
+.tele b{color:var(--tx);font-weight:500;font-size:14px;letter-spacing:.06em}
+.track,.tele{transition:opacity .6s}.hud-off .track,.hud-off .tele{opacity:0;pointer-events:none}
+.prog{position:fixed;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--ac),var(--ac2));z-index:60;width:0}
+
+/* chapters */
+.ch{min-height:170vh;position:relative}
+.ch:first-child{min-height:130vh}
+.panel{position:sticky;top:50%;transform:translateY(-50%);width:min(520px,100% - 2*var(--m));margin-left:clamp(90px,12vw,200px);opacity:0;transition:opacity 1.2s}
+.panel.r{margin-left:auto;margin-right:clamp(30px,7vw,140px)}
+.panel.on{opacity:1}
+.panel .k{color:var(--ac);display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.panel .k::before{content:"";width:28px;height:1px;background:var(--ac)}
+.panel h2{font-size:clamp(30px,4.2vw,64px);line-height:1.02;margin-bottom:18px}
+.panel h2 em{font-style:normal;background:linear-gradient(90deg,var(--ac),#c7b8ff,var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.panel p{color:#c3c9e6;line-height:1.75;font-size:16px;max-width:460px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);margin-top:28px;border-top:1px solid var(--line)}
+.facts div{padding:16px 12px 0 0}
+.facts b{display:block;font-family:Syncopate;font-weight:700;font-size:clamp(16px,1.6vw,22px);margin-bottom:6px}
+.facts span{color:var(--mu);font-size:10.5px}
+.panel .btn{margin-top:28px}
+
+.hero{min-height:130vh}
+.hero .panel{width:min(640px,100% - 2*var(--m))}
+.hero h1{font-size:clamp(40px,6.6vw,108px);line-height:.98;margin-bottom:22px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#8fd0ff,#c7b8ff 50%,#ffc88f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.launch{display:flex;gap:28px;margin-top:34px;color:var(--mu)}
+.launch b{display:block;color:var(--tx);font-weight:500;margin-top:4px;letter-spacing:.08em}
+.scrolltip{position:absolute;left:50%;bottom:34vh;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--mu)}
+.scrolltip i{width:1px;height:50px;background:linear-gradient(var(--tx),transparent);animation:drop 2s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* booking */
+.book{padding:clamp(90px,12vw,170px) 0 60px;background:linear-gradient(180deg,#02030a00,#02030acc 22%,#02030af2)}
+.book .hd{text-align:center;max-width:760px;margin:0 auto clamp(40px,5vw,70px)}
+.book h2{font-size:clamp(32px,5vw,78px);line-height:1;margin:16px 0}
+.book .hd p{color:var(--mu);line-height:1.7}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,26px)}
+.tier{border:1px solid var(--line);border-radius:28px;padding:clamp(24px,3vw,38px);background:linear-gradient(160deg,#ffffff0d,#ffffff03);backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:transform .6s cubic-bezier(.16,1,.3,1),border-color .6s}
+.tier::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-90px;top:-90px;background:radial-gradient(var(--g),transparent 65%);opacity:.5;transition:opacity .6s}
+.tier:hover{transform:translateY(-8px);border-color:#ffffff55}.tier:hover::before{opacity:.9}
+.tier .mono{color:var(--mu)}
+.tier h3{font-family:Syncopate;font-weight:700;font-size:clamp(20px,2vw,28px);margin:14px 0 8px;text-transform:uppercase}
+.tier .pr{font-size:clamp(28px,3vw,40px);font-weight:300;margin:18px 0}
+.tier ul{list-style:none;display:grid;gap:10px;color:#c3c9e6;font-size:15px;margin-bottom:26px}
+.tier li::before{content:"✦ ";color:var(--ac)}
+.tier.pop{border-color:#7cc4ff88}
+.cd{display:flex;justify-content:center;gap:clamp(10px,3vw,40px);margin:clamp(60px,8vw,110px) 0 30px}
+.cd div{text-align:center}
+.cd b{display:block;font-family:Syncopate;font-weight:700;font-size:clamp(34px,6vw,84px);line-height:1;font-variant-numeric:tabular-nums}
+.cd span{color:var(--mu)}
+form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:620px;margin:0 auto}
+input,select{flex:1;min-width:200px;padding:16px 22px;border-radius:999px;border:1px solid #ffffff33;background:#ffffff0a;outline:0;font-size:15px;backdrop-filter:blur(10px)}
+select option{background:#0b0d1c}
+input:focus,select:focus{border-color:var(--ac)}
+#msg{text-align:center;margin-top:16px;color:var(--ac);min-height:20px}
+footer{padding:40px var(--m) 30px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;color:var(--mu);background:#02030a;border-top:1px solid var(--line)}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity 1.2s,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav ul,.track{display:none}
+  .panel,.panel.r{margin:0 auto;top:auto;bottom:24px;transform:none;position:sticky;width:calc(100% - 2*var(--m));padding:22px;border-radius:22px;background:#04061299;backdrop-filter:blur(12px);border:1px solid var(--line)}
+  .ch{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:30px}
+  .hero .panel{background:none;border:0;backdrop-filter:none;padding:0}
+  .tiers{grid-template-columns:1fr}
+  .tele{bottom:auto;top:70px;font-size:10px}
+  .scrolltip{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.panel{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="load" id="load"><div style="text-align:center"><div class="ring"></div><span class="mono" style="color:var(--mu)">Calibrating star map</span></div></div>
+<div class="prog" id="prog"></div>
+<canvas id="gl"></canvas>
+
+<nav><a class="logo" href="#"><i></i>ODYSSEY</a>
+  <ul class="mono"><li><a href="#c1">Moon</a></li><li><a href="#c2">Mars</a></li><li><a href="#c3">Saturn</a></li><li><a href="#book">Book</a></li></ul>
+  <a class="btn mono" href="#book">Reserve a seat</a></nav>
+
+<div class="track mono" id="track">
+  <a href="#c0"><i></i><span>Earth</span></a><a href="#c1"><i></i><span>Moon</span></a><a href="#c2"><i></i><span>Mars</span></a><a href="#c3"><i></i><span>Saturn</span></a><a href="#c4"><i></i><span>Beyond</span></a>
+</div>
+<div class="tele mono">Distance from Earth<br><b id="dist">400 km</b><br>Velocity <b id="vel">7.66 km/s</b></div>
+
+<main id="journey">
+  <section class="ch hero" id="c0">
+    <div class="panel on">
+      <span class="k mono">Odyssey · Interplanetary voyages</span>
+      <h1 class="disp">Beyond<br>the <em>blue.</em></h1>
+      <p>Leave the atmosphere behind. Scroll to fly past the Moon, land on Mars and drift through the rings of Saturn — the first civilian voyages to the outer solar system.</p>
+      <div class="ctas"><a class="btn pri" href="#c1">Begin the journey ↓</a><a class="btn" href="#book">View voyages</a></div>
+      <div class="launch mono"><div>Next launch<b id="nl">—</b></div><div>Seats left<b>4 / 12</b></div><div>Pad<b>LC-39A</b></div></div>
+    </div>
+    <div class="scrolltip mono">Scroll to launch<i></i></div>
+  </section>
+
+  <section class="ch" id="c1"><div class="panel r">
+    <span class="k mono">01 — The Moon</span><h2 class="disp">A weekend<br>on the <em>Moon.</em></h2>
+    <p>Three days from launch you'll step onto the Sea of Tranquility, bounce in one-sixth gravity and watch Earth rise over a grey horizon that hasn't changed in a billion years.</p>
+    <div class="facts mono"><div><b>384K</b><span>km away</span></div><div><b>3 days</b><span>travel</span></div><div><b>0.16 g</b><span>gravity</span></div></div>
+  </div></section>
+
+  <section class="ch" id="c2"><div class="panel">
+    <span class="k mono">02 — Mars</span><h2 class="disp">The red<br><em>frontier.</em></h2>
+    <p>Seven months across the void to the planet that has haunted dreamers for centuries. Hike the rim of Valles Marineris and sleep beneath two moons in our pressurised dome resort.</p>
+    <div class="facts mono"><div><b>225M</b><span>km away</span></div><div><b>7 mo</b><span>travel</span></div><div><b>0.38 g</b><span>gravity</span></div></div>
+  </div></section>
+
+  <section class="ch" id="c3"><div class="panel r">
+    <span class="k mono">03 — Saturn</span><h2 class="disp">Lord of<br>the <em>rings.</em></h2>
+    <p>A slow, silent flyby through ice and dust. Watch the rings blaze in sunlight from just a few thousand kilometres away — a view only a handful of humans will ever see.</p>
+    <div class="facts mono"><div><b>1.4B</b><span>km away</span></div><div><b>146</b><span>moons</span></div><div><b>Flyby</b><span>only</span></div></div>
+  </div></section>
+
+  <section class="ch" id="c4"><div class="panel">
+    <span class="k mono">04 — Beyond</span><h2 class="disp">The next<br><em>light-year.</em></h2>
+    <p>Proxima b waits 4.24 light-years away. Our generation ship program is already taking names for the year 2150. Be the first family on another star.</p>
+    <a class="btn pri" href="#book">Join the waitlist →</a>
+  </div></section>
+</main>
+
+<section class="book" id="book"><div class="wrap">
+  <div class="hd rv"><span class="mono" style="color:var(--ac)">Reserve your seat</span><h2 class="disp">Choose your<br>voyage</h2><p>Every voyage includes six months of astronaut training, a personal flight surgeon and a window seat. Always a window seat.</p></div>
+  <div class="tiers">
+    <div class="tier rv" style="--g:#9aa3c799"><span class="mono">Lunar weekend · 6 days</span><h3>Selene</h3><p style="color:var(--mu)">Orbit, landing and two moonwalks.</p><div class="pr">$1.2M</div><ul><li>3-day transit</li><li>2 surface EVAs</li><li>Earthrise suite</li></ul><a class="btn" href="#f">Reserve</a></div>
+    <div class="tier pop rv" style="--g:#ff7a3d99;transition-delay:.12s"><span class="mono" style="color:var(--ac2)">Most requested · 14 months</span><h3>Ares</h3><p style="color:var(--mu)">Return trip to Mars with a 30-day stay.</p><div class="pr">$18M</div><ul><li>Dome resort stay</li><li>Valles Marineris trek</li><li>Phobos flyby</li></ul><a class="btn pri" href="#f">Reserve</a></div>
+    <div class="tier rv" style="--g:#e0c38c99;transition-delay:.24s"><span class="mono">Grand tour · 6 years</span><h3>Kronos</h3><p style="color:var(--mu)">Jupiter gravity assist and Saturn ring flyby.</p><div class="pr">$140M</div><ul><li>Jupiter slingshot</li><li>Ring-plane crossing</li><li>Titan observation</li></ul><a class="btn" href="#f">Reserve</a></div>
+  </div>
+  <div class="cd rv"><div><b id="d">00</b><span class="mono">Days</span></div><div><b id="h">00</b><span class="mono">Hours</span></div><div><b id="m">00</b><span class="mono">Minutes</span></div><div><b id="s">00</b><span class="mono">Seconds</span></div></div>
+  <p class="mono rv" style="text-align:center;color:var(--mu);margin-bottom:24px">Until the next launch window</p>
+  <form id="f" class="rv"><input type="email" required placeholder="Your email" aria-label="Email"><select aria-label="Voyage"><option>Selene — Moon</option><option>Ares — Mars</option><option>Kronos — Saturn</option></select><button class="btn pri" type="submit">Request briefing</button></form>
+  <div id="msg" class="mono"></div>
+</div></section>
+<footer class="mono"><span>© 2026 Odyssey Interplanetary</span><span>Mission control · Press · Careers</span><span>A portfolio design study</span></footer>
+
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(40,1,.1,3000);
+const SUN=new THREE.Vector3(-.9,.28,.18).normalize();
+
+// ---------- shared GLSL ----------
+const NOISE=`vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<6;i++){s+=a*snoise(p);p*=2.03;a*=.5;}return s;}`;
+const VERT=`varying vec3 vN;varying vec3 vP;varying vec3 vW;
+void main(){vP=normalize(position);vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`;
+
+// ---------- procedural planets ----------
+const PLANET_FRAG=`uniform int uType;uniform vec3 uSun;uniform float uTime;uniform float uSeed;uniform vec3 uAtm;
+varying vec3 vN;varying vec3 vP;varying vec3 vW;${NOISE}
+void main(){vec3 p=vP;vec3 N=normalize(vN);vec3 V=normalize(cameraPosition-vW);
+  float ndl=dot(N,uSun);float diff=max(ndl,0.);float term=smoothstep(-.12,.3,ndl);
+  vec3 col;float spec=0.;vec3 night=vec3(0.);
+  if(uType==0){
+    float n=fbm(p*1.7+uSeed);float land=smoothstep(.02,.08,n);
+    vec3 ocean=mix(vec3(.004,.03,.11),vec3(.02,.16,.36),smoothstep(-.45,.04,n));
+    float m=fbm(p*5.5+3.1);vec3 ground=mix(vec3(.09,.24,.08),vec3(.5,.4,.24),smoothstep(-.15,.35,m));
+    ground=mix(ground,vec3(.36,.3,.22),smoothstep(.25,.5,n));
+    col=mix(ocean,ground,land);
+    float ice=smoothstep(.74,.84,abs(p.y)+m*.07);col=mix(col,vec3(.9,.94,1.),ice);
+    vec3 H=normalize(uSun+V);spec=pow(max(dot(N,H),0.),70.)*(1.-land)*(1.-ice)*1.4;
+    float city=smoothstep(.62,.9,snoise(p*46.)*.5+.5)*smoothstep(.55,.8,snoise(p*9.+7.)*.5+.5)*land*(1.-ice);
+    night=vec3(1.,.6,.25)*city*2.2*(1.-term);
+  }else if(uType==1){
+    float n=fbm(p*3.2+uSeed);float c=snoise(p*11.);float crater=smoothstep(.55,.62,c)-smoothstep(.62,.75,c)*.6;
+    col=mix(vec3(.2),vec3(.58),n*.5+.5)*(1.-crater*.35)+crater*.08;
+  }else if(uType==2){
+    float n=fbm(p*2.4+uSeed);col=mix(vec3(.26,.06,.02),vec3(.66,.24,.08),n*.6+.5);
+    col=mix(col,vec3(.16,.05,.03),smoothstep(.0,.45,fbm(p*3.+1.7))*.8);
+    col=mix(col,vec3(.95,.92,.9),smoothstep(.86,.91,abs(p.y)+n*.03));
+  }else{
+    float w=fbm(p*vec3(2.,9.,2.)+uSeed+vec3(uTime*.008,0.,0.));
+    float b=sin(p.y*19.+w*4.2);
+    col=mix(vec3(.86,.74,.52),vec3(.6,.42,.24),b*.5+.5);
+    col=mix(col,vec3(.97,.9,.76),smoothstep(.55,1.,sin(p.y*7.+w*2.5))*.7);
+  }
+  vec3 lit=col*(diff*1.25+.012)+spec*vec3(1.,.95,.85)+night;
+  float fr=pow(1.-max(dot(N,V),0.),3.);
+  lit+=uAtm*fr*term*1.1;
+  gl_FragColor=vec4(lit,1.);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+const CLOUD_FRAG=`uniform vec3 uSun;uniform float uTime;varying vec3 vN;varying vec3 vP;varying vec3 vW;${NOISE}
+void main(){vec3 p=vP;float c=fbm(p*2.6+vec3(uTime*.012,0.,uTime*.006));float a=smoothstep(.08,.5,c);
+  float diff=max(dot(normalize(vN),uSun),0.);gl_FragColor=vec4(vec3(1.)*(diff*1.1+.01),a*.9);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+const ATM_FRAG=`uniform vec3 uSun;uniform vec3 uAtm;uniform vec3 uCenter;varying vec3 vN;varying vec3 vP;varying vec3 vW;
+void main(){vec3 N=normalize(vN);vec3 V=normalize(cameraPosition-vW);
+  float g=pow(smoothstep(0.,.47,-dot(N,V)),2.2);float lit=smoothstep(-.35,.6,dot(normalize(vW-uCenter),uSun));
+  gl_FragColor=vec4(uAtm*g*lit*1.6,1.);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+const uTime={value:0};
+function planet(type,r,pos,atm,seed){
+  const g=new THREE.Group();g.position.copy(pos);
+  const m=new THREE.Mesh(new THREE.SphereGeometry(r,160,120),new THREE.ShaderMaterial({vertexShader:VERT,fragmentShader:PLANET_FRAG,
+    uniforms:{uType:{value:type},uSun:{value:SUN},uTime,uSeed:{value:seed},uAtm:{value:new THREE.Color(atm||0)}}}));
+  g.add(m);g.userData.body=m;
+  if(atm){const a=new THREE.Mesh(new THREE.SphereGeometry(r*1.13,96,64),new THREE.ShaderMaterial({vertexShader:VERT,fragmentShader:ATM_FRAG,side:THREE.BackSide,
+    transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{uSun:{value:SUN},uAtm:{value:new THREE.Color(atm)},uCenter:{value:pos.clone()}}}));g.add(a)}
+  scene.add(g);return g}
+
+const earth=planet(0,3,new THREE.Vector3(0,0,0),0x4f9dff,1.3);
+const clouds=new THREE.Mesh(new THREE.SphereGeometry(3.04,128,96),new THREE.ShaderMaterial({vertexShader:VERT,fragmentShader:CLOUD_FRAG,transparent:true,depthWrite:false,uniforms:{uSun:{value:SUN},uTime}}));
+earth.add(clouds);earth.rotation.z=.4;
+const moon=planet(1,.95,new THREE.Vector3(14,3,-40),0,4.2);
+const mars=planet(2,1.8,new THREE.Vector3(-12,-2,-90),0xff8a5c,7.7);
+const saturn=planet(3,4,new THREE.Vector3(18,4,-155),0,2.1);
+saturn.rotation.set(.35,0,.25);
+// rings
+const RING_FRAG=`uniform vec3 uSun;varying vec2 vL;varying vec3 vW;${NOISE}
+void main(){float r=(length(vL)-5.4)/(9.6-5.4);if(r<0.||r>1.)discard;
+  float b=fbm(vec3(r*38.,0.,0.))*.5+.5;float gap=smoothstep(.54,.56,r)*(1.-smoothstep(.6,.62,r));
+  float a=smoothstep(0.,.06,r)*(1.-smoothstep(.92,1.,r))*(.25+.75*b)*(1.-gap*.9);
+  vec3 c=mix(vec3(.62,.52,.38),vec3(.95,.88,.72),b);gl_FragColor=vec4(c*.95,a*.8);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+const ring=new THREE.Mesh(new THREE.RingGeometry(5.4,9.6,256,1),new THREE.ShaderMaterial({side:THREE.DoubleSide,transparent:true,depthWrite:false,uniforms:{uSun:{value:SUN}},
+  vertexShader:`varying vec2 vL;varying vec3 vW;void main(){vL=position.xy;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,fragmentShader:RING_FRAG}));
+ring.rotation.x=-Math.PI/2;saturn.add(ring);
+
+// ---------- stars, nebula, sun ----------
+const SN=9000,sp=new Float32Array(SN*3),ss=new Float32Array(SN),sc=new Float32Array(SN*3);
+for(let i=0;i<SN;i++){sp.set([(Math.random()-.5)*900,(Math.random()-.5)*600,200-Math.random()*1100],i*3);ss[i]=Math.random()**3*3+.6;
+  const t=Math.random();const c=t<.15?[1,.82,.6]:t<.3?[.7,.82,1]:[1,1,1];sc.set(c,i*3)}
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));sg.setAttribute('aSize',new THREE.BufferAttribute(ss,1));sg.setAttribute('aCol',new THREE.BufferAttribute(sc,3));
+const stars=new THREE.Points(sg,new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime},
+  vertexShader:`attribute float aSize;attribute vec3 aCol;uniform float uTime;varying vec3 vC;varying float vT;
+    void main(){vC=aCol;vec4 mv=modelViewMatrix*vec4(position,1.);vT=.65+.35*sin(uTime*2.+position.x*12.+position.z);gl_PointSize=clamp(aSize*260./-mv.z,1.,9.);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying vec3 vC;varying float vT;void main(){float d=length(gl_PointCoord-.5);float a=smoothstep(.5,0.,d);gl_FragColor=vec4(vC*a*vT*1.4,a);}`}));
+scene.add(stars);
+const neb=new THREE.Mesh(new THREE.SphereGeometry(1400,64,32),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,
+  vertexShader:`varying vec3 vD;void main(){vD=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vD;${NOISE}void main(){vec3 d=vD;float n=fbm(d*2.2+vec3(1.3));float m=fbm(d*4.+n);
+    vec3 c=mix(vec3(.25,.05,.4),vec3(.02,.3,.45),smoothstep(-.3,.5,m))*smoothstep(-.1,.7,n)*.34;
+    c+=vec3(.6,.2,.5)*pow(max(-d.z,0.),6.)*smoothstep(0.,.6,n)*.6;gl_FragColor=vec4(c,1.);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }`}));
+scene.add(neb);
+const sunTex=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const g=x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'#fff');g.addColorStop(.08,'#fff6e0');g.addColorStop(.22,'rgba(255,200,120,.55)');g.addColorStop(.5,'rgba(255,140,60,.12)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,256,256);
+  return new THREE.CanvasTexture(c)})();
+const sun=new THREE.Sprite(new THREE.SpriteMaterial({map:sunTex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));
+sun.position.copy(SUN).multiplyScalar(700);sun.scale.setScalar(260);scene.add(sun);
+
+// ---------- post ----------
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.75,.6,.72);composer.addPass(bloom);composer.addPass(new OutputPass());
+let narrow=false;
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;narrow=w/h<1;camera.fov=narrow?62:40;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+
+// ---------- camera journey: a hold at each world, travel in between ----------
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+const W=[ // [camera, lookAt] desktop
+  [V(-3.4,.6,10.5),V(-3.9,.1,0)],
+  [V(16.4,3.3,-35.2),V(16.9,3,-40)],
+  [V(-14.9,-1.6,-82),V(-15.3,-2,-90)],
+  [V(26,9,-121),V(28.5,3,-155)],
+  [V(0,0,-215),V(0,0,-300)]];
+const N=[ // mobile: planet centred above the panel
+  [V(0,-2.6,13),V(0,-.6,0)],[V(14,1.6,-35),V(14,2.6,-40)],[V(-12,-3.6,-82),V(-12,-2.6,-90)],[V(18,-2,-118),V(18,2.4,-155)],[V(0,0,-215),V(0,0,-300)]];
+const DIST=[400,384400,2.25e8,1.43e9,4.0e13],VEL=[7.66,1.02,24.1,9.68,6200];
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const sm=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+const journey=document.getElementById('journey');
+let target=0,p=0,mx=0,my=0,tx=0,ty=0;
+const read=()=>{target=clamp(scrollY/(journey.offsetHeight-innerHeight))};
+addEventListener('scroll',read,{passive:true});read();p=target;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+const cp=new THREE.Vector3(),cl=new THREE.Vector3();
+const links=[...document.querySelectorAll('#track a')],fmt=n=>n>=9.46e12?(n/9.46e12).toFixed(2)+' ly':n>=1e9?(n/1e9).toFixed(2)+'B km':n>=1e6?(n/1e6).toFixed(1)+'M km':Math.round(n).toLocaleString('en-US')+' km';
+const clock=new THREE.Clock();let first=true;
+(function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();uTime.value=t;
+  p+=(target-p)*.06;mx+=(tx-mx)*.04;my+=(ty-my)*.04;
+  const P=narrow?N:W,seg=p*(P.length-1),i=Math.min(Math.floor(seg),P.length-2),f=seg-i,e=sm(.18,.82,f);
+  cp.lerpVectors(P[i][0],P[i+1][0],e);cl.lerpVectors(P[i][1],P[i+1][1],e);
+  cp.y+=Math.sin(e*Math.PI)*4;cp.x+=mx*.8;cp.y+=-my*.5;
+  camera.position.copy(cp);camera.lookAt(cl);camera.rotateZ(Math.sin(e*Math.PI)*.12-mx*.03);
+  earth.rotation.y=t*.03;clouds.rotation.y=t*.012;moon.rotation.y=t*.02;mars.rotation.y=t*.025;saturn.children[0].rotation.y=t*.04;
+  stars.rotation.z=t*.002;
+  // HUD
+  const k=Math.round(seg);links.forEach((a,j)=>a.classList.toggle('on',j===k));
+  const d=Math.exp(Math.log(DIST[i])+(Math.log(DIST[i+1])-Math.log(DIST[i]))*e);
+  document.getElementById('dist').textContent=fmt(d);
+  const v=VEL[i]+(VEL[i+1]-VEL[i])*e+Math.sin(e*Math.PI)*40;document.getElementById('vel').textContent=v.toFixed(2)+' km/s';
+  document.getElementById('prog').style.width=p*100+'%';
+  composer.render();
+  if(first){first=false;setTimeout(()=>document.getElementById('load').classList.add('done'),400)}
+})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+setTimeout(()=>$('load').classList.add('done'),7000);
+// hide the flight HUD once the journey is over
+const jr=$('journey');addEventListener('scroll',()=>document.body.classList.toggle('hud-off',scrollY>jr.offsetHeight-innerHeight*.6),{passive:true});
+// panels fade in when their chapter is centred
+const pio=new IntersectionObserver(es=>es.forEach(e=>e.target.querySelector('.panel').classList.toggle('on',e.isIntersecting)),{rootMargin:'-35% 0px -35% 0px'});
+document.querySelectorAll('.ch').forEach(c=>pio.observe(c));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+// launch countdown
+const end=new Date(Date.now()+(138*86400+5*3600+12*60)*1000);
+$('nl').textContent=end.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+function cd(){let s=Math.max(0,(end-Date.now())/1000|0);const d=s/86400|0;s%=86400;const h=s/3600|0;s%=3600;
+  [['d',d],['h',h],['m',s/60|0],['s',s%60]].forEach(([k,v])=>$(k).textContent=String(v).padStart(2,'0'))}
+cd();setInterval(cd,1000);
+$('f').onsubmit=e=>{e.preventDefault();$('msg').textContent='Briefing requested · Mission control will contact you within 48 hours'};
+</script>
+</body>
+</html>

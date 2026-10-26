@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Quest — Arcade Zone</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120a2b;--bg2:#1e1146;--pk:#ff3cac;--cy:#00f0ff;--yl:#ffe600;--gr:#39ff14;--or:#ff8a1f;--wh:#f4f0ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--wh);font-family:VT323,monospace;font-size:24px;line-height:1.3;overflow-x:hidden;image-rendering:pixelated}
+a{color:inherit;text-decoration:none}
+.px{font-family:'Press Start 2P',monospace;line-height:1.5}
+.wrap{width:min(1120px,100% - 36px);margin-inline:auto}
+#stars{position:fixed;inset:0;z-index:-2;width:100%;height:100%}
+/* CRT */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px);mix-blend-mode:multiply}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;box-shadow:inset 0 0 160px rgba(0,0,0,.7);animation:flick 4s infinite}
+@keyframes flick{0%,95%,100%{opacity:1}96%{opacity:.85}97%{opacity:1}98%{opacity:.9}}
+
+.box{border:4px solid var(--wh);background:var(--bg2);box-shadow:6px 6px 0 #000,inset -4px -4px 0 #0005,inset 4px 4px 0 #ffffff18;position:relative}
+
+header{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:4px solid var(--pk);box-shadow:0 4px 0 #000}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 0;gap:14px}
+.logo{font-size:15px;color:var(--yl);text-shadow:3px 3px 0 var(--pk);display:flex;align-items:center;gap:10px}
+.nav ul{display:flex;gap:26px;list-style:none;font-size:11px}
+.nav li a:hover::before{content:"▶ ";color:var(--pk)}
+.nav li a:hover{color:var(--cy)}
+.coins{font-size:10px;color:var(--gr)}
+
+.btn{display:inline-block;font-family:'Press Start 2P';font-size:13px;padding:16px 22px;background:var(--pk);color:#fff;border:4px solid #000;
+  box-shadow:inset -4px -4px 0 #0006,inset 4px 4px 0 #fff5,6px 6px 0 #000;cursor:pointer;transition:none;text-shadow:2px 2px 0 #0007}
+.btn:hover{background:var(--cy);color:#000;text-shadow:none;transform:translate(-2px,-2px);box-shadow:inset -4px -4px 0 #0006,inset 4px 4px 0 #fff7,8px 8px 0 #000}
+.btn:active{transform:translate(6px,6px);box-shadow:inset -4px -4px 0 #0006,inset 4px 4px 0 #fff5,0 0 0 #000}
+.btn.y{background:var(--yl);color:#000;text-shadow:none}.btn.y:hover{background:var(--gr)}
+
+.hero{text-align:center;padding:70px 0 50px;position:relative}
+.hi{font-size:12px;color:var(--cy);margin-bottom:30px}
+h1{font-family:'Press Start 2P';font-size:clamp(34px,8vw,92px);line-height:1.1;color:var(--yl);
+  text-shadow:4px 4px 0 var(--or),8px 8px 0 var(--pk),12px 12px 0 #000;margin-bottom:34px;animation:bobT 2.4s steps(4) infinite}
+@keyframes bobT{50%{transform:translateY(-8px)}}
+.hero p{font-size:30px;max-width:640px;margin:0 auto 34px;color:#d8d0ff}
+.blink{animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.insert{font-family:'Press Start 2P';font-size:14px;color:var(--gr);margin-top:34px}
+
+.sprites{display:flex;justify-content:center;gap:50px;margin:50px 0 10px;align-items:flex-end;flex-wrap:wrap}
+.spr{animation:hop 1s steps(2) infinite}
+.spr:nth-child(2){animation-delay:-.3s}.spr:nth-child(3){animation-delay:-.6s}.spr:nth-child(4){animation-delay:-.15s}
+@keyframes hop{50%{transform:translateY(-10px)}}
+.spr svg{display:block;filter:drop-shadow(5px 5px 0 #000)}
+
+.ground{height:48px;margin-top:-4px;background:
+  repeating-linear-gradient(90deg,#8a4b1e 0 48px,#6e3a14 48px 52px);border-top:8px solid var(--gr);position:relative}
+.ground::after{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:repeating-linear-gradient(90deg,#2bd10f 0 16px,var(--gr) 16px 32px)}
+
+.marq{background:var(--pk);border-block:4px solid #000;overflow:hidden;white-space:nowrap;padding:10px 0}
+.marq div{display:inline-block;font-family:'Press Start 2P';font-size:13px;animation:mq 20s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section.s{padding:90px 0}
+.title{font-family:'Press Start 2P';font-size:clamp(20px,3.6vw,34px);color:var(--cy);text-shadow:4px 4px 0 #000;margin-bottom:12px}
+.sub{color:#bdb2f5;margin-bottom:44px;font-size:26px}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.g{padding:20px;transition:transform .1s steps(2)}
+.g:hover{transform:translate(-4px,-4px);border-color:var(--yl)}
+.screen{height:170px;border:4px solid #000;display:grid;place-items:center;margin-bottom:16px;position:relative;overflow:hidden}
+.g:nth-child(1) .screen{background:linear-gradient(#2a1a6e,#ff3cac)}
+.g:nth-child(2) .screen{background:linear-gradient(#003a52,#00f0ff)}
+.g:nth-child(3) .screen{background:linear-gradient(#3b1d00,#ffb02e)}
+.screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0003 0 2px,transparent 2px 4px)}
+.screen svg{position:relative;z-index:1;transition:transform .1s steps(2)}
+.g:hover .screen svg{transform:scale(1.25)}
+.g h3{font-family:'Press Start 2P';font-size:14px;margin-bottom:10px;color:var(--yl)}
+.g p{font-size:23px;color:#d1c9ff;margin-bottom:14px}
+.tags{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tags span{font-family:'Press Start 2P';font-size:8px;padding:6px 8px;background:#000;color:var(--gr)}
+.hp{height:18px;border:3px solid #000;background:#000;display:flex;gap:2px;padding:2px}
+.hp i{flex:1;background:var(--gr)}.hp i.e{background:#333}
+.hpl{font-family:'Press Start 2P';font-size:8px;margin-bottom:6px;color:var(--wh)}
+
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:start}
+.lb{padding:24px}
+.lb h3{font-family:'Press Start 2P';font-size:14px;color:var(--yl);margin-bottom:20px;text-align:center}
+.row{display:flex;justify-content:space-between;padding:8px 6px;border-bottom:3px dashed #ffffff22;font-size:26px}
+.row:nth-child(2){color:var(--yl)}.row:nth-child(3){color:var(--cy)}.row:nth-child(4){color:var(--pk)}
+.row b{font-weight:400;font-family:'Press Start 2P';font-size:12px;align-self:center}
+.lv{padding:24px}
+.lv h3{font-family:'Press Start 2P';font-size:13px;color:var(--pk);margin-bottom:18px}
+.xp{height:26px;border:4px solid #000;background:#000;margin:8px 0 22px;padding:3px}
+.xp i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--gr) 0 12px,#1fb800 12px 16px);transition:width 1.8s steps(14)}
+.vis .xp i{width:var(--w)}
+.stat{display:flex;justify-content:space-between}
+
+.cta{text-align:center;padding:60px 24px}
+.cta h2{font-family:'Press Start 2P';font-size:clamp(20px,4vw,38px);color:var(--yl);text-shadow:4px 4px 0 var(--pk);margin-bottom:26px;line-height:1.4}
+form{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+input{font-family:'Press Start 2P';font-size:12px;padding:16px;background:#000;color:var(--gr);border:4px solid var(--wh);width:min(100%,360px);outline:0;text-transform:uppercase}
+input:focus{border-color:var(--yl)}
+input::placeholder{color:#3b8f2c}
+#msg{font-family:'Press Start 2P';font-size:11px;color:var(--cy);margin-top:20px;min-height:20px}
+footer{padding:36px 0 60px;text-align:center;font-family:'Press Start 2P';font-size:9px;color:#8579c9;line-height:2}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity .4s steps(4),transform .4s steps(4)}
+.rv.vis{opacity:1;transform:none}
+@media(max-width:860px){.games,.two{grid-template-columns:1fr}.nav ul{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<header><div class="wrap nav">
+  <a href="#" class="logo px"><span id="logoico"></span>PIXEL QUEST</a>
+  <ul class="px"><li><a href="#games">GAMES</a></li><li><a href="#scores">SCORES</a></li><li><a href="#join">JOIN</a></li></ul>
+  <div class="coins px">CREDITS <span id="cr">01</span></div>
+</div></header>
+
+<section class="hero wrap">
+  <div class="hi px blink">★ 1UP ★ HI-SCORE 999999 ★</div>
+  <h1>PIXEL<br>QUEST</h1>
+  <p>The ultimate retro arcade. Hundreds of 8-bit classics, new indie legends and global leaderboards — all in your browser.</p>
+  <a href="#join" class="btn">▶ PLAY NOW</a> <a href="#games" class="btn y">GAMES</a>
+  <div class="insert blink">INSERT COIN TO CONTINUE</div>
+  <div class="sprites" id="sprites"></div>
+</section>
+<div class="ground"></div>
+
+<div class="marq"><div class="px">★ NEW GAMES EVERY WEEK ★ 100% PIXELS ★ NO LOADING SCREENS ★ BEAT THE HIGH SCORE ★ NEW GAMES EVERY WEEK ★ 100% PIXELS ★ NO LOADING SCREENS ★ BEAT THE HIGH SCORE ★</div></div>
+
+<section class="s wrap" id="games">
+  <div class="title px rv">SELECT YOUR GAME</div><p class="sub rv">Choose wisely, player one.</p>
+  <div class="games">
+    <article class="g box rv"><div class="screen" id="s1"></div><h3>SPACE RAIDERS</h3><p>Blast waves of alien invaders before they reach Earth.</p>
+      <div class="tags"><span>SHOOTER</span><span>1-2P</span></div><div class="hpl">DIFFICULTY</div><div class="hp"><i></i><i></i><i></i><i></i><i class="e"></i></div></article>
+    <article class="g box rv" style="transition-delay:.15s"><div class="screen" id="s2"></div><h3>GHOST MAZE</h3><p>Gobble every dot and outsmart four clever ghosts.</p>
+      <div class="tags"><span>MAZE</span><span>1P</span></div><div class="hpl">DIFFICULTY</div><div class="hp"><i></i><i></i><i class="e"></i><i class="e"></i><i class="e"></i></div></article>
+    <article class="g box rv" style="transition-delay:.3s"><div class="screen" id="s3"></div><h3>HERO JUMP</h3><p>Leap across pits and stomp the baddies to save the kingdom.</p>
+      <div class="tags"><span>PLATFORM</span><span>1-4P</span></div><div class="hpl">DIFFICULTY</div><div class="hp"><i></i><i></i><i></i><i></i><i></i></div></article>
+  </div>
+</section>
+
+<section class="s wrap" id="scores">
+  <div class="two">
+    <div class="lb box rv"><h3>★ TOP PLAYERS ★</h3>
+      <div class="row"><span>1. AAA</span><b>999,990</b></div><div class="row"><span>2. NYX</span><b>874,300</b></div>
+      <div class="row"><span>3. ZED</span><b>812,450</b></div><div class="row"><span>4. MOO</span><b>744,120</b></div><div class="row"><span>5. YOU</span><b>??????</b></div></div>
+    <div class="lv box rv" id="lv" style="transition-delay:.15s"><h3>PLAYER STATS</h3>
+      <div class="stat"><span>SPEED</span><span>87</span></div><div class="xp"><i style="--w:87%"></i></div>
+      <div class="stat"><span>LUCK</span><span>64</span></div><div class="xp"><i style="--w:64%"></i></div>
+      <div class="stat"><span>SKILL</span><span>95</span></div><div class="xp"><i style="--w:95%"></i></div>
+      <a href="#join" class="btn y" style="font-size:11px">LEVEL UP ▲</a></div>
+  </div>
+</section>
+
+<section class="wrap" id="join" style="padding-bottom:40px">
+  <div class="cta box rv"><h2>READY<br>PLAYER ONE?</h2><p style="font-size:28px;color:#d1c9ff">Enter your initials and join the leaderboard.</p>
+    <form id="f"><input maxlength="12" required placeholder="YOUR NAME" aria-label="Name"><button class="btn" type="submit">START ▶</button></form>
+    <div id="msg"></div></div>
+</section>
+<footer>© 2026 PIXEL QUEST CORP<br>A PORTFOLIO DESIGN STUDY · PRESS START</footer>
+
+<script>
+// pixel sprite renderer
+function sprite(rows,pal,s){
+  const h=rows.length,w=rows[0].length;let r='';
+  rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(pal[c])r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${pal[c]}"/>`}));
+  return `<svg width="${w*s}" height="${h*s}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges">${r}</svg>`;
+}
+const invader=["..a......a..","...a....a...","..aaaaaaaa..",".aa.aaaa.aa.","aaaaaaaaaaaa","a.aaaaaaaa.a","a.a......a.a","...aa..aa..."];
+const ghost=["..aaaaaa..",".aaaaaaaa.","aaaaaaaaaa","aawwaawwaa","aabwaabwaa","aaaaaaaaaa","aaaaaaaaaa","aa.aa.aa.a"];
+const pac=["..yyyy..",".yyyyyy.","yyyyyy..","yyyy....","yyyy....","yyyyyy..",".yyyyyy.","..yyyy.."];
+const hero=["..rrrr...","..rrrrrrr","..sssks..",".ssssksss","..ssssss.","..bbrbb..",".bbbrbbb.",".bb.bb.b.","kk...kk.."];
+const heart=[".rr.rr.","rrrrrrr","rrrrrrr",".rrrrr.","..rrr..","...r..."];
+const P={a:'#39ff14',w:'#fff',b:'#2a2aff',y:'#ffe600',r:'#ff3030',s:'#ffc08a',k:'#222'};
+const ink=(c)=>({...P,a:c});
+sprites.innerHTML=
+ `<div class="spr">${sprite(invader,ink('#39ff14'),9)}</div>`+
+ `<div class="spr">${sprite(ghost,ink('#ff3cac'),9)}</div>`+
+ `<div class="spr">${sprite(pac,P,10)}</div>`+
+ `<div class="spr">${sprite(hero,P,9)}</div>`+
+ `<div class="spr">${sprite(invader,ink('#00f0ff'),9)}</div>`;
+logoico.innerHTML=sprite(heart,P,3);
+s1.innerHTML=sprite(invader,ink('#39ff14'),9);
+s2.innerHTML=sprite(ghost,ink('#00f0ff'),10);
+s3.innerHTML=sprite(hero,P,10);
+
+// starfield
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let st=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;st=Array.from({length:110},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2.5+.8,c:['#fff','#00f0ff','#ff3cac','#ffe600'][Math.random()*4|0]}))}
+rs();addEventListener('resize',rs);
+(function loop(){cx.clearRect(0,0,cv.width,cv.height);
+  st.forEach(o=>{o.y+=o.s*.6;if(o.y>cv.height){o.y=0;o.x=Math.random()*cv.width}cx.fillStyle=o.c;const z=Math.ceil(o.s);cx.fillRect(o.x|0,o.y|0,z*2,z*2)});
+  requestAnimationFrame(loop)})();
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+// coin counter + form
+let c=1;document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click',()=>{if(b.type==='submit')return;c=Math.min(c+1,99);cr.textContent=String(c).padStart(2,'0')}));
+f.onsubmit=e=>{e.preventDefault();msg.textContent='★ WELCOME, '+f.querySelector('input').value.toUpperCase()+'! GAME STARTING... ★'};
+</script>
+</body>
+</html>

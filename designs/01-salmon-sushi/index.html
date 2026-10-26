@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ootum — Salmon Sunrise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#3d6a5b; --green-d:#2a4d41; --green-dd:#1f3a32; --sage:#8fae9f;
+  --cream:#f7ecd1; --cream-l:#fbf4e1; --peach:#f9d3b4; --coral:#ee6b52; --coral-d:#d9553d;
+  --gold:#d9a94a; --ink:#27463b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
+h1,h2,h3,.serif{font-family:'Fraunces',serif}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1200px,100% - 48px);margin-inline:auto}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--coral);color:#fff;font-weight:600;font-size:15px;
+  padding:14px 30px;border-radius:999px;border:0;cursor:pointer;box-shadow:0 8px 20px -8px rgba(238,107,82,.8);
+  transition:transform .3s cubic-bezier(.2,.8,.3,1.4),background .3s,box-shadow .3s}
+.btn:hover{transform:translateY(-3px) scale(1.04);background:var(--coral-d);box-shadow:0 14px 26px -10px rgba(238,107,82,.9)}
+.btn svg{width:14px;transition:transform .3s}
+.btn:hover svg{transform:translateX(4px)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:radial-gradient(120% 90% at 70% 40%,#4a7a69 0%,var(--green) 45%,var(--green-d) 100%);color:var(--cream);
+  min-height:min(100vh,860px);padding-bottom:180px}
+.splash{position:absolute;pointer-events:none}
+.splash.tl{top:-60px;left:-80px;width:360px}
+nav{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:34px 0}
+.logo{display:flex;align-items:center;gap:8px;font-family:'Fraunces',serif;font-weight:700;font-size:26px;color:var(--gold)}
+.logo svg{width:30px}
+.links{display:flex;gap:40px;font-size:14px;font-weight:500}
+.links a{position:relative;padding:6px 0;opacity:.9}
+.links a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--gold);transition:width .35s}
+.links a:hover::after,.links a.on::after{width:100%}
+.menu{display:none;background:none;border:0;color:var(--cream);font-size:28px}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:20px;padding-top:30px}
+h1{font-size:clamp(64px,9vw,128px);line-height:.92;font-weight:600;color:var(--cream-l);letter-spacing:-.02em;margin-bottom:34px}
+h1 .w{display:block;overflow:hidden}
+h1 .w span{display:inline-block;transform:translateY(110%);animation:rise 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+h1 .w:nth-child(2) span{animation-delay:.18s}
+@keyframes rise{to{transform:none}}
+.hero p.lead{max-width:430px;font-size:16px;line-height:1.7;opacity:.88;margin-bottom:26px}
+.dots{display:flex;gap:10px;margin-bottom:34px}
+.dots i{width:12px;height:12px;border-radius:50%;cursor:pointer;transition:transform .3s;animation:pop .6s backwards}
+.dots i:hover{transform:scale(1.5)}
+.dots i:nth-child(1){background:#f5b97a;animation-delay:.8s}.dots i:nth-child(2){background:#f09a68;animation-delay:.9s}
+.dots i:nth-child(3){background:#eb7a5e;animation-delay:1s}.dots i:nth-child(4){background:#9dc0b0;animation-delay:1.1s}
+.dots i:nth-child(5){background:#7ea594;animation-delay:1.2s}.dots i:nth-child(6){background:#bcd2c6;animation-delay:1.3s}
+@keyframes pop{from{transform:scale(0)}}
+.fade{opacity:0;animation:fadeUp .9s .7s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+.plate-stage{position:relative;aspect-ratio:1.15/1}
+.plate{position:absolute;inset:8% 0 0 4%;animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-16px) rotate(-1.5deg)}}
+.plate-in{animation:plateIn 1.3s cubic-bezier(.2,.8,.2,1) both .3s}
+@keyframes plateIn{from{opacity:0;transform:translateX(120px) rotate(14deg) scale(.85)}}
+.stamp{position:absolute;top:0;right:2%;width:150px;transform:rotate(4deg);opacity:.85;animation:stampIn .8s 1.2s backwards cubic-bezier(.2,.8,.3,1.6)}
+@keyframes stampIn{from{opacity:0;transform:rotate(-20deg) scale(2)}}
+.pod{position:absolute;width:90px;filter:drop-shadow(0 8px 6px rgba(0,0,0,.25))}
+.pod.a{left:-6%;bottom:-8%;animation:float 5s -1s ease-in-out infinite}
+.pod.b{left:10%;bottom:-18%;width:60px;animation:float 7s -3s ease-in-out infinite}
+.sprig{position:absolute;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(5deg)}}
+
+.tear{position:absolute;left:0;right:0;width:100%;pointer-events:none;z-index:4}
+.tear.bottom{bottom:-2px;height:240px}
+
+/* ---------- story ---------- */
+.story{position:relative;background:linear-gradient(180deg,var(--cream) 0%,var(--cream-l) 60%,var(--cream) 100%);padding:40px 0 60px}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.blob-wrap{position:relative;display:flex;justify-content:center;min-height:420px}
+.blob{position:absolute;inset:0 6% 0 18%;width:76%;height:100%;fill:var(--peach);animation:morph 9s ease-in-out infinite;transform-origin:center}
+@keyframes morph{50%{transform:rotate(6deg) scale(1.05)}}
+.fork{position:absolute;left:4%;top:-50px;height:520px;filter:drop-shadow(8px 10px 8px rgba(120,80,20,.25));animation:forkIn 1.2s both}
+.nig{position:absolute;left:22%;top:34%;width:64%;filter:drop-shadow(0 18px 14px rgba(120,60,30,.3));transition:transform .6s}
+.blob-wrap:hover .nig{transform:rotate(-4deg) scale(1.05)}
+.cap{position:absolute;left:26%;top:22%;font-family:'Fraunces',serif;font-size:21px;font-weight:600;line-height:1.1;color:var(--green);text-align:right}
+.story h2{font-size:clamp(32px,4vw,48px);color:var(--green);font-weight:600;margin-bottom:12px;line-height:1.1}
+.rule{width:150px;height:2px;background:var(--peach);margin:22px 0 24px}
+.story p{line-height:1.8;font-size:15.5px;margin-bottom:16px;max-width:520px;color:#3c5a4f}
+.story .btn{margin-top:34px}
+
+.mega{padding:90px 0 30px;text-align:center;background:var(--cream)}
+.mega h2{font-size:clamp(28px,4.4vw,54px);letter-spacing:.14em;font-weight:400;color:var(--green)}
+.mega h2 b{font-weight:700;color:var(--coral)}
+
+/* ---------- feature band ---------- */
+.band{position:relative;background:linear-gradient(180deg,var(--green) 0%,var(--green-d) 100%);color:var(--cream);margin-top:-30px;padding:240px 0 150px}
+.tear.top{top:-2px;height:240px;transform:scaleY(-1)}
+.band-grid{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:30px;align-items:center}
+.col h3{font-size:30px;color:var(--gold);margin-bottom:12px;display:flex;align-items:baseline;gap:12px}
+.col h3 small{font-size:13px;letter-spacing:.2em;color:var(--sage);font-family:'DM Sans'}
+.col p{line-height:1.75;font-size:14.5px;opacity:.88}
+.col.r{text-align:right}.col.r h3{justify-content:flex-end}
+.col ul{list-style:none;margin-top:18px;display:grid;gap:10px;font-size:14px}
+.col li{display:flex;gap:10px;align-items:center}
+.col.r li{justify-content:flex-end}
+.col li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral)}
+.col.r li::before{order:2}
+.plate2{position:relative;animation:float 7s ease-in-out infinite}
+.plate2-wrap{position:relative;transition:transform .5s}
+.plate2-wrap:hover{transform:scale(1.05)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.plate2-wrap .sprig{right:2%;top:-6%}
+
+/* ---------- menu cards ---------- */
+.cards{background:var(--cream);padding:110px 0 120px;position:relative;z-index:3}
+.cards h2{text-align:center;font-size:clamp(34px,4vw,52px);color:var(--green);margin-bottom:12px}
+.cards .sub{text-align:center;opacity:.75;margin-bottom:56px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card{background:var(--cream-l);border-radius:28px;padding:30px;text-align:center;box-shadow:0 20px 40px -26px rgba(42,77,65,.5);
+  transition:transform .45s cubic-bezier(.2,.8,.3,1.2),box-shadow .45s}
+.card:hover{transform:translateY(-12px) rotate(-.6deg);box-shadow:0 34px 50px -26px rgba(42,77,65,.6)}
+.card .dish{position:relative;height:150px;margin:0 auto 18px;width:170px;display:grid;place-items:center}
+.card .dish::before{content:"";position:absolute;inset:6% 0;border-radius:50%;background:var(--sage);opacity:.35;transition:transform .5s}
+.card:hover .dish::before{transform:scale(1.2)}
+.card .dish svg{position:relative;width:150px;transition:transform .5s}
+.card:hover .dish svg{transform:translateY(-6px) rotate(4deg)}
+.card h3{color:var(--green);font-size:22px;margin-bottom:6px}
+.card p{font-size:14px;opacity:.75;line-height:1.6;margin-bottom:14px}
+.price{font-family:'Fraunces',serif;font-weight:700;color:var(--coral);font-size:22px}
+
+/* ---------- footer ---------- */
+footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.foot .logo{font-size:22px}
+.foot ul{list-style:none;display:flex;gap:34px;font-size:13.5px;opacity:.8;flex-wrap:wrap}
+.foot li:hover{color:var(--gold);cursor:pointer}
+.copy{width:100%;font-size:12px;opacity:.5;margin-top:6px}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}
+@keyframes forkIn{from{opacity:0;transform:translateY(-80px) rotate(-8deg)}}
+
+@media(max-width:900px){
+  .links{display:none}.menu{display:block}
+  .hero-grid,.story-grid,.band-grid{grid-template-columns:1fr}
+  .band-grid .col.r{text-align:left}.col.r h3{justify-content:flex-start}.col.r li{justify-content:flex-start}.col.r li::before{order:0}
+  .grid3{grid-template-columns:1fr}
+  .stamp{width:100px}.hero{padding-bottom:140px}
+  .fork{height:380px}.blob-wrap{min-height:340px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,h1 .w span,.fade{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- shared defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="sal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a6a"/><stop offset=".5" stop-color="#f4733f"/><stop offset="1" stop-color="#e2562c"/></linearGradient>
+    <linearGradient id="rice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#e4dccb"/></linearGradient>
+    <radialGradient id="pl" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#6d8579"/><stop offset=".6" stop-color="#4f6a5f"/><stop offset="1" stop-color="#34493f"/></radialGradient>
+    <radialGradient id="plin" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#3c554a"/><stop offset="1" stop-color="#2b4036"/></radialGradient>
+    <linearGradient id="gold" x1="0" x2="1"><stop offset="0" stop-color="#b98a2e"/><stop offset=".4" stop-color="#f3d37f"/><stop offset=".7" stop-color="#d9a94a"/><stop offset="1" stop-color="#a9791f"/></linearGradient>
+    <filter id="rough" x="-10%" y="-60%" width="120%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency=".012 .035" numOctaves="5" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="rough2" x="-10%" y="-60%" width="120%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency=".02 .05" numOctaves="4" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="45" xChannelSelector="G" yChannelSelector="R"/>
+    </filter>
+    <filter id="blotch" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="4" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="60"/>
+    </filter>
+    <symbol id="nigiri" viewBox="0 0 300 170">
+      <ellipse cx="150" cy="150" rx="110" ry="12" fill="#000" opacity=".18"/>
+      <path d="M48 112 Q46 84 150 82 Q254 84 252 112 Q254 150 150 152 Q46 150 48 112Z" fill="url(#rice)"/>
+      <g fill="#cbbfa5" opacity=".55"><circle cx="80" cy="128" r="2"/><circle cx="105" cy="140" r="2"/><circle cx="140" cy="146" r="2"/><circle cx="180" cy="143" r="2"/><circle cx="215" cy="134" r="2"/><circle cx="235" cy="120" r="2"/><circle cx="70" cy="114" r="2"/></g>
+      <path d="M22 96 Q30 36 150 32 Q272 34 282 92 Q256 116 150 112 Q50 116 22 96Z" fill="url(#sal)"/>
+      <g fill="none" stroke="#ffd8b6" stroke-linecap="round" opacity=".75">
+        <path d="M45 88 Q110 50 168 60" stroke-width="5"/><path d="M70 100 Q140 66 220 72" stroke-width="4"/>
+        <path d="M120 44 Q180 54 250 80" stroke-width="5"/><path d="M60 72 Q90 48 130 42" stroke-width="3"/>
+        <path d="M150 90 Q210 78 264 92" stroke-width="3.5"/>
+      </g>
+      <path d="M50 64 Q110 34 190 40 Q120 46 62 80Z" fill="#fff" opacity=".28"/>
+      <path d="M26 96 Q150 118 280 92 Q270 112 150 114 Q40 116 26 96Z" fill="#c8431f" opacity=".35"/>
+    </symbol>
+    <symbol id="logoleaf" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#d9a94a" stroke-width="3"/><path d="M12 28 Q10 12 28 10 Q30 26 12 28Z" fill="#d9a94a"/><path d="M12 28 Q18 20 26 13" stroke="#3d6a5b" stroke-width="2" fill="none"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <svg class="splash tl" viewBox="0 0 360 260" aria-hidden="true">
+    <g filter="url(#blotch)"><ellipse cx="120" cy="90" rx="150" ry="70" fill="#a9c3b5" opacity=".85"/><ellipse cx="100" cy="60" rx="120" ry="40" fill="#cfe0d5" opacity=".7"/></g>
+  </svg>
+
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#top"><svg><use href="#logoleaf"/></svg>Ootum</a>
+      <div class="links"><a class="on" href="#top">Home</a><a href="#story">Our Story</a><a href="#sea">The Sea</a><a href="#menu">Menu</a><a href="#visit">Visit</a></div>
+      <button class="menu" aria-label="Menu">☰</button>
+    </nav>
+
+    <div class="hero-grid">
+      <div>
+        <h1><span class="w"><span>Salmon</span></span><span class="w"><span>Sunrise</span></span></h1>
+        <p class="lead fade">Hand-cut, line-caught Atlantic salmon laid over warm, seasoned rice. Every plate is finished with fresh dill, a pinch of sea salt and a quiet moment of calm.</p>
+        <div class="dots fade"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <a href="#menu" class="btn fade" style="animation-delay:.95s">Order Now <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5h11M8 1l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="plate-stage" id="stage">
+        <svg class="stamp" viewBox="0 0 150 90" aria-hidden="true">
+          <rect x="3" y="3" width="144" height="84" fill="none" stroke="#cfe0d5" stroke-width="2"/><rect x="9" y="9" width="132" height="72" fill="none" stroke="#cfe0d5" stroke-width="1"/>
+          <text x="75" y="42" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="22" fill="#cfe0d5">FRESH</text>
+          <text x="75" y="62" text-anchor="middle" font-family="DM Sans" font-size="9" letter-spacing="3" fill="#cfe0d5">CAUGHT DAILY</text>
+        </svg>
+        <div class="plate plate-in" data-depth="14">
+          <svg viewBox="0 0 560 420" width="100%" style="overflow:visible">
+            <ellipse cx="290" cy="360" rx="230" ry="38" fill="#0e1f19" opacity=".45" filter="url(#blotch)"/>
+            <ellipse cx="280" cy="230" rx="270" ry="150" fill="#2c4439"/>
+            <ellipse cx="280" cy="214" rx="270" ry="150" fill="url(#pl)"/>
+            <ellipse cx="280" cy="222" rx="218" ry="116" fill="url(#plin)"/>
+            <g fill="#e9dcc0" opacity=".55"><circle cx="150" cy="260" r="2"/><circle cx="190" cy="285" r="2.5"/><circle cx="240" cy="300" r="2"/><circle cx="320" cy="296" r="2.5"/><circle cx="380" cy="280" r="2"/><circle cx="420" cy="250" r="2"/><circle cx="400" cy="200" r="2"/><circle cx="170" cy="215" r="2"/><circle cx="300" cy="170" r="2"/></g>
+            <use href="#nigiri" x="210" y="40" width="270" height="153" transform="rotate(-6 340 110)"/>
+            <use href="#nigiri" x="100" y="112" width="280" height="158" transform="rotate(4 240 190)"/>
+          </svg>
+          <div class="sprig" style="right:6%;top:-4%;width:150px;animation-delay:-1s" data-sprig="1"></div>
+          <div class="sprig" style="right:26%;top:34%;width:120px;transform:rotate(-40deg);animation-delay:-2.5s" data-sprig="1"></div>
+        </div>
+        <svg class="pod a" viewBox="0 0 90 60" data-depth="-30"><g><path d="M10 40 Q30 10 70 24 Q50 46 10 40Z" fill="#c9b030"/><path d="M10 40 Q40 28 70 24" stroke="#8d7a14" fill="none" stroke-width="2"/><circle cx="62" cy="26" r="6" fill="#8aa832"/><path d="M70 24 Q82 18 84 10" stroke="#7b8f26" stroke-width="2" fill="none"/></g></svg>
+        <svg class="pod b" viewBox="0 0 90 60" data-depth="-45"><g transform="rotate(30 45 30)"><path d="M10 40 Q30 10 70 24 Q50 46 10 40Z" fill="#d9bd3a"/><path d="M10 40 Q40 28 70 24" stroke="#8d7a14" fill="none" stroke-width="2"/></g></svg>
+      </div>
+    </div>
+  </div>
+
+  <svg class="tear bottom" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
+    <path filter="url(#rough)" d="M-80 190 C140 90 300 170 520 140 S 860 60 1080 130 S 1380 100 1520 70 L1520 300 L-80 300Z" fill="#cfe0d5" opacity=".7" transform="translate(0,-26)"/>
+    <path filter="url(#rough2)" d="M-80 200 C140 120 320 190 540 160 S 880 90 1100 150 S 1380 130 1520 100 L1520 300 L-80 300Z" fill="#f7ecd1"/>
+  </svg>
+</header>
+
+<!-- ================= STORY ================= -->
+<section class="story" id="story">
+  <div class="wrap story-grid">
+    <div class="blob-wrap rv">
+      <svg class="blob" viewBox="0 0 400 480" preserveAspectRatio="none"><path d="M200 20 C320 0 380 90 360 200 C345 290 390 380 280 440 C180 490 40 440 30 330 C20 240 60 220 70 140 C80 70 130 30 200 20Z"/></svg>
+      <svg class="fork" viewBox="0 0 60 520" aria-hidden="true">
+        <path d="M6 4 H14 V90 H6Z M24 4 H32 V90 H24Z M42 4 H50 V90 H42Z" fill="url(#gold)"/>
+        <path d="M4 80 H52 Q52 118 34 130 L34 506 Q34 516 28 516 Q22 516 22 506 L22 130 Q4 118 4 80Z" fill="url(#gold)"/>
+        <path d="M27 130 V500" stroke="#fff6cf" stroke-width="2" opacity=".6"/>
+      </svg>
+      <div class="cap">The art<br>of Umami</div>
+      <svg class="nig" viewBox="0 0 300 170"><use href="#nigiri"/></svg>
+      <div class="sprig" style="left:24%;top:62%;width:90px;transform:rotate(-20deg)" data-sprig="1"></div>
+    </div>
+
+    <div class="rv d1">
+      <h2>Barely Waved, Beautifully Served</h2>
+      <div class="rule"></div>
+      <p>We start before sunrise, with the day's catch still cold from the water. Each fillet is trimmed by hand, rested, and sliced against the grain so it melts the moment it meets the rice.</p>
+      <p>Nothing is hidden behind heavy sauces. A touch of citrus, a leaf of dill, a grain of flaked salt — just enough to let the salmon speak for itself.</p>
+      <p>It is a slow kind of food, made for people who like to taste the quiet details.</p>
+      <a href="#menu" class="btn">Read More <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5h11M8 1l4 4-4 4"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section class="mega" id="sea">
+  <h2 class="rv">WE LET THE <b>SEA</b> SPEAK</h2>
+</section>
+
+<!-- ================= BAND ================= -->
+<section class="band">
+  <svg class="tear top" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
+    <path filter="url(#rough)" d="M-80 190 C140 90 300 170 520 140 S 860 60 1080 130 S 1380 100 1520 70 L1520 300 L-80 300Z" fill="#8fae9f" opacity=".55" transform="translate(0,-26)"/>
+    <path filter="url(#rough2)" d="M-80 200 C140 120 320 190 540 160 S 880 90 1100 150 S 1380 130 1520 100 L1520 300 L-80 300Z" fill="#f7ecd1"/>
+  </svg>
+  <svg class="splash" style="left:-60px;bottom:-20px;width:300px" viewBox="0 0 300 220"><g filter="url(#blotch)"><ellipse cx="110" cy="130" rx="120" ry="60" fill="#a9c3b5" opacity=".7"/></g></svg>
+  <svg class="splash" style="right:-60px;bottom:40px;width:300px" viewBox="0 0 300 220"><g filter="url(#blotch)"><ellipse cx="190" cy="110" rx="120" ry="60" fill="#a9c3b5" opacity=".7"/></g></svg>
+
+  <div class="wrap band-grid">
+    <div class="col rv">
+      <h3>01 <small>ORIGIN</small></h3>
+      <p>Wild-caught from cold northern waters and delivered within hours. We know every boat, every captain, every tide.</p>
+      <ul><li>Line-caught only</li><li>Zero freezer time</li><li>Traceable to the dock</li></ul>
+    </div>
+    <div class="plate2-wrap rv d1">
+      <svg class="plate2" viewBox="0 0 560 560" width="100%">
+        <circle cx="280" cy="300" r="250" fill="#10231c" opacity=".4" filter="url(#blotch)"/>
+        <circle cx="280" cy="280" r="260" fill="url(#pl)"/><circle cx="280" cy="280" r="205" fill="url(#plin)"/>
+        <circle cx="280" cy="280" r="260" fill="none" stroke="#7d968a" stroke-width="2" opacity=".5"/>
+        <use href="#nigiri" x="120" y="140" width="320" height="181" transform="rotate(-18 280 230)"/>
+        <use href="#nigiri" x="140" y="260" width="300" height="170" transform="rotate(8 290 340)"/>
+      </svg>
+      <div class="sprig" style="right:6%;top:2%;width:120px" data-sprig="1"></div>
+    </div>
+    <div class="col r rv d2">
+      <h3><small>CRAFT</small> 02</h3>
+      <p>Our chefs train for years to master one cut. The knife does the work, so the fish never has to be pressed or rushed.</p>
+      <ul><li>Hand-sliced to order</li><li>Seasoned rice, body-warm</li><li>Finished at the table</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MENU ================= -->
+<section class="cards" id="menu">
+  <div class="wrap">
+    <h2 class="rv">Plates from the Tide</h2>
+    <p class="sub rv d1">A small menu, changed with the season.</p>
+    <div class="grid3">
+      <article class="card rv"><div class="dish"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Classic Nigiri</h3><p>Two pieces of line-caught salmon over warm rice with fresh dill.</p><span class="price">$14</span></article>
+      <article class="card rv d1"><div class="dish"><svg viewBox="0 0 300 170" style="transform:scaleX(-1)"><use href="#nigiri"/></svg></div><h3>Sunrise Sashimi</h3><p>Five delicate slices, yuzu zest, and pickled ginger on the side.</p><span class="price">$18</span></article>
+      <article class="card rv d2"><div class="dish"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Chef's Tide Set</h3><p>Our tasting of six nigiri, miso soup and a seasonal garden salad.</p><span class="price">$32</span></article>
+    </div>
+  </div>
+</section>
+
+<footer id="visit">
+  <div class="wrap foot">
+    <a class="logo" href="#top"><svg><use href="#logoleaf"/></svg>Ootum</a>
+    <ul><li>Tue–Sun · 12:00–22:00</li><li>12 Harbour Lane</li><li>hello@ootum.example</li><li>Instagram</li></ul>
+    <a href="#menu" class="btn">Book a Table</a>
+    <p class="copy">© 2026 Ootum Kitchen. A portfolio design study.</p>
+  </div>
+</footer>
+
+<script>
+// feathery dill sprigs
+function sprig(){
+  let s='<svg viewBox="0 0 100 200" width="100%" style="overflow:visible"><g stroke="#5fae6a" stroke-linecap="round" fill="none">';
+  s+='<path d="M50 200 Q44 100 56 4" stroke-width="3"/>';
+  for(let i=0;i<16;i++){
+    const t=i/16, y=190-t*180, x=50+Math.sin(t*3)*5-4*t, len=34*(1-t*.6);
+    for(const d of [-1,1]){
+      const ex=x+d*len, ey=y-len*.55;
+      s+=`<path d="M${x} ${y} Q${x+d*len*.5} ${y-len*.1} ${ex} ${ey}" stroke-width="${2.2-t}"/>`;
+      s+=`<path d="M${x+d*len*.5} ${y-len*.12} l${d*8} -10" stroke-width="1.4"/>`;
+    }
+  }
+  return s+'</g></svg>';
+}
+document.querySelectorAll('[data-sprig]').forEach(e=>e.innerHTML=sprig());
+
+// scroll reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+// mouse parallax on hero
+const stage=document.getElementById('stage');
+addEventListener('mousemove',e=>{
+  const x=(e.clientX/innerWidth-.5), y=(e.clientY/innerHeight-.5);
+  stage.querySelectorAll('[data-depth]').forEach(el=>{
+    const d=+el.dataset.depth; el.style.translate=`${x*d}px ${y*d}px`;
+  });
+});
+</script>
+</body>
+</html>

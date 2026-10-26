@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUNSET DRIVE — Lumen Avenue</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800;1,900&family=Mr+Dafoe&family=Rubik:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12001f;--bg2:#1d0533;--pk:#ff2fb9;--cy:#2de2e6;--yl:#ffd319;--or:#ff8b1f;--vi:#8b3dff;--tx:#f6e9ff;--mu:#b39ccc;--m:clamp(16px,4vw,60px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--tx);font-family:Rubik,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.osd{font-family:VT323,monospace;font-size:22px;letter-spacing:.06em;text-shadow:2px 0 #ff2fb9aa,-2px 0 #2de2e6aa}
+.script{font-family:'Mr Dafoe',cursive}
+.wrap{width:min(1200px,100% - 2*var(--m));margin-inline:auto}
+/* chrome 80s title */
+.chrome{font-family:Kanit,sans-serif;font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;
+  background:linear-gradient(180deg,#e6f6ff 0%,#9fd5ff 30%,#2b4c9b 48%,#ffffff 50%,#ff9ee0 70%,#ffd3f2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-stroke:1.5px #ffffffaa;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 6px 0 #6a0f7a) drop-shadow(0 0 28px #ff2fb9aa)}
+/* global VHS: scanlines + noise + subtle flicker */
+.vhs{position:fixed;inset:0;pointer-events:none;z-index:300}
+.vhs::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 2px,#00000026 2px 3px)}
+.vhs::after{content:"";position:absolute;inset:-50%;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:nz .25s steps(3) infinite}
+@keyframes nz{33%{transform:translate(-4%,3%)}66%{transform:translate(3%,-2%)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px var(--m);background:linear-gradient(#12001fcc,#12001f00)}
+.logo{font-family:Kanit;font-style:italic;font-weight:900;font-size:22px;letter-spacing:.02em}
+.logo span{color:var(--pk);text-shadow:0 0 12px var(--pk)}
+nav ul{display:flex;gap:30px;list-style:none;font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+nav ul a:hover{color:var(--cy);text-shadow:0 0 10px var(--cy)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:6px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px;transition:transform .2s,box-shadow .2s}
+.btn.pk{background:linear-gradient(90deg,#ff2fb9,#ff8b1f);color:#1a0010;box-shadow:0 0 24px #ff2fb988,inset 0 1px 0 #ffffff66}
+.btn.cy{border:2px solid var(--cy);color:var(--cy);box-shadow:0 0 16px #2de2e655,inset 0 0 16px #2de2e633;text-shadow:0 0 8px var(--cy)}
+.btn:hover{transform:translateY(-2px) skewX(-6deg);box-shadow:0 0 40px #ff2fb9}
+.btn.cy:hover{box-shadow:0 0 30px var(--cy),inset 0 0 20px #2de2e655}
+
+/* hero */
+.hero{position:relative;height:100vh;min-height:640px;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hcopy{position:absolute;z-index:3;left:0;right:0;top:20%;text-align:center;pointer-events:none}
+.hcopy a,.hcopy button{pointer-events:auto}
+.hcopy .pre{color:var(--cy);letter-spacing:.4em;font-size:13px;text-transform:uppercase;text-shadow:0 0 10px var(--cy)}
+.hcopy h1{font-size:clamp(56px,11vw,180px);line-height:.85;margin-top:10px}
+.hcopy .sig{font-size:clamp(46px,6vw,96px);color:var(--pk);text-shadow:0 0 8px #fff,0 0 22px var(--pk),0 0 44px var(--pk);transform:rotate(-6deg);margin-top:-.25em;display:inline-block;animation:flick 6s infinite}
+@keyframes flick{0%,92%,94%,100%{opacity:1}93%{opacity:.4}}
+.hcopy .jp{font-size:clamp(14px,1.4vw,18px);letter-spacing:.6em;color:var(--yl);text-shadow:0 0 12px var(--or);margin:16px 0 26px}
+.ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hud{position:absolute;inset:clamp(70px,9vh,90px) var(--m) clamp(20px,4vh,40px);z-index:4;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
+.hud .row{display:flex;justify-content:space-between}
+.rec i{display:inline-block;width:12px;height:12px;border-radius:50%;background:#ff2b2b;margin-right:8px;animation:blink 1s steps(1) infinite;vertical-align:1px}
+@keyframes blink{50%{opacity:0}}
+.track{position:absolute;left:0;right:0;height:10px;z-index:4;pointer-events:none;background:linear-gradient(#ffffff00,#ffffff22,#ffffff00);animation:trk 7s linear infinite;mix-blend-mode:screen}
+@keyframes trk{0%{top:-10%}100%{top:110%}}
+
+/* sections */
+section.s{padding-top:clamp(90px,12vw,160px);position:relative}
+.hd{text-align:center;margin-bottom:clamp(36px,5vw,64px)}
+.hd .script{font-size:clamp(34px,4vw,56px);color:var(--pk);text-shadow:0 0 18px var(--pk);display:block;transform:rotate(-4deg);margin-bottom:-6px}
+.hd h2{font-size:clamp(44px,7vw,108px);line-height:.9}
+.hd p{color:var(--mu);max-width:520px;margin:16px auto 0}
+
+/* player */
+.player{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(20px,4vw,60px);align-items:center;padding:clamp(22px,3vw,40px);border-radius:20px;
+  background:linear-gradient(160deg,#2a0b4a,#140024);border:1px solid #ff2fb955;box-shadow:0 0 60px -10px #ff2fb966,inset 0 0 60px #8b3dff22}
+.tape{position:relative;aspect-ratio:1.6;border-radius:14px;background:linear-gradient(180deg,#2b2b38,#16161f);box-shadow:inset 0 0 0 3px #3a3a4a,0 20px 40px -14px #000}
+.tape svg{position:absolute;inset:0;width:100%;height:100%}
+.reel{transform-box:fill-box;transform-origin:center}
+.playing .reel{animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.now{font-family:VT323;font-size:22px;color:var(--cy);text-shadow:0 0 8px var(--cy);margin-bottom:6px}
+.np{font-family:Kanit;font-style:italic;font-weight:900;font-size:clamp(28px,3vw,42px);text-transform:uppercase;line-height:1}
+#viz{width:100%;height:120px;display:block;margin:18px 0}
+.ctrl{display:flex;align-items:center;gap:14px}
+.pbtn{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ff2fb9,#ff8b1f);display:grid;place-items:center;font-size:24px;color:#1a0010;box-shadow:0 0 30px #ff2fb988;transition:transform .2s}
+.pbtn:hover{transform:scale(1.08)}
+.vol{flex:1;height:6px;border-radius:9px;background:#ffffff22;position:relative}
+.vol i{position:absolute;inset:0;width:70%;border-radius:9px;background:linear-gradient(90deg,var(--cy),var(--pk))}
+.list{list-style:none;margin-top:24px;border-top:1px solid #ffffff1a}
+.list li{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:13px 6px;border-bottom:1px solid #ffffff1a;cursor:pointer;transition:background .2s,padding .3s}
+.list li:hover{background:#ffffff0d;padding-left:14px}
+.list li.on{color:var(--yl);text-shadow:0 0 10px var(--or)}
+.list li span:first-child{font-family:VT323;font-size:22px;color:var(--mu)}
+.list li.on span:first-child{color:var(--yl)}
+.list li small{font-family:VT323;font-size:20px;color:var(--mu)}
+
+/* tour */
+.tour{display:grid;gap:12px}
+.date{display:grid;grid-template-columns:140px 1fr 1fr auto;align-items:center;gap:20px;padding:20px 24px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff14;transition:all .3s}
+.date:hover{border-color:var(--cy);box-shadow:0 0 24px #2de2e633;transform:translateX(6px)}
+.date .d{font-family:Kanit;font-style:italic;font-weight:900;font-size:28px;color:var(--yl);text-shadow:0 0 12px var(--or)}
+.date .c{font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:.06em}
+.date .v{color:var(--mu)}
+.date .btn{padding:10px 18px;font-size:12px}
+.date .sold{color:var(--mu);font-family:VT323;font-size:22px;text-decoration:line-through}
+
+/* merch: VHS covers */
+.merch{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,30px)}
+.vcov{position:relative;aspect-ratio:3/4.4;border-radius:10px;overflow:hidden;background:#000;box-shadow:0 20px 40px -14px #000,0 0 0 1px #ffffff22;transition:transform .5s;transform:perspective(900px) rotateY(-8deg)}
+.vcov:hover{transform:perspective(900px) rotateY(0) translateY(-8px)}
+.vcov .art{position:absolute;inset:0}
+.vcov .lbl{position:absolute;left:0;right:0;bottom:0;padding:16px;background:linear-gradient(transparent,#000e)}
+.vcov h3{font-family:Kanit;font-style:italic;font-weight:900;font-size:22px;text-transform:uppercase}
+.vcov .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.vcov .pr{font-family:VT323;font-size:26px;color:var(--yl)}
+.vcov .side{position:absolute;left:0;top:0;bottom:0;width:26px;background:var(--c);writing-mode:vertical-rl;font-family:Kanit;font-style:italic;font-weight:900;font-size:13px;display:grid;place-items:center;color:#12001f;letter-spacing:.2em}
+.add{padding:8px 14px;border-radius:6px;border:1px solid var(--cy);color:var(--cy);font-size:12px;font-weight:700;letter-spacing:.1em}
+.add:hover{background:var(--cy);color:#12001f}
+
+footer{margin-top:clamp(90px,12vw,160px);text-align:center;padding:60px var(--m) 30px;background:linear-gradient(transparent,#2b0a4a)}
+.fbig{font-size:clamp(56px,12vw,180px);line-height:.9}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;margin-top:40px;color:var(--mu)}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(max-width:900px){nav ul{display:none}.player{grid-template-columns:1fr}.date{grid-template-columns:1fr auto;gap:6px 14px}.date .v{grid-column:1}.merch{grid-template-columns:1fr}.hud .hide-sm{display:none}.hcopy{top:16%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="vhs"></div>
+<nav><a class="logo" href="#">LUMEN<span>/</span>AVENUE</a>
+  <ul><li><a href="#listen">Listen</a></li><li><a href="#tour">Tour</a></li><li><a href="#merch">Merch</a></li></ul>
+  <a class="btn cy" href="#listen" style="padding:10px 18px">▶ Play</a></nav>
+
+<header class="hero" id="hero">
+  <canvas id="gl"></canvas>
+  <div class="track"></div>
+  <div class="hud osd"><div class="row"><span>PLAY ▶</span><span class="rec"><i></i>REC</span></div>
+    <div class="row"><span id="stamp">JUN. 14 1986</span><span class="hide-sm">SP · CH 03</span></div></div>
+  <div class="hcopy">
+    <div class="pre">Lumen Avenue · the new album</div>
+    <h1 class="chrome">Sunset<br>Drive</h1>
+    <div class="sig script">Outrun the night</div>
+    <div class="jp">サンセット・ドライブ</div>
+    <div class="ctas"><button class="btn pk" id="heroPlay">▶ Play the demo</button><a class="btn cy" href="#tour">Tour dates</a></div>
+  </div>
+</header>
+
+<main>
+  <section class="s wrap" id="listen">
+    <div class="hd"><span class="script rv">Side A</span><h2 class="chrome rv">Listen now</h2><p class="rv">Every track is synthesised live in your browser — real oscillators, real drum machines, zero files. Press play and turn it up.</p></div>
+    <div class="player rv" id="player">
+      <div class="tape" id="tape"></div>
+      <div>
+        <div class="now">NOW PLAYING ▸</div>
+        <div class="np" id="np">Neon Highway</div>
+        <canvas id="viz"></canvas>
+        <div class="ctrl"><button class="pbtn" id="play" aria-label="Play">▶</button><div class="vol"><i></i></div><span class="osd" id="tm">00:00</span></div>
+        <ul class="list" id="list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="s wrap" id="tour">
+    <div class="hd"><span class="script rv">On the road</span><h2 class="chrome rv">Tour '26</h2></div>
+    <div class="tour" id="dates"></div>
+  </section>
+
+  <section class="s wrap" id="merch">
+    <div class="hd"><span class="script rv">Be kind, rewind</span><h2 class="chrome rv">Merch</h2></div>
+    <div class="merch" id="mer"></div>
+  </section>
+</main>
+
+<footer><div class="fbig chrome">Lumen/Avenue</div><div class="script" style="font-size:40px;color:var(--pk);text-shadow:0 0 16px var(--pk)">see you at sunset</div>
+  <div class="frow osd"><span>© 2026 LUMEN AVENUE</span><span>BANDCAMP · SPOTIFY · INSTAGRAM</span><span>A PORTFOLIO DESIGN STUDY</span></div></footer>
+
+<script type="module">
+// ---------- synthwave world: scrolling neon terrain, striped sun, palms, VHS post ----------
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+const hero=document.getElementById('hero'),canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+const scene=new THREE.Scene();const FOG=new THREE.Color('#2a0640');scene.background=new THREE.Color('#12001f');
+const camera=new THREE.PerspectiveCamera(70,1,.1,1200);camera.position.set(0,4.5,10);
+const U={uTime:{value:0},uBeat:{value:0}};
+window.__synthBeat=U.uBeat;
+
+// sky gradient dome
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(900,32,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,
+  vertexShader:'varying vec3 v;void main(){v=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:'varying vec3 v;void main(){float y=v.y;vec3 c=mix(vec3(.55,.08,.42),vec3(.07,0.,.14),smoothstep(-.02,.45,y));c=mix(c,vec3(.95,.35,.3),smoothstep(.08,0.,abs(y-.01))*.35);gl_FragColor=vec4(c,1.);}'})));
+// stars
+const sp=new Float32Array(1500*3);for(let i=0;i<1500;i++){const a=Math.random()*Math.PI*2,e=.12+Math.random()*1.3;sp.set([Math.cos(a)*Math.cos(e)*800,Math.sin(e)*800,Math.sin(a)*Math.cos(e)*800],i*3)}
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffe9ff,size:1.6,sizeAttenuation:false,transparent:true,opacity:.8})));
+
+// retro sun with sliding stripes
+const sun=new THREE.Mesh(new THREE.CircleGeometry(95,96),new THREE.ShaderMaterial({transparent:true,uniforms:U,
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:`uniform float uTime;uniform float uBeat;varying vec2 vUv;void main(){float y=vUv.y;vec3 c=mix(vec3(1.,.18,.62),vec3(1.,.86,.2),smoothstep(.1,.9,y));
+    float band=step(.5,fract(y*14.-uTime*.35));float cut=y<.52?band*smoothstep(.0,.52,.52-y)*1.9:0.;if(cut>.5)discard;
+    gl_FragColor=vec4(c*(1.05+uBeat*.5),1.);}`}));
+sun.position.set(0,30,-520);scene.add(sun);
+const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const g=x.createRadialGradient(128,128,40,128,128,128);
+  g.addColorStop(0,'rgba(255,90,170,.28)');g.addColorStop(1,'rgba(255,40,140,0)');x.fillStyle=g;x.fillRect(0,0,256,256);return new THREE.CanvasTexture(c)})(),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+glow.position.copy(sun.position);glow.scale.setScalar(300);scene.add(glow);
+
+// neon grid terrain: flat highway in the middle, mountains on the sides, scrolling forward
+const terrain=new THREE.Mesh(new THREE.PlaneGeometry(400,600,200,300),new THREE.ShaderMaterial({uniforms:{...U,uFog:{value:FOG}},
+  vertexShader:`uniform float uTime;varying vec2 vW;varying float vH;varying float vD;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+1.),f.x),f.y);}
+    void main(){vec3 p=position;float z=p.y-uTime*14.;vec2 q=vec2(p.x,z)*.045;
+      float side=smoothstep(10.,46.,abs(p.x));float H=(n(q)*.65+n(q*2.3)*.35)*side*side*38.;
+      vec3 w=vec3(p.x,H,-p.y);vW=vec2(p.x,z);vH=H;vec4 mv=modelViewMatrix*vec4(w,1.);vD=-mv.z;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`uniform vec3 uFog;uniform float uBeat;varying vec2 vW;varying float vH;varying float vD;
+    void main(){vec2 g=vW/4.;vec2 a=abs(fract(g-.5)-.5)/fwidth(g);float l=1.-min(min(a.x,a.y),1.);
+      vec3 base=mix(vec3(.05,0.,.1),vec3(.12,0.,.22),clamp(vH/30.,0.,1.));
+      vec3 line=mix(vec3(1.,.18,.72),vec3(.18,.88,.9),clamp(vH/26.,0.,1.))*(1.6+uBeat*.8);
+      vec3 c=mix(base,line,l);float f=smoothstep(60.,330.,vD);c=mix(c,uFog,f);gl_FragColor=vec4(c,1.);}`}));
+terrain.position.z=-260;scene.add(terrain);
+
+// palm tree silhouettes (canvas sprites) along the road
+function palmTex(){const c=document.createElement('canvas');c.width=256;c.height=512;const x=c.getContext('2d');x.fillStyle='#0b0014';x.strokeStyle='#0b0014';
+  x.lineCap='round';x.lineWidth=14;x.beginPath();x.moveTo(128,512);x.quadraticCurveTo(110,300,150,110);x.stroke();
+  for(let i=0;i<9;i++){const a=-Math.PI+i*Math.PI/8+(Math.random()-.5)*.2,L=95+Math.random()*30;x.save();x.translate(150,110);x.rotate(a);x.beginPath();x.moveTo(0,0);
+    x.quadraticCurveTo(L*.5,-22,L,18);x.quadraticCurveTo(L*.5,-6,0,0);x.fill();for(let k=1;k<9;k++){x.beginPath();x.moveTo(L*k/9,-6+k*1.5);x.lineTo(L*k/9+8,12+k);x.lineWidth=3;x.stroke()}x.restore()}
+  x.beginPath();x.arc(150,112,9,0,7);x.fill();return new THREE.CanvasTexture(c)}
+const ptex=[palmTex(),palmTex()],palms=[];
+for(let i=0;i<16;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:ptex[i%2],transparent:true,fog:false}));const side=i%2?1:-1;
+  s.scale.set(9,18,1);s.position.set(side*(8.5+Math.random()*3),8.5,-i*24);s.userData.side=side;scene.add(s);palms.push(s)}
+
+// post: bloom + VHS (chromatic split, wobble, noise, vignette)
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.7,.5,.45);composer.addPass(bloom);
+const vhs=new ShaderPass({uniforms:{tDiffuse:{value:null},uTime:{value:0}},
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:`uniform sampler2D tDiffuse;uniform float uTime;varying vec2 vUv;
+    float r(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){vec2 uv=vUv;float band=smoothstep(.0,.02,abs(fract(uTime*.07)-uv.y));uv.x+=(1.-band)*.012*sin(uv.y*400.+uTime*30.);
+      uv.x+=sin(uv.y*3.+uTime*2.)*.0008;float o=.0028;
+      vec3 c=vec3(texture2D(tDiffuse,uv+vec2(o,0.)).r,texture2D(tDiffuse,uv).g,texture2D(tDiffuse,uv-vec2(o,0.)).b);
+      c+=(r(uv*uTime)-.5)*.06;float v=smoothstep(1.15,.35,length(vUv-.5)*1.4);gl_FragColor=vec4(c*v,1.);}`});
+composer.addPass(vhs);composer.addPass(new OutputPass());
+
+function resize(){const w=hero.clientWidth,h=hero.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.fov=w<h?88:70;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+let mx=0,tx=0,vis=true;addEventListener('pointermove',e=>tx=e.clientX/innerWidth-.5);
+new IntersectionObserver(([e])=>vis=e.isIntersecting).observe(hero);
+const clock=new THREE.Clock();
+(function loop(){requestAnimationFrame(loop);if(!vis)return;const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.05)||.016;
+  U.uTime.value=t;vhs.uniforms.uTime.value=t;U.uBeat.value*=.9;
+  mx+=(tx-mx)*.04;const sc=Math.min(1,scrollY/innerHeight);
+  camera.position.set(mx*4,4.5+sc*6,10);camera.lookAt(mx*8,6+sc*2,-120);camera.rotateZ(-mx*.06);
+  palms.forEach(p=>{p.position.z+=14*.016;if(p.position.z>14)p.position.z-=16*24});
+  composer.render()})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+
+// VHS date stamp
+(function tick(){const d=new Date();$('stamp').textContent=`JUN. 14 1986  ${d.toLocaleTimeString('en-US',{hour12:true}).replace(/:\d\d /,' ').toUpperCase()}`;setTimeout(tick,1000)})();
+
+// ---------- cassette ----------
+$('tape').innerHTML=`<svg viewBox="0 0 320 200"><defs><linearGradient id="lb" x1="0" x2="1"><stop offset="0" stop-color="#ff2fb9"/><stop offset=".5" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ffd319"/></linearGradient></defs>
+  <rect x="18" y="16" width="284" height="120" rx="8" fill="url(#lb)"/><rect x="18" y="16" width="284" height="26" rx="8" fill="#12001f" opacity=".25"/>
+  <text x="32" y="35" font-family="Kanit" font-style="italic" font-weight="900" font-size="15" fill="#fff">SUNSET DRIVE</text><text x="288" y="35" text-anchor="end" font-family="VT323" font-size="18" fill="#fff">A · 90</text>
+  ${[0,1,2,3,4].map(i=>`<rect x="18" y="${70+i*8}" width="284" height="3" fill="#12001f" opacity=".18"/>`).join('')}
+  <rect x="78" y="58" width="164" height="58" rx="29" fill="#12001f"/>
+  ${[118,202].map(cx=>`<g class="reel"><circle cx="${cx}" cy="87" r="22" fill="#e9e3f2"/><circle cx="${cx}" cy="87" r="8" fill="#12001f"/>${[0,60,120,180,240,300].map(a=>`<rect x="${cx-2}" y="69" width="4" height="9" fill="#12001f" transform="rotate(${a} ${cx} 87)"/>`).join('')}</g>`).join('')}
+  <rect x="140" y="78" width="40" height="18" fill="#3a2d1f" opacity=".9"/><path d="M60 196 L84 150 H236 L260 196Z" fill="#232330"/><circle cx="104" cy="176" r="6" fill="#12001f"/><circle cx="216" cy="176" r="6" fill="#12001f"/></svg>`;
+
+// ---------- WebAudio synthwave engine ----------
+const TRACKS=[
+  {n:'Neon Highway',bpm:104,key:57,prog:[[0,3,7],[-4,0,3],[3,7,10],[-2,2,5]],arp:[0,1,2,1,0,2,1,2]},
+  {n:'Pacific Coast',bpm:96,key:52,prog:[[0,4,7],[-3,0,4],[5,9,12],[7,11,14]],arp:[0,2,1,2,0,1,2,1]},
+  {n:'Midnight Arcade',bpm:118,key:55,prog:[[0,3,7],[5,8,12],[-2,2,5],[3,7,10]],arp:[0,1,2,0,1,2,0,2]},
+  {n:'VHS Heart',bpm:90,key:60,prog:[[0,4,7],[9,12,16],[5,9,12],[7,11,14]],arp:[2,1,0,1,2,1,0,1]},
+  {n:'Last Sunset',bpm:100,key:50,prog:[[0,3,7],[-4,0,3],[-7,-3,0],[-2,2,5]],arp:[0,2,1,0,2,1,0,1]}];
+let ac,master,an,rev,cur=0,playing=false,nextT=0,step=0,timer=null,start=0;
+const f=m=>440*Math.pow(2,(m-69)/12);
+function init(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.5;an=ac.createAnalyser();an.fftSize=256;
+  rev=ac.createConvolver();const L=ac.sampleRate*2.2,b=ac.createBuffer(2,L,ac.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<L;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/L,2.4)}rev.buffer=b;
+  const rg=ac.createGain();rg.gain.value=.35;rev.connect(rg);rg.connect(master);master.connect(an);an.connect(ac.destination)}
+function voice(type,freq,t,dur,vol,cut,toRev){const o=ac.createOscillator(),g=ac.createGain(),fl=ac.createBiquadFilter();o.type=type;o.frequency.value=freq;
+  fl.type='lowpass';fl.frequency.setValueAtTime(cut,t);fl.frequency.exponentialRampToValueAtTime(Math.max(200,cut*.25),t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(fl);fl.connect(g);g.connect(master);if(toRev)g.connect(rev);o.start(t);o.stop(t+dur+.05)}
+function noise(t,dur,vol,hp){const b=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const s=ac.createBufferSource(),g=ac.createGain(),fl=ac.createBiquadFilter();s.buffer=b;fl.type=hp?'highpass':'bandpass';fl.frequency.value=hp||1800;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(fl);fl.connect(g);g.connect(master);if(!hp)g.connect(rev);s.start(t)}
+function kick(t){const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(40,t+.18);
+  g.gain.setValueAtTime(.9,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(master);o.start(t);o.stop(t+.32);
+  const dl=Math.max(0,(t-ac.currentTime)*1000);setTimeout(()=>{if(window.__synthBeat)window.__synthBeat.value=1},dl)}
+function schedule(){const T=TRACKS[cur],s16=60/T.bpm/4;
+  while(nextT<ac.currentTime+.12){const bar=Math.floor(step/16)%4,s=step%16,ch=T.prog[bar],root=T.key+ch[0];
+    if(s%4===0)kick(nextT);if(s===4||s===12)noise(nextT,.18,.35);if(s%2===0)noise(nextT,.05,.12,7000);
+    if(s%2===0)voice('sawtooth',f(root-24),nextT,s16*1.8,.22,900);                      // bass
+    voice('square',f(T.key+ch[T.arp[s%8]]+12),nextT,s16*.9,.06,3200,true);              // arp
+    if(s===0)ch.forEach(n=>[-.08,.08].forEach(dt=>{const o=f(T.key+n);voice('sawtooth',o*(1+dt/100),nextT,s16*15,.035,1600,true)}));   // pad
+    nextT+=s16;step++}}
+function play(){if(!ac)init();if(ac.state==='suspended')ac.resume();if(playing)return;playing=true;nextT=ac.currentTime+.05;step=0;start=ac.currentTime;
+  timer=setInterval(schedule,25);ui()}
+function stop(){playing=false;clearInterval(timer);ui()}
+function ui(){$('play').textContent=playing?'❚❚':'▶';$('heroPlay').innerHTML=playing?'❚❚ Pause':'▶ Play the demo';$('tape').classList.toggle('playing',playing);
+  $('np').textContent=TRACKS[cur].n;[...$('list').children].forEach((li,i)=>li.classList.toggle('on',i===cur))}
+$('list').innerHTML=TRACKS.map((t,i)=>`<li><span>0${i+1}</span><span>${t.n}</span><small>${t.bpm} BPM</small></li>`).join('');
+[...$('list').children].forEach((li,i)=>li.onclick=()=>{cur=i;if(playing){step=0}else play();ui()});
+$('play').onclick=()=>playing?stop():play();
+$('heroPlay').onclick=()=>{if(playing)stop();else{play();}};
+ui();
+
+// visualizer + timer
+const vz=$('viz'),vx=vz.getContext('2d');
+function fitV(){const d=Math.min(devicePixelRatio,2);vz.width=vz.clientWidth*d;vz.height=vz.clientHeight*d}fitV();addEventListener('resize',fitV);
+const data=new Uint8Array(128);
+(function draw(){requestAnimationFrame(draw);const W=vz.width,H=vz.height;vx.clearRect(0,0,W,H);const n=48,bw=W/n;
+  if(an&&playing)an.getByteFrequencyData(data);else data.fill(0);
+  for(let i=0;i<n;i++){const v=playing?data[i+2]/255:.06+Math.abs(Math.sin(performance.now()/900+i*.4))*.05,h=Math.max(3,v*H);
+    const g=vx.createLinearGradient(0,H,0,H-h);g.addColorStop(0,'#ff2fb9');g.addColorStop(1,'#2de2e6');vx.fillStyle=g;vx.fillRect(i*bw+2,H-h,bw-4,h)}
+  if(playing){const s=ac.currentTime-start;$('tm').textContent=String(s/60|0).padStart(2,'0')+':'+String(s%60|0).padStart(2,'0')}})();
+
+// ---------- tour ----------
+const TOUR=[['MAR 06','Los Angeles','The Palladium',0],['MAR 09','Miami','Neon Pier',0],['MAR 14','Tokyo','Shibuya O-East',1],['MAR 20','Berlin','Tempodrom',0],['MAR 27','London','Roundhouse',0]];
+$('dates').innerHTML=TOUR.map(([d,c,v,s],i)=>`<div class="date rv" style="transition-delay:${i*.08}s"><span class="d">${d}</span><span class="c">${c}</span><span class="v">${v}</span>${s?'<span class="sold">SOLD OUT</span>':'<a class="btn pk" href="#">Tickets</a>'}</div>`).join('');
+
+// ---------- merch: generated VHS covers ----------
+const cover=(a,b,i)=>`<svg class="art" viewBox="0 0 300 440" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="cg${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12001f"/><stop offset=".55" stop-color="${a}"/><stop offset="1" stop-color="#12001f"/></linearGradient>
+  <linearGradient id="cs${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd319"/><stop offset="1" stop-color="#ff2fb9"/></linearGradient></defs><rect width="300" height="440" fill="url(#cg${i})"/>
+  <circle cx="150" cy="${170+i*10}" r="${70-i*6}" fill="url(#cs${i})"/>${[0,1,2,3,4].map(k=>`<rect x="60" y="${190+i*10+k*10}" width="180" height="${3+k}" fill="#12001f"/>`).join('')}
+  <g stroke="${b}" stroke-width="1.5" opacity=".9">${Array.from({length:9},(_,k)=>`<line x1="${-150+k*75}" y1="440" x2="150" y2="250"/>`).join('')}${Array.from({length:7},(_,k)=>`<line x1="0" y1="${255+k*k*4.2}" x2="300" y2="${255+k*k*4.2}"/>`).join('')}</g></svg>`;
+const M=[['Sunset Drive VHS','$24','#ff2fb9','#2de2e6','VHS'],['Neon Tour Tee','$32','#8b3dff','#ff2fb9','TEE'],['Cassette + Zine','$18','#ff8b1f','#ffd319','TAPE']];
+$('mer').innerHTML=M.map(([n,p,a,b,s],i)=>`<article class="vcov rv" style="--c:${a};transition-delay:${i*.12}s">${cover(a,b,i)}<span class="side">${s} · LUMEN AVENUE</span>
+  <div class="lbl"><h3>${n}</h3><div class="row"><span class="pr">${p}</span><button class="add">Add to cart</button></div></div></article>`).join('');
+document.querySelectorAll('.add').forEach(b=>b.onclick=()=>{b.textContent='✓ Added';setTimeout(()=>b.textContent='Add to cart',1500)});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

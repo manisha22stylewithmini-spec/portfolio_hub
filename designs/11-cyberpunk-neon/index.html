@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VOLT//RUNNER — Neo-Tokyo 2099</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05010f;--bg2:#0b0420;--cy:#00f0ff;--mg:#ff2bd6;--yl:#f7ff3c;--vi:#7a3cff;--tx:#e6f6ff;--mu:#8a86b5;--m:clamp(16px,3.4vw,52px);
+  --cut:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--tx);font-family:'Chakra Petch',sans-serif;-webkit-font-smoothing:antialiased}
+@media(hover:hover){body,a,button{cursor:none}}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit;border:0;background:none}
+.mono{font-family:'Share Tech Mono',monospace;letter-spacing:.06em}
+.disp{font-family:Orbitron,sans-serif;font-weight:900;text-transform:uppercase}
+.jp{font-family:'Noto Sans JP',sans-serif}
+.wrap{width:min(1280px,100% - 2*var(--m));margin-inline:auto}
+.c{color:var(--cy)}.p{color:var(--mg)}.y{color:var(--yl)}
+
+/* global scanlines + vignette */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:300;background:repeating-linear-gradient(0deg,#0000 0 2px,#00000038 2px 3px);mix-blend-mode:multiply}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:299;box-shadow:inset 0 0 180px #000c}
+
+/* crosshair cursor */
+.cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;z-index:400;pointer-events:none;transition:width .25s,height .25s,margin .25s}
+.cur::before,.cur::after{content:"";position:absolute;background:var(--cy);box-shadow:0 0 8px var(--cy)}
+.cur::before{left:50%;top:0;bottom:0;width:1px}.cur::after{top:50%;left:0;right:0;height:1px}
+.cur i{position:absolute;inset:6px;border:1px solid var(--mg);box-shadow:0 0 10px var(--mg);transform:rotate(45deg);transition:transform .4s}
+.cur.hot{width:54px;height:54px;margin:-27px 0 0 -27px}.cur.hot i{transform:rotate(225deg);border-color:var(--yl)}
+@media(hover:none){.cur{display:none}}
+
+/* boot */
+.boot{position:fixed;inset:0;z-index:500;background:#020008;padding:var(--m);display:flex;flex-direction:column;justify-content:flex-end;color:var(--cy);font-size:15px;line-height:1.6;transition:opacity .5s,visibility .5s}
+.boot.off{opacity:0;visibility:hidden;animation:bootglitch .5s steps(2)}
+@keyframes bootglitch{0%{clip-path:inset(20% 0 40% 0);transform:translateX(-10px)}50%{clip-path:inset(60% 0 10% 0);transform:translateX(10px)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px var(--m);background:linear-gradient(#05010fe6,#05010f00)}
+.logo{font-family:Orbitron;font-weight:900;font-size:18px;letter-spacing:.06em}
+.logo b{color:var(--mg);text-shadow:0 0 12px var(--mg)}
+nav ul{display:flex;gap:clamp(16px,2.6vw,38px);list-style:none;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+nav ul a{position:relative;transition:color .2s,text-shadow .2s}
+nav ul a:hover{color:var(--cy);text-shadow:0 0 10px var(--cy)}
+nav ul a::before{content:"> ";color:var(--mg);opacity:0;transition:opacity .2s}
+nav ul a:hover::before{opacity:1}
+
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;gap:12px;padding:15px 28px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:14px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));transition:transform .2s,filter .2s}
+.btn.mg{background:var(--mg);color:#12001a;filter:drop-shadow(0 0 14px #ff2bd6aa)}
+.btn.cy{background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--cy) border-box;border:1.5px solid transparent;color:var(--cy)}
+.btn.cy::before{content:"";position:absolute;inset:0;background:var(--cy);opacity:0;transition:opacity .2s}
+.btn.cy:hover::before{opacity:.12}
+.btn:hover{transform:translate(-2px,-2px);filter:drop-shadow(0 0 22px #ff2bd6) brightness(1.15)}
+.btn.cy:hover{filter:drop-shadow(0 0 16px var(--cy))}
+.btn:active{transform:translate(1px,1px)}
+.btn:hover span{animation:jit .25s steps(2) infinite}
+@keyframes jit{50%{transform:translate(1px,-1px);text-shadow:-2px 0 var(--cy),2px 0 var(--yl)}}
+
+/* glitch text */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none}
+.glitch::before{color:var(--cy);mix-blend-mode:screen;transform:translate(-3px,0);clip-path:inset(0 0 60% 0);animation:g1 3.2s infinite steps(1)}
+.glitch::after{color:var(--mg);mix-blend-mode:screen;transform:translate(3px,0);clip-path:inset(55% 0 0 0);animation:g2 2.7s infinite steps(1)}
+@keyframes g1{0%,88%{clip-path:inset(0 0 100% 0)}89%{clip-path:inset(10% 0 60% 0);transform:translate(-6px,-2px)}92%{clip-path:inset(50% 0 20% 0);transform:translate(5px,1px)}95%{clip-path:inset(80% 0 5% 0);transform:translate(-3px,0)}}
+@keyframes g2{0%,84%{clip-path:inset(100% 0 0 0)}85%{clip-path:inset(30% 0 45% 0);transform:translate(6px,2px)}90%{clip-path:inset(70% 0 10% 0);transform:translate(-5px,-1px)}96%{clip-path:inset(5% 0 85% 0);transform:translate(4px,0)}}
+.glitch.burst{animation:shake .35s steps(3)}
+.glitch.burst::before{animation:g1 .35s infinite steps(1);clip-path:inset(20% 0 40% 0)}
+.glitch.burst::after{animation:g2 .3s infinite steps(1);clip-path:inset(50% 0 20% 0)}
+@keyframes shake{33%{transform:translate(-4px,2px) skewX(-6deg)}66%{transform:translate(4px,-2px) skewX(6deg)}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:100vh;min-height:640px;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#05010f66 0%,#05010f00 30%,#05010f00 60%,var(--bg) 100%)}
+.hud{position:absolute;inset:clamp(70px,10vh,96px) var(--m) clamp(24px,5vh,48px);z-index:2;pointer-events:none}
+.br{position:absolute;width:42px;height:42px;border:2px solid var(--cy);filter:drop-shadow(0 0 6px var(--cy))}
+.br.tl{left:0;top:0;border-right:0;border-bottom:0}.br.tr{right:0;top:0;border-left:0;border-bottom:0}
+.br.bl{left:0;bottom:0;border-right:0;border-top:0}.br.brr{right:0;bottom:0;border-left:0;border-top:0}
+.read{position:absolute;font-size:12px;line-height:1.7;color:#9fe9ff;text-shadow:0 0 6px #00f0ff88}
+.read.l{left:22px;top:20px}.read.r{right:22px;top:20px;text-align:right}
+.read b{color:var(--yl);font-weight:400}
+.sig{display:inline-flex;gap:2px;vertical-align:middle}.sig i{width:4px;height:10px;background:var(--cy);animation:sig 1.2s infinite}
+.sig i:nth-child(2){animation-delay:.15s}.sig i:nth-child(3){animation-delay:.3s}.sig i:nth-child(4){animation-delay:.45s;opacity:.3}
+@keyframes sig{50%{opacity:.25}}
+.kana{position:absolute;right:22px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:clamp(22px,2.6vw,38px);color:var(--mg);text-shadow:0 0 14px var(--mg);letter-spacing:.2em;opacity:.85}
+.hero-c{position:absolute;z-index:3;left:var(--m);right:var(--m);bottom:clamp(60px,12vh,120px)}
+.tagl{display:inline-flex;gap:10px;align-items:center;padding:6px 12px;border:1px solid #00f0ff66;background:#00f0ff12;font-size:13px;color:var(--cy);margin-bottom:18px}
+.tagl i{width:7px;height:7px;background:var(--mg);box-shadow:0 0 8px var(--mg);animation:sig .8s infinite}
+.hero h1{font-size:clamp(46px,10.5vw,170px);line-height:.9;letter-spacing:-.01em;text-shadow:0 0 22px #ff2bd677,0 0 60px #7a3cff55}
+.hero h1 .sl{color:var(--mg)}
+.sub{font-size:clamp(16px,1.6vw,22px);margin:16px 0 28px;color:#c7d6ff;min-height:1.4em}
+.sub .caret{display:inline-block;width:10px;height:1.05em;background:var(--cy);vertical-align:-3px;margin-left:3px;animation:sig .8s steps(1) infinite}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ticker */
+.tick{position:relative;z-index:5;background:var(--yl);color:#120a00;overflow:hidden;white-space:nowrap;transform:skewY(-2deg);border-block:2px solid #000;box-shadow:0 0 40px #f7ff3c55}
+.tick div{display:inline-flex;gap:26px;padding:10px 0;font-family:Orbitron;font-weight:900;font-size:clamp(14px,1.8vw,22px);animation:mq 22s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* sections */
+section.s{padding-top:clamp(90px,12vw,170px)}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px 40px;margin-bottom:clamp(30px,4vw,56px)}
+.hd .k{font-size:13px;color:var(--mg);display:block;margin-bottom:12px}
+.hd h2{font-size:clamp(36px,6vw,92px);line-height:.95}
+.hd p{max-width:380px;color:var(--mu);line-height:1.6}
+
+/* neon panels */
+.panel{position:relative;clip-path:var(--cut);background:linear-gradient(160deg,#ffffff0d,#ffffff03),#0a0420;padding:clamp(20px,2.4vw,32px)}
+.panel::before{content:"";position:absolute;inset:0;clip-path:var(--cut);padding:1.5px;background:linear-gradient(135deg,var(--a,var(--cy)),transparent 40%,transparent 60%,var(--b,var(--mg)));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* augments */
+.aug{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,26px)}
+.card{transition:transform .3s,filter .3s}
+.card:hover{transform:translateY(-8px);filter:drop-shadow(0 0 24px var(--glow,#00f0ff66))}
+.card:hover h3{animation:shake .3s steps(3)}
+.card .ic{width:62px;height:62px;display:grid;place-items:center;margin-bottom:22px;border:1px solid var(--a);color:var(--a);box-shadow:0 0 18px inset color-mix(in srgb,var(--a) 30%,transparent),0 0 12px color-mix(in srgb,var(--a) 50%,transparent);font-size:26px}
+.card h3{font-family:Orbitron;font-weight:700;font-size:clamp(20px,1.8vw,26px);margin-bottom:8px}
+.card p{color:var(--mu);line-height:1.55;margin-bottom:22px;font-size:15px}
+.stat{display:grid;grid-template-columns:90px 1fr 36px;align-items:center;gap:10px;font-size:12px;margin-top:9px;color:#b7c4ee}
+.bar{height:6px;background:#ffffff12;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0;width:0;background:var(--a);box-shadow:0 0 10px var(--a);transition:width 1.4s cubic-bezier(.2,.9,.2,1)}
+.in .bar i{width:var(--w)}
+.card .id{position:absolute;right:22px;top:18px;font-size:12px;color:var(--mu)}
+
+/* district map */
+.mapw{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(14px,2vw,26px)}
+.map{padding:0;aspect-ratio:16/10}
+.map svg{width:100%;height:100%;display:block}
+.map .dist{fill:#00f0ff08;stroke:#00f0ff55;stroke-width:1;transition:fill .3s,stroke .3s}
+.map .dist.on{fill:#ff2bd622;stroke:var(--mg);filter:drop-shadow(0 0 6px var(--mg))}
+.node{cursor:none}
+.node circle.p1{fill:var(--yl);filter:drop-shadow(0 0 6px var(--yl))}
+.node circle.p2{fill:none;stroke:var(--yl);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:ping 2s infinite}
+@keyframes ping{from{transform:scale(1);opacity:1}to{transform:scale(3.4);opacity:0}}
+.info h3{font-family:Orbitron;font-size:clamp(24px,2.4vw,34px);margin:8px 0 12px;text-shadow:0 0 14px var(--mg)}
+.info p{color:var(--mu);line-height:1.6;margin-bottom:18px}
+.info .row{display:flex;justify-content:space-between;border-top:1px solid #ffffff14;padding:10px 0;font-size:13px}
+.info .row b{font-weight:400;color:var(--cy)}
+.threat{display:flex;gap:4px;margin-top:6px}.threat i{flex:1;height:8px;background:#ffffff14}.threat i.on{background:var(--mg);box-shadow:0 0 8px var(--mg)}
+
+/* factions */
+.fac{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(14px,2vw,26px);align-items:stretch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.tabs button{padding:10px 16px;border:1px solid #ffffff22;font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:all .2s}
+.tabs button.on{border-color:var(--a);color:var(--a);background:color-mix(in srgb,var(--a) 14%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--a) 50%,transparent)}
+.fac h3{font-family:Orbitron;font-size:clamp(28px,3.2vw,48px);line-height:1;margin-bottom:12px}
+.fac p{color:var(--mu);line-height:1.6;max-width:44ch}
+.quote{margin-top:22px;padding-left:16px;border-left:2px solid var(--a);font-size:18px;font-style:italic;color:#d6dcff}
+.radar{display:grid;place-items:center}
+.radar svg{width:min(100%,460px);overflow:visible}
+.radar .web{fill:none;stroke:#ffffff18}
+.radar text{font-family:'Share Tech Mono';font-size:11px;fill:#9aa6d8}
+#poly{fill:color-mix(in srgb,var(--a) 22%,transparent);stroke:var(--a);stroke-width:2;filter:drop-shadow(0 0 8px var(--a))}
+
+/* preorder */
+.pre{margin-top:clamp(90px,12vw,170px);text-align:center;padding:clamp(40px,7vw,96px) var(--m);--a:var(--mg);--b:var(--cy);overflow:hidden}
+.pre .bgk{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(90px,22vw,340px);color:#ff2bd60d;pointer-events:none;letter-spacing:.1em}
+.pre h2{position:relative;font-size:clamp(34px,6.6vw,104px);line-height:.95;margin:12px 0 24px}
+.cd{position:relative;display:flex;justify-content:center;gap:clamp(8px,2vw,20px);margin-bottom:30px}
+.cd div{min-width:clamp(64px,9vw,112px);padding:12px 8px;border:1px solid #00f0ff55;background:#00f0ff0d;box-shadow:0 0 18px #00f0ff22 inset}
+.cd b{display:block;font-family:Orbitron;font-weight:900;font-size:clamp(26px,4.4vw,54px);color:var(--cy);text-shadow:0 0 14px var(--cy);font-variant-numeric:tabular-nums}
+.cd span{font-size:11px;color:var(--mu)}
+form{position:relative;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:620px;margin:0 auto}
+input{flex:1;min-width:220px;padding:15px 18px;background:#00000066;border:1px solid #ff2bd666;font-family:'Share Tech Mono';font-size:16px;outline:0;color:var(--tx)}
+input:focus{border-color:var(--mg);box-shadow:0 0 16px #ff2bd655}
+#msg{position:relative;margin-top:16px;min-height:22px;color:var(--yl);text-shadow:0 0 8px var(--yl)}
+.editions{position:relative;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.editions button{padding:10px 18px;border:1px solid #ffffff22;font-size:13px;letter-spacing:.12em;text-transform:uppercase;transition:all .2s}
+.editions button.on{border-color:var(--yl);color:var(--yl);box-shadow:0 0 14px #f7ff3c55;background:#f7ff3c12}
+
+footer{padding:clamp(60px,8vw,110px) 0 28px}
+.fbig{font-size:clamp(46px,14vw,230px);line-height:.85;text-align:center;margin-bottom:26px;color:transparent;-webkit-text-stroke:1.5px var(--mg);filter:drop-shadow(0 0 12px #ff2bd699)}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;font-size:12px;color:var(--mu);border-top:1px solid #ffffff14;padding-top:16px}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .8s cubic-bezier(.2,.9,.2,1)}
+.rv.in{opacity:1;transform:none;animation:flick .6s steps(1)}
+@keyframes flick{10%{opacity:.2}20%{opacity:1}30%{opacity:.4}40%{opacity:1}}
+
+@media(max-width:900px){
+  nav ul{display:none}
+  .aug,.mapw,.fac{grid-template-columns:1fr}
+  .kana,.read.r{display:none}
+}
+@media(max-width:640px){.hero h1{font-size:8.4vw}.ctas .btn{flex:1;justify-content:center}.fbig{font-size:11vw}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="cur" id="cur"><i></i></div>
+<div class="boot mono" id="boot"></div>
+
+<nav><a class="logo" href="#">VOLT<b>//</b>RUNNER</a>
+  <ul><li><a href="#augments">Augments</a></li><li><a href="#districts">Districts</a></li><li><a href="#factions">Factions</a></li></ul>
+  <a class="btn mg" href="#preorder" style="padding:11px 18px;font-size:12px"><span>Pre-order</span></a></nav>
+
+<header class="hero">
+  <canvas id="gl"></canvas>
+  <div class="hud mono">
+    <span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+    <div class="read l">LAT <b>35.6895</b> · LON <b>139.6917</b><br>DISTRICT // <span id="dist">SHINJUKU-9</span><br>SIGNAL <span class="sig"><i></i><i></i><i></i><i></i></span> 87%</div>
+    <div class="read r">NEO-TOKYO <b id="clock">00:00:00</b><br>TEMP 31°C · ACID RAIN<br>NETRUNNERS ONLINE <b id="online">48,212</b></div>
+    <div class="kana jp">ボルト・ランナー</div>
+  </div>
+  <div class="hero-c">
+    <div class="tagl mono"><i></i>NEO-TOKYO // 2099 // OPEN WORLD RPG</div>
+    <h1 class="disp glitch" id="title" data-text="VOLT//RUNNER">VOLT<span class="sl">//</span>RUNNER</h1>
+    <p class="sub mono" id="sub"></p>
+    <div class="ctas"><a class="btn mg" href="#preorder"><span>Pre-order now</span>→</a><a class="btn cy" href="#augments"><span>▶ Watch trailer</span></a></div>
+  </div>
+</header>
+
+<div class="tick"><div id="tick"></div></div>
+
+<section class="s wrap" id="augments">
+  <div class="hd"><div><span class="k mono">// 01 — CHROME YOUR BODY</span><h2 class="disp glitch" data-text="AUGMENTS">AUGMENTS</h2></div><p class="rv">Rip out what nature gave you. Install what the street demands. Every augment rewires how you fight, hack and run.</p></div>
+  <div class="aug">
+    <article class="panel card rv" style="--a:var(--cy);--glow:#00f0ff66"><span class="id mono">AUG-01</span><div class="ic">⌁</div><h3>Synapse Overclock</h3><p>Slow time to a crawl for 4.2 seconds. Perfect for dodging bullets or reading minds.</p>
+      <div class="stat mono">REFLEX<div class="bar"><i style="--w:92%"></i></div>92</div><div class="stat mono">HEAT<div class="bar"><i style="--w:64%"></i></div>64</div></article>
+    <article class="panel card rv" style="--a:var(--mg);--b:var(--yl);--glow:#ff2bd666;transition-delay:.1s"><span class="id mono">AUG-02</span><div class="ic">◈</div><h3>Ghost Skin</h3><p>Optical camo woven into your dermis. Vanish from cameras, drones and ex-partners.</p>
+      <div class="stat mono">STEALTH<div class="bar"><i style="--w:86%"></i></div>86</div><div class="stat mono">HEAT<div class="bar"><i style="--w:38%"></i></div>38</div></article>
+    <article class="panel card rv" style="--a:var(--yl);--b:var(--vi);--glow:#f7ff3c55;transition-delay:.2s"><span class="id mono">AUG-03</span><div class="ic">⚡</div><h3>Volt Arm</h3><p>A cybernetic arm that stores 40,000 volts. Punch through doors — and corporations.</p>
+      <div class="stat mono">POWER<div class="bar"><i style="--w:97%"></i></div>97</div><div class="stat mono">HEAT<div class="bar"><i style="--w:81%"></i></div>81</div></article>
+  </div>
+</section>
+
+<section class="s wrap" id="districts">
+  <div class="hd"><div><span class="k mono">// 02 — THE CITY</span><h2 class="disp glitch" data-text="DISTRICTS">DISTRICTS</h2></div><p class="rv">Six districts. One sprawling megacity. Hover the map to scan each zone.</p></div>
+  <div class="mapw">
+    <div class="panel map rv" style="--a:var(--cy);--b:var(--vi)"><svg viewBox="0 0 800 500" id="map"></svg></div>
+    <div class="panel info rv" style="--a:var(--mg);--b:var(--cy);transition-delay:.1s">
+      <span class="mono p" id="dcode">ZONE 01</span><h3 id="dname">SHINJUKU-9</h3><p id="ddesc"></p>
+      <div class="row mono"><span>CONTROL</span><b id="dctrl"></b></div>
+      <div class="row mono"><span>POPULATION</span><b id="dpop"></b></div>
+      <div class="row mono" style="display:block"><span>THREAT LEVEL</span><div class="threat" id="dthreat"><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="s wrap" id="factions">
+  <div class="hd"><div><span class="k mono">// 03 — PICK A SIDE</span><h2 class="disp glitch" data-text="FACTIONS">FACTIONS</h2></div><p class="rv">Every faction has a price. Choose who you owe.</p></div>
+  <div class="fac" id="fac" style="--a:var(--cy)">
+    <div class="panel rv"><div class="tabs" id="tabs"></div><h3 id="fname"></h3><p id="fdesc"></p><div class="quote" id="fquote"></div></div>
+    <div class="panel radar rv" style="transition-delay:.1s"><svg viewBox="-170 -160 340 320" id="radar"></svg></div>
+  </div>
+</section>
+
+<section class="wrap" id="preorder">
+  <div class="panel pre rv"><div class="bgk disp jp">予約</div>
+    <span class="mono y" style="position:relative">// LAUNCH SEQUENCE INITIATED</span>
+    <h2 class="disp glitch" data-text="JACK IN EARLY">JACK IN EARLY</h2>
+    <div class="cd mono"><div><b id="d">00</b><span>DAYS</span></div><div><b id="h">00</b><span>HRS</span></div><div><b id="m">00</b><span>MIN</span></div><div><b id="s">00</b><span>SEC</span></div></div>
+    <div class="editions mono" id="eds"><button class="on">Standard · $69</button><button>Chrome · $99</button><button>Collector · $249</button></div>
+    <form id="f"><input type="email" required placeholder="netrunner@grid.nt" aria-label="Email"><button class="btn mg" type="submit"><span>Reserve</span>→</button></form>
+    <div id="msg" class="mono"></div>
+  </div>
+</section>
+
+<footer class="wrap"><div class="fbig disp">VOLT//RUNNER</div>
+  <div class="frow mono"><span>© 2099 VOLT SYSTEMS (2026)</span><span>RATED M · CONTAINS NEON</span><span>A PORTFOLIO DESIGN STUDY</span></div></footer>
+
+<script type="module">
+// ---------- neon city flythrough (Three.js + bloom) ----------
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+const canvas=document.getElementById('gl'),hero=canvas.parentElement;
+const renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x07021a);scene.fog=new THREE.FogExp2(0x0a0322,.03);
+const camera=new THREE.PerspectiveCamera(62,1,.1,400);
+scene.add(new THREE.HemisphereLight(0x6a3cff,0x05010f,.6));
+
+const NEON=[0x00f0ff,0xff2bd6,0xf7ff3c,0x7a3cff,0xff4b6e];
+function winTex(pal){const c=document.createElement('canvas');c.width=64;c.height=256;const x=c.getContext('2d');x.fillStyle='#04020a';x.fillRect(0,0,64,256);
+  for(let r=0;r<64;r++)for(let k=0;k<8;k++)if(Math.random()<.2){x.fillStyle=pal[Math.random()*pal.length|0];x.globalAlpha=.25+Math.random()*.6;x.fillRect(k*8+2,r*4+1,4,2)}
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.magFilter=THREE.NearestFilter;return t}
+const mats=[['#7ff6ff','#ffffff','#2fb8ff'],['#ff7be8','#ffd1f6','#c13cff'],['#fff58a','#ffb347','#ffffff']].map(p=>
+  new THREE.MeshStandardMaterial({color:0x0b0818,roughness:.6,metalness:.4,emissive:0xffffff,emissiveIntensity:.75,emissiveMap:winTex(p)}));
+
+const L=160,box=new THREE.BoxGeometry(1,1,1);box.translate(0,.5,0);
+function tile(){
+  const g=new THREE.Group(),buckets=mats.map(()=>[]),m4=new THREE.Matrix4(),q=new THREE.Quaternion();
+  for(const s of [-1,1])for(let row=0;row<4;row++)for(let z=0;z>-L;z-=4+Math.random()*4){
+    const w=3+Math.random()*4,d=3+Math.random()*4,h=(row?10:6)+Math.random()*(row*14+18);
+    const x=s*(9+row*8+Math.random()*2.5);
+    m4.compose(new THREE.Vector3(x,0,z),q,new THREE.Vector3(w,h,d));buckets[Math.random()*3|0].push(m4.clone());
+    if(row===0&&Math.random()<.45){const c=NEON[Math.random()*NEON.length|0],sh=2+Math.random()*7;
+      const sign=new THREE.Mesh(new THREE.BoxGeometry(.18,sh,.9+Math.random()*1.6),new THREE.MeshBasicMaterial({color:c}));
+      sign.position.set(x-s*(w/2+.12),3+Math.random()*(h-sh-2)+sh/2,z);sign.userData.f=Math.random()<.25;g.add(sign)}
+    if(row===1&&Math.random()<.2){const c=NEON[Math.random()*NEON.length|0];
+      const hb=new THREE.Mesh(new THREE.BoxGeometry(5,1.6,.2),new THREE.MeshBasicMaterial({color:c}));hb.position.set(x-s*.5,h+1.4,z);g.add(hb)}
+  }
+  buckets.forEach((arr,i)=>{const im=new THREE.InstancedMesh(box,mats[i],arr.length);arr.forEach((m,k)=>im.setMatrixAt(k,m));g.add(im)});
+  // road dashes + side light strips
+  const dash=new THREE.InstancedMesh(new THREE.BoxGeometry(.18,.02,2.2),new THREE.MeshBasicMaterial({color:0xf7ff3c}),Math.floor(L/6));
+  for(let i=0;i<dash.count;i++){m4.makeTranslation(0,.02,-i*6);dash.setMatrixAt(i,m4)}g.add(dash);
+  for(const s of [-1,1]){const st=new THREE.Mesh(new THREE.BoxGeometry(.12,.05,L),new THREE.MeshBasicMaterial({color:s<0?0x00f0ff:0xff2bd6}));st.position.set(s*6,.03,-L/2);g.add(st)}
+  return g}
+const tiles=[tile(),tile()];tiles[1].position.z=-L;tiles.forEach(t=>scene.add(t));
+
+// wet ground grid
+const gc=document.createElement('canvas');gc.width=gc.height=256;const gx=gc.getContext('2d');gx.fillStyle='#05020d';gx.fillRect(0,0,256,256);
+gx.strokeStyle='#7a3cff55';gx.lineWidth=2;gx.strokeRect(0,0,256,256);
+const gt=new THREE.CanvasTexture(gc);gt.wrapS=gt.wrapT=THREE.RepeatWrapping;gt.repeat.set(40,80);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,400),new THREE.MeshStandardMaterial({map:gt,roughness:.15,metalness:.9,color:0x1a1030}));
+ground.rotation.x=-Math.PI/2;scene.add(ground);
+
+// flying cars with light streaks
+const cars=[];
+for(let i=0;i<46;i++){const c=Math.random()<.5?0xff4b6e:(Math.random()<.5?0xffffff:0x00f0ff);
+  const m=new THREE.Mesh(new THREE.BoxGeometry(.25,.12,1.6+Math.random()*2.5),new THREE.MeshBasicMaterial({color:c}));
+  m.position.set((Math.random()-.5)*14,5+Math.random()*22,-Math.random()*220);m.userData.v=(Math.random()<.5?-1:1)*(14+Math.random()*26);scene.add(m);cars.push(m)}
+
+// rain
+const RN=3200,rp=new Float32Array(RN*6);
+for(let i=0;i<RN;i++){const x=(Math.random()-.5)*60,y=Math.random()*40,z=-Math.random()*80;rp.set([x,y,z,x-.05,y-.9,z],i*6)}
+const rg=new THREE.BufferGeometry();rg.setAttribute('position',new THREE.BufferAttribute(rp,3));
+const rain=new THREE.LineSegments(rg,new THREE.LineBasicMaterial({color:0x9ab8ff,transparent:true,opacity:.28}));scene.add(rain);
+
+// post: bloom
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.9,.55,.32);composer.addPass(bloom);composer.addPass(new OutputPass());
+
+function resize(){const w=hero.clientWidth,h=hero.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.fov=w<h?78:62;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+
+let mx=0,my=0,tx=0,ty=0,sp=0,visible=true,cz=0;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+new IntersectionObserver(([e])=>visible=e.isIntersecting).observe(hero);
+const clock=new THREE.Clock();
+(function loop(){
+  requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+  if(!visible)return;
+  mx+=(tx-mx)*.04;my+=(ty-my)*.04;sp=Math.min(1,scrollY/innerHeight);
+  cz-=dt*9;
+  camera.position.set(mx*5,4.2+sp*10-my*2,cz);
+  camera.lookAt(mx*9,5.5+sp*4-my*4,cz-40);camera.rotateZ(-mx*.08);
+  // leapfrog city tiles
+  tiles.forEach(tl=>{if(tl.position.z-L>cz+10)tl.position.z-=2*L});
+  ground.position.z=cz-100;gt.offset.y=-cz/5;
+  cars.forEach(c=>{c.position.z+=c.userData.v*dt;if(c.position.z>cz+20)c.position.z=cz-220;if(c.position.z<cz-240)c.position.z=cz+10});
+  const a=rg.attributes.position.array;
+  for(let i=0;i<RN;i++){const o=i*6;a[o+1]-=dt*38;a[o+4]-=dt*38;if(a[o+1]<0){const x=(Math.random()-.5)*60,y=40,z=cz-Math.random()*80;a.set([x,y,z,x-.05,y-.9,z],o)}}
+  rg.attributes.position.needsUpdate=true;
+  // flicker some neon signs
+  if(Math.random()<.2)tiles.forEach(tl=>tl.children.forEach(o=>{if(o.userData.f)o.visible=Math.random()>.15}));
+  composer.render();
+})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+
+// boot sequence
+const bootLines=['> VOLT_OS v9.9.1 — kernel loaded','> mounting /dev/neural ............ OK','> bypassing ICE (3/3) ............. OK','> syncing with NEO-TOKYO grid ..... OK','> welcome back, runner.'];
+(function(){const b=$('boot');let i=0;const iv=setInterval(()=>{b.innerHTML+=bootLines[i++]+'<br>';if(i>=bootLines.length){clearInterval(iv);setTimeout(()=>b.classList.add('off'),350)}},230)})();
+
+// cursor
+const cur=$('cur');let cx=0,cy=0,tx=0,ty=0;
+addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY});
+(function f(){cx+=(tx-cx)*.35;cy+=(ty-cy)*.35;cur.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(f)})();
+document.addEventListener('pointerover',e=>cur.classList.toggle('hot',!!e.target.closest('a,button,.node,input')));
+
+// typed subtitle
+const subs=['the grid never sleeps.','neither do you.','run fast. jack in. stay chrome.'];let si=0,ci=0,del=false;
+(function type(){const s=subs[si];$('sub').innerHTML=s.slice(0,ci)+'<span class="caret"></span>';
+  if(!del&&ci<s.length){ci++;return setTimeout(type,55)}if(!del){del=true;return setTimeout(type,1800)}
+  if(ci>0){ci--;return setTimeout(type,22)}del=false;si=(si+1)%subs.length;setTimeout(type,300)})();
+
+// random glitch bursts on the title
+setInterval(()=>{const t=$('title');t.classList.add('burst');setTimeout(()=>t.classList.remove('burst'),360)},3600);
+
+// HUD readouts
+const dists=['SHINJUKU-9','AKIBA-GRID','HARBOR-X','KABUKI-NULL','TOWER ROW','OLD TOKYO'];let di=0;
+setInterval(()=>{$('dist').textContent=dists[di=(di+1)%dists.length]},2600);
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Tokyo'});$('online').textContent=(48000+Math.random()*900|0).toLocaleString('en-US')},1000);
+
+// ticker
+const tk=['PRE-ORDER NOW','★','NEO-TOKYO 2099','★','200+ AUGMENTS','★','6 DISTRICTS','★','NO SLEEP. ONLY NEON','★'];
+$('tick').innerHTML=[...tk,...tk,...tk].map(w=>`<span>${w}</span>`).join('');
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+// district map
+const D=[
+ {n:'SHINJUKU-9',c:'ZONE 01',ctrl:'KUROGANE MEGACORP',pop:'4.2M',t:4,d:'Corporate spires and black-glass towers. Security drones every block. The money lives here — and so do the best hacks.',p:'60,60 300,40 330,200 90,230',xy:[200,130]},
+ {n:'AKIBA-GRID',c:'ZONE 02',ctrl:'NETRUNNER COLLECTIVE',pop:'1.8M',t:2,d:'Endless arcades, black-market chips and street ripperdocs. If it can be jacked in, it can be bought here.',p:'330,40 560,60 540,220 330,200',xy:[440,130]},
+ {n:'HARBOR-X',c:'ZONE 03',ctrl:'SMUGGLER CARTELS',pop:'0.9M',t:5,d:'Container stacks and rusted cranes. Contraband flows in at night under acid rain. Bring backup.',p:'560,60 750,90 740,280 540,220',xy:[650,170]},
+ {n:'KABUKI-NULL',c:'ZONE 04',ctrl:'NOBODY',pop:'2.6M',t:5,d:'The neon never turns off and the law never shows up. Gangs, braindance dens and the loudest market in the city.',p:'90,230 330,200 340,420 70,440',xy:[210,320]},
+ {n:'TOWER ROW',c:'ZONE 05',ctrl:'CITY COUNCIL (BOUGHT)',pop:'3.1M',t:3,d:'Arcologies stacked kilometres high. Sky-trains, rooftop gardens and the city\'s cleanest air — for a price.',p:'330,200 540,220 560,430 340,420',xy:[440,320]},
+ {n:'OLD TOKYO',c:'ZONE 06',ctrl:'MONKS & MACHINES',pop:'0.6M',t:1,d:'Flooded temples and quiet alleys where the old city survives. Rumoured home of the first AI to dream.',p:'540,220 740,280 730,450 560,430',xy:[640,350]}];
+const svg=$('map');
+let mh='<defs><pattern id="gr" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#00f0ff14"/></pattern></defs><rect width="800" height="500" fill="url(#gr)"/>';
+mh+='<path d="M0 470 C200 440 300 480 420 455 S700 470 800 440" fill="none" stroke="#7a3cff66" stroke-width="10"/>';
+D.forEach((d,i)=>{mh+=`<polygon class="dist" data-i="${i}" points="${d.p}"/>`});
+D.forEach((d,i)=>{mh+=`<g class="node" data-i="${i}"><circle class="p2" cx="${d.xy[0]}" cy="${d.xy[1]}" r="6"/><circle class="p1" cx="${d.xy[0]}" cy="${d.xy[1]}" r="6"/><text x="${d.xy[0]+12}" y="${d.xy[1]+4}" font-family="Share Tech Mono" font-size="13" fill="#cfe9ff">${d.n}</text></g>`});
+svg.innerHTML=mh;
+function pick(i){const d=D[i];$('dcode').textContent=d.c;$('dname').textContent=d.n;$('ddesc').textContent=d.d;$('dctrl').textContent=d.ctrl;$('dpop').textContent=d.pop;
+  [...$('dthreat').children].forEach((x,k)=>x.classList.toggle('on',k<d.t));svg.querySelectorAll('.dist').forEach(p=>p.classList.toggle('on',+p.dataset.i===i));
+  const h=$('dname');h.classList.remove('burst');void h.offsetWidth}
+svg.querySelectorAll('.dist,.node').forEach(el=>{el.addEventListener('pointerenter',()=>pick(+el.dataset.i));el.addEventListener('click',()=>pick(+el.dataset.i))});pick(0);
+
+// factions + radar chart
+const F=[
+ {n:'NEON SAINTS',col:'#00f0ff',d:'Hacker monks who believe the net is holy. They speak in code and fight with viruses.',q:'"Every firewall is a prayer waiting to be answered."',s:[95,40,55,70,85,60]},
+ {n:'RED LOTUS',col:'#ff2bd6',d:'An elegant crime syndicate running the city\'s nightlife. Beautiful, ruthless, impossibly rich.',q:'"Loyalty is the only currency we never devalue."',s:[60,85,75,45,50,95]},
+ {n:'IRON TIDE',col:'#f7ff3c',d:'Full-conversion cyborg mercenaries. More machine than human — and proud of it.',q:'"Flesh is a rental. Chrome is forever."',s:[35,98,90,60,40,30]},
+ {n:'DRIFTERS',col:'#7a3cff',d:'Rooftop runners and couriers. Nobody is faster across the skyline, and nobody owns them.',q:'"Walls are just floors you haven\'t run on yet."',s:[70,55,45,98,90,50]}];
+const AX=['HACKING','COMBAT','ARMOR','SPEED','STEALTH','INFLUENCE'],R=120;
+const pt=(i,v)=>{const a=-Math.PI/2+i*Math.PI*2/6;return[Math.cos(a)*R*v/100,Math.sin(a)*R*v/100]};
+let rh='';[25,50,75,100].forEach(v=>rh+=`<polygon class="web" points="${AX.map((_,i)=>pt(i,v).join(',')).join(' ')}"/>`);
+AX.forEach((a,i)=>{const[x,y]=pt(i,100);rh+=`<line x1="0" y1="0" x2="${x}" y2="${y}" stroke="#ffffff14"/>`;const[lx,ly]=pt(i,124);rh+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${a}</text>`});
+rh+='<polygon id="poly"/>';$('radar').innerHTML=rh;
+let cur3=[0,0,0,0,0,0];
+function setF(i){const f=F[i];$('fac').style.setProperty('--a',f.col);$('fname').textContent=f.n;$('fdesc').textContent=f.d;$('fquote').textContent=f.q;
+  [...$('tabs').children].forEach((b,k)=>b.classList.toggle('on',k===i));
+  const from=[...cur3],t0=performance.now();
+  (function an(t){const p=Math.min((t-t0)/600,1),e=1-Math.pow(1-p,3);cur3=from.map((v,k)=>v+(f.s[k]-v)*e);
+    $('poly').setAttribute('points',cur3.map((v,k)=>pt(k,v).join(',')).join(' '));if(p<1)requestAnimationFrame(an)})(t0)}
+$('tabs').innerHTML=F.map(f=>`<button style="--a:${f.col}">${f.n}</button>`).join('');
+[...$('tabs').children].forEach((b,i)=>b.onclick=()=>setF(i));setF(0);
+
+// countdown + editions + form
+const end=Date.now()+(13*86400+4*3600+20*60)*1000;
+function cd(){let s=Math.max(0,(end-Date.now())/1000|0);const d=s/86400|0;s%=86400;const h=s/3600|0;s%=3600;
+  [['d',d],['h',h],['m',s/60|0],['s',s%60]].forEach(([k,v])=>$(k).textContent=String(v).padStart(2,'0'))}
+cd();setInterval(cd,1000);
+[...$('eds').children].forEach(b=>b.onclick=()=>[...$('eds').children].forEach(x=>x.classList.toggle('on',x===b)));
+$('f').onsubmit=e=>{e.preventDefault();$('msg').textContent='> RESERVATION CONFIRMED // '+document.querySelector('#eds .on').textContent.toUpperCase()+' // SEE YOU ON THE GRID'};
+</script>
+</body>
+</html>

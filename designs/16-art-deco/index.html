@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Emerald Room — Jazz &amp; Cocktails since 1925</title>
+<link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Marcellus+SC&family=Bodoni+Moda:ital,wght@0,400;0,500;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bk:#08090a;--em:#0c3a2d;--em2:#0f4d3a;--gold:#d4af37;--g2:#f3dc8a;--ivory:#f3ead3;--mu:#a49d86;--line:#d4af3740;--m:clamp(18px,4.6vw,72px);
+  --gg:linear-gradient(100deg,#9c7a2b 0%,#f7e7a1 22%,#d4af37 42%,#fff4c6 55%,#b8902f 75%,#f3dc8a 100%);--ease:cubic-bezier(.19,1,.22,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:80px}
+body{background:var(--bk);color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;border:0;background:none}
+.deco{font-family:'Poiret One',sans-serif;font-weight:400}
+.sc{font-family:'Marcellus SC',serif;letter-spacing:.32em;font-size:12px}
+.bod{font-family:'Bodoni Moda',serif}
+.gold{background:var(--gg);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 7s ease-in-out infinite}
+@keyframes sheen{50%{background-position:100% 0}}
+.wrap{width:min(1200px,100% - 2*var(--m));margin-inline:auto}
+/* art deco fan pattern */
+.fans{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1'%3E%3Cpath d='M0 40a40 40 0 0 1 80 0M10 40a30 30 0 0 1 60 0M20 40a20 20 0 0 1 40 0M30 40a10 10 0 0 1 20 0'/%3E%3Cpath d='M-40 20a40 40 0 0 1 80 0M40 20a40 40 0 0 1 80 0' transform='translate(0 -20)'/%3E%3C/g%3E%3C/svg%3E");background-size:80px 40px}
+
+/* loader: a fan opening */
+.load{position:fixed;inset:0;z-index:200;background:var(--bk);display:grid;place-items:center;transition:opacity 1.4s var(--ease),visibility 1.4s}
+.load.done{opacity:0;visibility:hidden}
+.load svg{width:140px}
+.load .r{transform-origin:70px 70px;transform:rotate(-90deg);animation:fan 1.6s var(--ease) forwards}
+@keyframes fan{to{transform:rotate(var(--a))}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px var(--m);transition:background .8s,padding .8s}
+nav.solid{background:#08090af0;padding-block:12px;border-bottom:1px solid var(--line)}
+nav .l,nav .r{display:flex;gap:clamp(18px,3vw,40px)}nav .r{justify-content:flex-end}
+nav a.lk{position:relative;padding:6px 0;opacity:.85}
+nav a.lk::after{content:"";position:absolute;left:50%;right:50%;bottom:0;height:1px;background:var(--gold);transition:all .7s var(--ease)}
+nav a.lk:hover::after{left:0;right:0}
+.mono{display:flex;align-items:center;gap:12px;font-family:'Poiret One';font-size:26px;letter-spacing:.2em}
+.mono i{width:38px;height:38px;border:1px solid var(--gold);transform:rotate(45deg);display:grid;place-items:center}
+.mono i b{transform:rotate(-45deg);font-family:'Bodoni Moda';font-style:italic;font-weight:400;font-size:17px;color:var(--gold);letter-spacing:0}
+.btn{position:relative;display:inline-flex;align-items:center;gap:14px;padding:15px 30px;border:1px solid var(--gold);color:var(--g2);overflow:hidden;cursor:pointer;transition:color .8s var(--ease)}
+.btn::before{content:"";position:absolute;inset:3px;border:1px solid #d4af3766;pointer-events:none}
+.btn::after{content:"";position:absolute;inset:0;background:var(--gg);transform:scaleY(0);transform-origin:bottom;transition:transform .8s var(--ease);z-index:-1}
+.btn{isolation:isolate}
+.btn:hover{color:var(--bk)}.btn:hover::after{transform:scaleY(1)}
+
+/* hero */
+.hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:radial-gradient(60% 60% at 50% 45%,#11583f 0%,var(--em) 40%,#06140f 75%,var(--bk) 100%)}
+.hero .pat{position:absolute;inset:0;opacity:.08}
+.hero .spot{position:absolute;inset:0;opacity:.45;-webkit-mask:radial-gradient(260px circle at var(--mx,50%) var(--my,40%),#000,transparent 70%);mask:radial-gradient(260px circle at var(--mx,50%) var(--my,40%),#000,transparent 70%)}
+.burst{position:absolute;left:50%;top:46%;width:max(150vh,150vw);aspect-ratio:1;transform:translate(-50%,-50%);opacity:.12;animation:spin 160s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.arch{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(760px,92vw);height:min(86vh,820px)}
+.arch svg{width:100%;height:100%;overflow:visible}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3.4s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+#bub{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hc{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);text-align:center;width:min(640px,86vw);z-index:3}
+.hc .sc{color:var(--g2);opacity:0;animation:up 1.6s var(--ease) 1.6s forwards}
+.hc h1{font-family:'Poiret One';font-weight:400;font-size:clamp(52px,8.6vw,132px);line-height:.92;letter-spacing:.08em;margin:18px 0 10px}
+.hc h1 span{display:block;opacity:0;letter-spacing:.6em;animation:track 2.4s var(--ease) forwards}
+.hc h1 span:nth-child(1){animation-delay:1.8s}.hc h1 span:nth-child(2){animation-delay:2.05s}
+@keyframes track{to{opacity:1;letter-spacing:.08em}}
+.hc .est{font-family:'Bodoni Moda';font-style:italic;font-size:clamp(20px,2vw,28px);color:var(--g2);opacity:0;animation:up 1.6s var(--ease) 2.5s forwards}
+.hc p{max-width:440px;margin:18px auto 30px;color:#ece4cc;text-shadow:0 2px 12px #06140f;line-height:1.7;opacity:0;animation:up 1.6s var(--ease) 2.7s forwards}
+.hc .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:up 1.6s var(--ease) 2.9s forwards}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--mu)}
+.cue i{width:10px;height:10px;border:1px solid var(--gold);transform:rotate(45deg);animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(8px) rotate(45deg)}}
+
+/* ornamental divider */
+.orn{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 auto}
+.orn svg{width:min(420px,80vw);height:30px}
+
+/* intro */
+.intro{text-align:center;padding:clamp(110px,14vw,200px) 0}
+.intro h2{font-family:'Poiret One';font-weight:400;font-size:clamp(34px,4.6vw,70px);line-height:1.15;letter-spacing:.04em;margin:30px auto 26px;max-width:900px}
+.intro p{max-width:640px;margin:0 auto;color:#cfc7ae;line-height:1.9;font-size:17px;text-align:left}
+.intro p::first-letter{float:left;font-family:'Poiret One';font-size:84px;line-height:.82;padding:6px 14px 0 0;color:var(--gold)}
+
+/* evenings: arched windows */
+.hd{text-align:center;margin-bottom:clamp(40px,5vw,70px)}
+.hd h2{font-family:'Poiret One';font-weight:400;font-size:clamp(40px,5.4vw,84px);letter-spacing:.06em;margin-top:16px}
+.eves{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,42px)}
+.eve{text-align:center}
+.win{position:relative;aspect-ratio:3/4.2;border-radius:999px 999px 0 0;overflow:hidden;background:linear-gradient(180deg,#0f4d3a,#071a14);border:1px solid var(--gold);transition:transform 1.2s var(--ease)}
+.win::before{content:"";position:absolute;inset:8px;border-radius:999px 999px 0 0;border:1px solid #d4af3766;z-index:2;pointer-events:none}
+.win .fan{position:absolute;inset:0;opacity:.12;transition:opacity 1.2s var(--ease)}
+.win svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.win svg .ln{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.4s var(--ease)}
+.eve.in .win svg .ln{stroke-dashoffset:0}
+.eve:hover .win{transform:translateY(-10px)}.eve:hover .win .fan{opacity:.3}
+.eve h3{font-family:'Poiret One';font-size:clamp(26px,2.4vw,34px);letter-spacing:.08em;margin:24px 0 6px}
+.eve .when{font-family:'Bodoni Moda';font-style:italic;color:var(--g2)}
+.eve p{color:var(--mu);line-height:1.7;margin-top:10px;max-width:320px;margin-inline:auto}
+
+/* cocktail menu */
+.menu{margin-top:clamp(110px,14vw,200px);background:var(--em);border:1px solid var(--gold);padding:clamp(34px,5vw,80px);position:relative}
+.menu::before{content:"";position:absolute;inset:10px;border:1px solid #d4af3755;pointer-events:none}
+.corner{position:absolute;width:64px;height:64px}
+.corner.tl{left:-1px;top:-1px}.corner.tr{right:-1px;top:-1px;transform:scaleX(-1)}.corner.bl{left:-1px;bottom:-1px;transform:scaleY(-1)}.corner.br{right:-1px;bottom:-1px;transform:scale(-1)}
+.menu .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px clamp(30px,6vw,90px);margin-top:clamp(30px,4vw,50px)}
+.item{padding:14px 0;cursor:default}
+.item .top{display:flex;align-items:baseline;gap:12px}
+.item .nm{font-family:'Poiret One';font-size:clamp(22px,2vw,28px);letter-spacing:.06em;white-space:nowrap;transition:color .6s}
+.item .dots{flex:1;border-bottom:1px dotted #d4af3788;transform:translateY(-6px)}
+.item .pr{font-family:'Bodoni Moda';color:var(--g2)}
+.item .ing{color:var(--mu);font-size:15px;max-height:0;overflow:hidden;opacity:0;transition:all .9s var(--ease)}
+.item:hover .nm{color:var(--g2)}.item:hover .ing{max-height:60px;opacity:1;margin-top:6px}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(110px,14vw,200px);border-block:1px solid var(--line)}
+.nums div{text-align:center;padding:clamp(28px,4vw,50px) 10px;border-right:1px solid var(--line)}
+.nums div:last-child{border-right:0}
+.nums b{display:block;font-family:'Poiret One';font-weight:400;font-size:clamp(46px,5.6vw,86px);line-height:1}
+.nums span{color:var(--mu);margin-top:10px;display:block}
+
+/* invitation RSVP */
+.rsvp{padding:clamp(110px,14vw,200px) 0 clamp(80px,10vw,140px)}
+.card{position:relative;max-width:760px;margin:0 auto;background:linear-gradient(160deg,#f6eed8,#e9dcb8);color:#1a1a14;padding:clamp(36px,6vw,80px) clamp(24px,6vw,80px);text-align:center;box-shadow:0 40px 80px -30px #000}
+.card::before{content:"";position:absolute;inset:12px;border:2px solid #b8902f;pointer-events:none}
+.card::after{content:"";position:absolute;inset:20px;border:1px solid #b8902f88;pointer-events:none}
+.card .corner path{stroke:#b8902f}
+.card .sc{color:#7a6326}
+.card h2{font-family:'Poiret One';font-weight:400;font-size:clamp(36px,5vw,68px);letter-spacing:.08em;margin:14px 0 6px}
+.card .bod{font-style:italic;font-size:20px;color:#5a4a1e}
+form{display:grid;grid-template-columns:1fr 1fr;gap:22px 26px;margin-top:34px;text-align:left;position:relative;z-index:2}
+.f{display:grid;gap:4px}.f.full{grid-column:1/-1}
+.f label{font-family:'Marcellus SC';font-size:11px;letter-spacing:.24em;color:#7a6326}
+.f input,.f select{border-bottom:1px solid #b8902f;padding:10px 2px;font-family:'Bodoni Moda';font-size:18px;color:#1a1a14;outline:0;border-radius:0;appearance:none;background:transparent}
+.f input:focus,.f select:focus{border-bottom-width:2px}
+.card .btn{color:#1a1a14;border-color:#b8902f;justify-self:center;grid-column:1/-1;margin-top:10px}
+.card .btn:hover{color:#1a1a14}
+.seal{position:absolute;right:clamp(10px,4vw,40px);bottom:clamp(10px,4vw,40px);width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#b0302c,#6d1414);display:grid;place-items:center;color:#f3cfc0;font-family:'Bodoni Moda';font-style:italic;font-size:30px;
+  box-shadow:inset 0 0 0 6px #8a1e1c,inset 0 0 0 8px #c4473f66,0 10px 20px -6px #0008;transform:scale(2.4) rotate(-30deg);opacity:0;pointer-events:none;z-index:3}
+.seal.on{animation:stamp .7s cubic-bezier(.5,1.6,.4,1) forwards}
+@keyframes stamp{to{transform:scale(1) rotate(-12deg);opacity:1}}
+#msg{grid-column:1/-1;text-align:center;font-family:'Bodoni Moda';font-style:italic;color:#5a4a1e;min-height:26px}
+
+/* footer skyline */
+footer{position:relative;padding-top:20px;border-top:1px solid var(--line)}
+.sky{display:block;width:100%;height:clamp(140px,18vw,240px)}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:24px var(--m) 30px;color:var(--mu);background:var(--bk)}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity 1.6s var(--ease),transform 1.6s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav{grid-template-columns:1fr auto}nav .l{display:none}.mono{justify-self:start;font-size:20px}
+  .eves,.menu .cols{grid-template-columns:1fr}.eves{max-width:420px;margin:0 auto}
+  .nums{grid-template-columns:1fr 1fr}.nums div:nth-child(2){border-right:0}.nums div{border-bottom:1px solid var(--line)}
+  form{grid-template-columns:1fr}.seal{width:80px;height:80px;font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.hc *{opacity:1!important;transform:none!important;letter-spacing:.08em}.draw{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="load" id="load"><svg viewBox="0 0 140 80" id="fanL"></svg></div>
+
+<nav id="nav" class="sc">
+  <div class="l"><a class="lk" href="#evenings">Evenings</a><a class="lk" href="#menu">Cocktails</a></div>
+  <a class="mono" href="#"><i><b>E</b></i><span class="gold">EMERALD</span></a>
+  <div class="r"><a class="btn" href="#rsvp"><span>Reserve</span></a></div>
+</nav>
+
+<header class="hero" id="hero">
+  <svg class="burst" viewBox="-100 -100 200 200" id="burst"></svg>
+  <div class="pat fans"></div>
+  <div class="spot fans" style="background-size:60px 30px"></div>
+  <div class="arch" id="arch"></div>
+  <canvas id="bub"></canvas>
+  <div class="hc">
+    <span class="sc">Jazz · Cocktails · Dancing</span>
+    <h1 class="gold"><span>THE EMERALD</span><span>ROOM</span></h1>
+    <div class="est">— Established mcmxxv —</div>
+    <p>Behind an unmarked green door, the roaring twenties never ended. Live jazz, gin in crystal coupes and dancing until the champagne runs dry.</p>
+    <div class="ctas"><a class="btn" href="#rsvp"><span>Request an invitation</span></a><a class="btn" href="#menu"><span>See the menu</span></a></div>
+  </div>
+  <div class="cue sc">Enter<i></i></div>
+</header>
+
+<main>
+  <section class="wrap intro">
+    <div class="orn rv" data-orn></div>
+    <h2 class="rv">An evening of <span class="gold">gold</span>, gin &amp; gentle mischief.</h2>
+    <p class="rv">Since 1925 the Emerald Room has kept its secrets — from prohibition agents, gossip columnists and anyone who forgot the password. Our walls are lacquered in green, our brass is polished nightly, and our bartenders still stir every martini exactly forty times. Dress beautifully. Arrive curious. Leave when the band says so.</p>
+  </section>
+
+  <section class="wrap" id="evenings">
+    <div class="hd"><span class="sc rv" style="color:var(--g2)">Every night of the week</span><h2 class="rv">The <span class="gold">Evenings</span></h2></div>
+    <div class="eves" id="eves"></div>
+  </section>
+
+  <section class="wrap" id="menu">
+    <div class="menu rv">
+      <svg class="corner tl" viewBox="0 0 64 64"><path d="M2 62V2h60M10 54V10h44M18 46V18h28" fill="none" stroke="#d4af37"/><path d="M2 2l16 16" stroke="#d4af37"/></svg>
+      <svg class="corner tr" viewBox="0 0 64 64"><path d="M2 62V2h60M10 54V10h44M18 46V18h28" fill="none" stroke="#d4af37"/><path d="M2 2l16 16" stroke="#d4af37"/></svg>
+      <svg class="corner bl" viewBox="0 0 64 64"><path d="M2 62V2h60M10 54V10h44M18 46V18h28" fill="none" stroke="#d4af37"/><path d="M2 2l16 16" stroke="#d4af37"/></svg>
+      <svg class="corner br" viewBox="0 0 64 64"><path d="M2 62V2h60M10 54V10h44M18 46V18h28" fill="none" stroke="#d4af37"/><path d="M2 2l16 16" stroke="#d4af37"/></svg>
+      <div class="hd" style="margin:0"><span class="sc" style="color:var(--g2)">From the bar</span><h2>Cocktail <span class="gold">Menu</span></h2><div class="orn" data-orn style="margin-top:14px"></div></div>
+      <div class="cols" id="cols"></div>
+    </div>
+  </section>
+
+  <section class="wrap nums">
+    <div class="rv"><b class="gold" data-n="1925">0</b><span class="sc">Established</span></div>
+    <div class="rv"><b class="gold" data-n="12">0</b><span class="sc">Piece big band</span></div>
+    <div class="rv"><b class="gold" data-n="40">0</b><span class="sc">Stirs per martini</span></div>
+    <div class="rv"><b class="gold" data-n="88">0</b><span class="sc">Seats only</span></div>
+  </section>
+
+  <section class="wrap rsvp" id="rsvp">
+    <div class="card rv">
+      <svg class="corner tl" viewBox="0 0 64 64" style="left:6px;top:6px"><path d="M2 62V2h60M10 54V10h44" fill="none" stroke-width="1.5"/></svg>
+      <svg class="corner tr" viewBox="0 0 64 64" style="right:6px;top:6px"><path d="M2 62V2h60M10 54V10h44" fill="none" stroke-width="1.5"/></svg>
+      <svg class="corner bl" viewBox="0 0 64 64" style="left:6px;bottom:6px"><path d="M2 62V2h60M10 54V10h44" fill="none" stroke-width="1.5"/></svg>
+      <svg class="corner br" viewBox="0 0 64 64" style="right:6px;bottom:6px"><path d="M2 62V2h60M10 54V10h44" fill="none" stroke-width="1.5"/></svg>
+      <span class="sc">You are cordially invited</span>
+      <h2>R · S · V · P</h2>
+      <div class="bod">The pleasure of your company is requested</div>
+      <form id="f">
+        <div class="f full"><label for="n">Name</label><input id="n" required></div>
+        <div class="f"><label for="d">Evening</label><input id="d" type="date" required></div>
+        <div class="f"><label for="t">Arrival</label><select id="t"><option>8:00 pm</option><option selected>9:00 pm</option><option>10:30 pm</option><option>After midnight</option></select></div>
+        <div class="f"><label for="g">Party of</label><select id="g"><option>Two</option><option>Four</option><option>Six</option><option>Eight</option></select></div>
+        <div class="f"><label for="p">Password</label><input id="p" placeholder="the bee's knees" required></div>
+        <button class="btn" type="submit"><span>Seal the invitation</span></button>
+        <div id="msg"></div>
+      </form>
+      <div class="seal" id="seal">E</div>
+    </div>
+  </section>
+</main>
+
+<footer><svg class="sky" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMax slice" id="sky"></svg>
+  <div class="frow sc"><span>© 2026 The Emerald Room</span><span>Tue–Sun · 8pm until late</span><span>A portfolio design study</span></div></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const G='#d4af37';
+
+// loader fan
+$('fanL').innerHTML=Array.from({length:9},(_,i)=>`<g class="r" style="--a:${-80+i*20}deg"><path d="M70 70 L70 6" stroke="${G}" stroke-width="1.5"/><circle cx="70" cy="6" r="3" fill="${G}"/></g>`).join('')+`<path d="M10 70 A60 60 0 0 1 130 70" fill="none" stroke="${G}"/><circle cx="70" cy="70" r="6" fill="${G}"/>`;
+addEventListener('load',()=>setTimeout(()=>$('load').classList.add('done'),900));setTimeout(()=>$('load').classList.add('done'),3500);
+
+// sunburst rays
+$('burst').innerHTML=Array.from({length:72},(_,i)=>{const a=i*5*Math.PI/180,w=i%2?.6:1.6,r=100;
+  const x1=Math.cos(a-w*Math.PI/180)*r,y1=Math.sin(a-w*Math.PI/180)*r,x2=Math.cos(a+w*Math.PI/180)*r,y2=Math.sin(a+w*Math.PI/180)*r;
+  return `<path d="M0 0L${x1.toFixed(2)} ${y1.toFixed(2)}L${x2.toFixed(2)} ${y2.toFixed(2)}Z" fill="${G}" opacity="${i%2?.5:1}"/>`}).join('');
+
+// stepped deco arch, drawn line by line
+(function(){const W=760,H=820;let s='';
+  const arch=(inset,step)=>{const x0=inset,x1=W-inset,y1=H-10,top=60+inset,r=(x1-x0)/2,cx=W/2;
+    return `M${x0} ${y1} V${top+r} A${r} ${r} 0 0 1 ${x1} ${top+r} V${y1}`};
+  [0,16,30].forEach((ins,i)=>s+=`<path class="draw" pathLength="1" d="${arch(ins)}" fill="none" stroke="${G}" stroke-width="${i?1:1.6}" opacity="${1-i*.25}" style="animation-delay:${.4+i*.25}s"/>`);
+  // stepped shoulders + keystone
+  s+=`<path class="draw" pathLength="1" d="M${W/2-60} 46 L${W/2} 6 L${W/2+60} 46" fill="none" stroke="${G}" style="animation-delay:1.2s"/>`;
+  s+=`<path class="draw" pathLength="1" d="M${W/2-26} 30 L${W/2} 16 L${W/2+26} 30" fill="none" stroke="${G}" style="animation-delay:1.4s"/>`;
+  [[-1],[1]].forEach(([d])=>{const x=d<0?0:W;s+=`<path class="draw" pathLength="1" d="M${x} ${H-10} h${-d*-40} M${x+d*-16} ${H-40} h${-d*-60} M${x+d*-30} ${H-70} h${-d*-80}" fill="none" stroke="${G}" stroke-width="1" style="animation-delay:1.6s"/>`});
+  // inner radiating lines at the crown
+  for(let i=0;i<13;i++){const a=Math.PI+i*Math.PI/12,r1=170,r2=330,cx=W/2,cy=60+30+(W-60)/2;
+    s+=`<path class="draw" pathLength="1" d="M${cx+Math.cos(a)*r1} ${cy+Math.sin(a)*r1} L${cx+Math.cos(a)*r2} ${cy+Math.sin(a)*r2}" stroke="${G}" stroke-width=".7" opacity=".35" style="animation-delay:${1.6+i*.04}s"/>`}
+  $('arch').innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${s}</svg>`})();
+
+// ornament divider
+const orn=`<svg viewBox="0 0 420 30"><g fill="none" stroke="${G}"><path d="M0 15H160M260 15H420"/><path d="M40 10H150M270 10H380M40 20H150M270 20H380" opacity=".5"/>
+  <path d="M210 2 L224 15 L210 28 L196 15Z" fill="${G}"/><path d="M180 15 L196 15M224 15 L240 15"/><circle cx="170" cy="15" r="4"/><circle cx="250" cy="15" r="4"/></g></svg>`;
+document.querySelectorAll('[data-orn]').forEach(e=>e.innerHTML=orn);
+
+// champagne bubbles + spotlight
+const hero=$('hero'),bc=$('bub'),bx=bc.getContext('2d');let bw,bh,bubbles=[];
+function fit(){const d=Math.min(devicePixelRatio,2);bw=hero.clientWidth;bh=hero.clientHeight;bc.width=bw*d;bc.height=bh*d;bx.setTransform(d,0,0,d,0,0)}
+fit();addEventListener('resize',fit);
+for(let i=0;i<70;i++)bubbles.push({x:Math.random(),y:Math.random(),r:.6+Math.random()*2.2,s:.15+Math.random()*.5,w:Math.random()*6});
+let vis=true;new IntersectionObserver(([e])=>vis=e.isIntersecting).observe(hero);
+(function loop(t){requestAnimationFrame(loop);if(!vis)return;bx.clearRect(0,0,bw,bh);
+  bubbles.forEach(b=>{b.y-=b.s/bh*1.6;if(b.y<-.02){b.y=1.02;b.x=Math.random()}
+    const x=b.x*bw+Math.sin(t/900+b.w)*6,y=b.y*bh;bx.beginPath();bx.arc(x,y,b.r,0,7);bx.strokeStyle='rgba(243,220,138,.55)';bx.lineWidth=.8;bx.stroke();
+    bx.fillStyle='rgba(255,244,198,.18)';bx.fill()})})(0);
+hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();hero.style.setProperty('--mx',e.clientX-r.left+'px');hero.style.setProperty('--my',e.clientY-r.top+'px')});
+
+// evenings: arched windows with deco line art
+const ART={
+  coupe:`<path class="ln" pathLength="1" d="M90 150 Q150 215 210 150 Z M150 196 V300 M110 304 H190" fill="none" stroke="${G}" stroke-width="2"/><path class="ln" pathLength="1" d="M98 160 H202" stroke="${G}"/>
+    ${[0,1,2,3,4].map(i=>`<circle class="ln" pathLength="1" cx="${130+i*10}" cy="${132-i*14}" r="${3+i%2}" fill="none" stroke="${G}"/>`).join('')}`,
+  horn:`<path class="ln" pathLength="1" d="M150 300 V210 M150 210 L80 110 Q150 90 220 110 Z" fill="none" stroke="${G}" stroke-width="2"/><circle class="ln" pathLength="1" cx="150" cy="310" r="40" fill="none" stroke="${G}"/>
+    <circle class="ln" pathLength="1" cx="150" cy="310" r="26" fill="none" stroke="${G}"/>${[0,1,2,3,4].map(i=>`<path class="ln" pathLength="1" d="M150 210 L${96+i*27} ${110+Math.abs(2-i)*4}" stroke="${G}" stroke-width=".7"/>`).join('')}`,
+  moon:`<path class="ln" pathLength="1" d="M180 110 A70 70 0 1 0 190 240 A56 56 0 1 1 180 110Z" fill="none" stroke="${G}" stroke-width="2"/>
+    ${[[90,120],[220,170],[110,270],[230,280],[150,320]].map(([x,y])=>`<path class="ln" pathLength="1" d="M${x} ${y-10}L${x+3} ${y-3}L${x+10} ${y}L${x+3} ${y+3}L${x} ${y+10}L${x-3} ${y+3}L${x-10} ${y}L${x-3} ${y-3}Z" fill="none" stroke="${G}"/>`).join('')}`};
+const EV=[['coupe','Gin Fridays','Friday · 9pm','The twelve-piece band, gin cocktails by the coupe and the Charleston until 2am.'],
+  ['horn','Hot Jazz Nights','Wednesday · 10pm','Brass, swing and smoky vocals. Requests honoured, especially the scandalous ones.'],
+  ['moon','Midnight Masquerade','Last Saturday · 11pm','Masks mandatory, names optional. The most glamorous secret in the city.']];
+$('eves').innerHTML=EV.map(([k,n,w,d],i)=>`<article class="eve rv" style="transition-delay:${i*.15}s"><div class="win"><div class="fan fans"></div>
+  <svg viewBox="0 0 300 420" preserveAspectRatio="xMidYMid meet"><g transform="translate(0 20)">${ART[k]}</g>
+  ${Array.from({length:9},(_,j)=>`<path class="ln" pathLength="1" d="M150 400 L${150+Math.cos(Math.PI+j*Math.PI/8)*150} ${400+Math.sin(Math.PI+j*Math.PI/8)*150}" stroke="${G}" stroke-width=".5" opacity=".35"/>`).join('')}</svg></div>
+  <h3>${n}</h3><div class="when">${w}</div><p>${d}</p></article>`).join('');
+
+// cocktail menu
+const DR=[['The Gatsby','18','Gin, champagne, lemon, a whisper of elderflower'],['Green Light','16','Absinthe rinse, rye, chartreuse, mint'],['Daisy\'s Coupe','17','Vodka, crème de violette, sparkling rosé'],['Old Sport','19','Bourbon, demerara, orange bitters, smoke'],
+  ['Bee\'s Knees','15','Gin, honey syrup, fresh lemon'],['Speakeasy Sour','16','Pisco, egg white, lime, angostura'],['Roaring Negroni','17','Gin, vermouth rosso, bitter, gold leaf'],['Midnight Fizz','18','Cognac, coffee, cream, a dusting of cocoa']];
+$('cols').innerHTML=DR.map(([n,p,i])=>`<div class="item"><div class="top"><span class="nm">${n}</span><span class="dots"></span><span class="pr">$${p}</span></div><div class="ing">${i}</div></div>`).join('');
+
+// art deco skyline
+(function(){let s=`<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f4d3a"/><stop offset="1" stop-color="#08090a"/></linearGradient></defs>`;
+  const B=[[0,90,120],[90,70,170],[150,110,130],[250,60,200],[300,100,150],[390,80,190],[460,120,140],[570,70,230,1],[630,100,160],[720,80,200],[790,110,130],[890,70,180],[950,90,150],[1030,80,190],[1100,100,140]];
+  B.forEach(([x,w,h,spire])=>{const y=240-h;s+=`<path d="M${x} 240V${y+20}h${w*.15}v-10h${w*.15}v-10h${w*.4}v10h${w*.15}v10h${w*.15}V240Z" fill="url(#sg)" stroke="${G}" stroke-width=".8" opacity=".9"/>`;
+    for(let wy=y+34;wy<236;wy+=14)for(let wx=x+8;wx<x+w-8;wx+=12)if(Math.random()<.35)s+=`<rect x="${wx}" y="${wy}" width="4" height="6" fill="#f3dc8a" opacity="${.3+Math.random()*.6}"/>`;
+    if(spire){const cx=x+w/2;s+=`<path d="M${cx-20} ${y} L${cx} ${y-90} L${cx+20} ${y}Z" fill="url(#sg)" stroke="${G}"/>`;for(let k=0;k<5;k++)s+=`<path d="M${cx-16+k*3} ${y-10-k*14} A${18-k*3} ${18-k*3} 0 0 1 ${cx+16-k*3} ${y-10-k*14}" fill="none" stroke="${G}" stroke-width=".8"/>`}});
+  $('sky').innerHTML=s})();
+
+// nav + reveals + count-up
+addEventListener('scroll',()=>$('nav').classList.toggle('solid',scrollY>innerHeight*.6),{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);
+  const b=e.target.querySelector('[data-n]');if(b){const n=+b.dataset.n,t0=performance.now();(function f(t){const p=Math.min((t-t0)/2200,1);b.textContent=Math.round(n*(1-Math.pow(1-p,4)));if(p<1)requestAnimationFrame(f)})(t0)}}),{threshold:.2});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+// RSVP: wax seal
+$('d').value=new Date(Date.now()+7*864e5).toISOString().slice(0,10);
+$('f').onsubmit=e=>{e.preventDefault();$('seal').classList.remove('on');void $('seal').offsetWidth;$('seal').classList.add('on');
+  $('msg').textContent=`Splendid, ${$('n').value.split(' ')[0]||'darling'}. Your table for ${$('g').value.toLowerCase()} awaits — knock three times.`};
+</script>
+</body>
+</html>

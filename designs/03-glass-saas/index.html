@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova — Glass AI Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070f;--v:#8b5cf6;--c:#22d3ee;--m:#f472b6;--tx:#eceaff;--mu:#9b98b8;--gl:rgba(255,255,255,.06);--gb:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:Sora,sans-serif;overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+.mono{font-family:'JetBrains Mono',monospace}
+.grad{background:linear-gradient(100deg,var(--c),var(--v) 50%,var(--m));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shift 6s ease-in-out infinite alternate}
+@keyframes shift{to{background-position:100% 0}}
+
+/* aurora */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;
+  background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:56px 56px;
+  mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 80%)}
+.orb{position:fixed;z-index:-2;border-radius:50%;filter:blur(110px);opacity:.55;animation:drift 18s ease-in-out infinite alternate}
+.o1{width:520px;height:520px;background:var(--v);top:-120px;left:-120px}
+.o2{width:460px;height:460px;background:var(--c);top:20%;right:-140px;animation-delay:-6s;opacity:.4}
+.o3{width:420px;height:420px;background:var(--m);bottom:-120px;left:30%;animation-delay:-11s;opacity:.35}
+@keyframes drift{to{transform:translate(90px,60px) scale(1.2)}}
+
+/* glass */
+.glass{background:var(--gl);border:1px solid var(--gb);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-radius:24px;box-shadow:0 20px 60px -20px #000a, inset 0 1px 0 #ffffff1a;position:relative;overflow:hidden}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(139,92,246,.28),transparent 60%)}
+.glass:hover::before{opacity:1}
+
+nav{position:sticky;top:16px;z-index:50;margin-top:16px}
+.nb{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 12px 24px;border-radius:999px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px}
+.logo i{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 180deg,var(--c),var(--v),var(--m),var(--c));box-shadow:0 0 20px var(--v);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nb ul{display:flex;gap:34px;list-style:none;font-size:14px;color:var(--mu)}
+.nb ul a:hover{color:#fff}
+.btn{display:inline-block;border:0;cursor:pointer;font:600 14px Sora;color:#fff;padding:12px 24px;border-radius:999px;
+  background:linear-gradient(120deg,var(--v),var(--c));box-shadow:0 0 0 0 #8b5cf600,0 10px 30px -8px var(--v);transition:.3s;position:relative}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 30px 2px #8b5cf688,0 14px 34px -8px var(--c)}
+.btn.ghost{background:var(--gl);border:1px solid var(--gb);box-shadow:none;backdrop-filter:blur(10px)}
+.btn.ghost:hover{background:#ffffff14}
+
+.hero{text-align:center;padding:110px 0 60px}
+.pill{display:inline-flex;gap:10px;align-items:center;padding:7px 16px;border-radius:999px;font-size:13px;margin-bottom:30px;color:#cfc9ff}
+.pill b{background:linear-gradient(120deg,var(--v),var(--m));padding:2px 10px;border-radius:999px;font-size:11px;color:#fff}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px #4ade80;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+h1{font-size:clamp(44px,7.4vw,98px);line-height:1.02;font-weight:700;letter-spacing:-.04em;max-width:960px;margin:0 auto 26px}
+.hero p{color:var(--mu);max-width:600px;margin:0 auto 38px;font-size:18px}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+.dash{margin-top:80px;padding:18px;transform:perspective(1400px) rotateX(10deg);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.dash:hover{transform:perspective(1400px) rotateX(0)}
+.bar{display:flex;gap:7px;margin-bottom:16px;align-items:center}
+.bar i{width:11px;height:11px;border-radius:50%;background:#ffffff30}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{margin-left:14px;font-size:12px;color:var(--mu)}
+.dg{display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:14px}
+.side{grid-row:span 3;border-radius:16px;background:#ffffff08;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--mu);text-align:left}
+.side div{padding:9px 12px;border-radius:10px}.side .on{background:linear-gradient(120deg,#8b5cf655,#22d3ee33);color:#fff}
+.kpi{border-radius:16px;background:#ffffff08;padding:18px;text-align:left}
+.kpi small{color:var(--mu);font-size:12px}.kpi b{display:block;font-size:30px;letter-spacing:-.03em}
+.kpi em{font-style:normal;font-size:12px;color:#4ade80}
+.chart{grid-column:span 3;border-radius:16px;background:#ffffff08;padding:18px;height:230px;text-align:left}
+.chart svg{width:100%;height:170px}
+.line{stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 3s .6s forwards ease-out}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.logos{display:flex;justify-content:center;gap:clamp(24px,6vw,70px);flex-wrap:wrap;padding:70px 0 30px;color:#6e6b8c;font-weight:600;letter-spacing:.1em;font-size:15px}
+.logos span{transition:.3s}.logos span:hover{color:#fff;text-shadow:0 0 16px var(--v)}
+
+section.s{padding:100px 0}
+.hd{text-align:center;margin-bottom:60px}
+.hd small{color:var(--c);letter-spacing:.2em;font-size:12px;text-transform:uppercase}
+.hd h2{font-size:clamp(34px,5vw,60px);letter-spacing:-.035em;line-height:1.1;margin-top:12px}
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+.bc{padding:30px}
+.bc:nth-child(1){grid-column:span 4}.bc:nth-child(2){grid-column:span 2}.bc:nth-child(3){grid-column:span 2}.bc:nth-child(4){grid-column:span 4}
+.ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:20px;background:linear-gradient(135deg,#8b5cf655,#22d3ee33);border:1px solid var(--gb)}
+.bc h3{font-size:22px;letter-spacing:-.02em;margin-bottom:8px}
+.bc p{color:var(--mu);font-size:15px;max-width:440px}
+.code{margin-top:22px;background:#00000066;border-radius:14px;padding:16px 18px;font-size:13px;color:#b9b4ee;border:1px solid #ffffff10}
+.code .k{color:var(--m)}.code .s{color:var(--c)}.cur{display:inline-block;width:8px;height:15px;background:var(--c);vertical-align:-2px;animation:pulse 1s infinite}
+.meter{margin-top:22px;display:grid;gap:12px}
+.meter div{height:8px;border-radius:9px;background:#ffffff12;overflow:hidden}
+.meter i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--v),var(--c));box-shadow:0 0 14px var(--v);transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
+.in .meter i{width:var(--w)}
+.orbit{position:relative;height:130px;margin-top:10px}
+.orbit i{position:absolute;left:50%;top:50%;border-radius:50%;border:1px dashed #ffffff30;transform:translate(-50%,-50%)}
+.orbit i:nth-child(1){width:70px;height:70px}.orbit i:nth-child(2){width:120px;height:120px;animation:spin 14s linear infinite}
+.orbit i::after{content:"";position:absolute;top:-5px;left:50%;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 14px var(--c)}
+.orbit i:nth-child(1)::after{background:var(--m);box-shadow:0 0 14px var(--m)}
+.orbit i:nth-child(1){animation:spin 8s linear infinite reverse}
+
+.price-t{display:flex;justify-content:center;margin-bottom:40px}
+.tog{display:flex;padding:5px;border-radius:999px;gap:4px}
+.tog button{border:0;background:none;color:var(--mu);font:600 14px Sora;padding:10px 22px;border-radius:999px;cursor:pointer;transition:.3s}
+.tog button.on{background:linear-gradient(120deg,var(--v),var(--c));color:#fff;box-shadow:0 0 20px #8b5cf688}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+.pc{padding:34px;display:flex;flex-direction:column}
+.pc.hot{border-color:#8b5cf6aa;box-shadow:0 0 60px -10px #8b5cf6aa,inset 0 1px 0 #ffffff22;transform:translateY(-14px)}
+.pc h3{font-size:18px;color:var(--mu);font-weight:400}
+.amt{font-size:52px;font-weight:700;letter-spacing:-.04em;margin:10px 0 20px}.amt small{font-size:15px;color:var(--mu);font-weight:400}
+.pc ul{list-style:none;display:grid;gap:12px;margin-bottom:30px;color:#cfcbf0;font-size:15px;flex:1}
+.pc li::before{content:"✦";color:var(--c);margin-right:10px}
+.pc .btn{text-align:center}
+
+.final{padding:70px 40px;text-align:center}
+.final h2{font-size:clamp(34px,5vw,64px);letter-spacing:-.035em;line-height:1.08;margin-bottom:24px}
+footer{padding:50px 0;color:var(--mu);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+.rv{opacity:0;transform:translateY(40px) scale(.97);filter:blur(8px);transition:1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none;filter:none}
+@media(max-width:900px){.nb ul{display:none}.dg{grid-template-columns:1fr 1fr}.side{display:none}.chart{grid-column:span 2}
+ .bento,.pg{grid-template-columns:1fr}.bc:nth-child(n){grid-column:auto}.pc.hot{transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}.line{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="aurora"></div>
+
+<div class="wrap"><nav><div class="nb glass">
+  <a class="logo" href="#"><i></i>Nova</a>
+  <ul><li><a href="#features">Features</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#">Docs</a></li><li><a href="#">Changelog</a></li></ul>
+  <a class="btn" href="#pricing">Get started</a>
+</div></nav></div>
+
+<header class="hero wrap">
+  <div class="pill glass"><b>NEW</b> Nova 2.0 is live <span class="dot"></span></div>
+  <h1>Ship intelligence at <span class="grad">the speed of thought</span></h1>
+  <p>Nova is the AI workspace that turns raw data into decisions — instantly, securely, and beautifully.</p>
+  <div class="cta"><a class="btn" href="#pricing">Start free trial</a><a class="btn ghost" href="#features">Watch demo ▸</a></div>
+
+  <div class="dash glass">
+    <div class="bar"><i></i><i></i><i></i><span class="mono">nova.app / overview</span></div>
+    <div class="dg">
+      <div class="side"><div class="on">◆ Overview</div><div>◇ Models</div><div>◇ Pipelines</div><div>◇ Analytics</div><div>◇ Settings</div></div>
+      <div class="kpi"><small>Requests</small><b data-n="2480000">0</b><em>▲ 12.4%</em></div>
+      <div class="kpi"><small>Latency</small><b><span data-n="38">0</span>ms</b><em>▼ 8.1%</em></div>
+      <div class="kpi"><small>Uptime</small><b>99.99%</b><em>● stable</em></div>
+      <div class="chart"><small style="color:var(--mu);font-size:12px">Throughput · last 30 days</small>
+        <svg viewBox="0 0 600 170" preserveAspectRatio="none">
+          <defs><linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".5"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient>
+          <linearGradient id="l" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".6" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+          <path d="M0 130 C60 120 90 70 150 90 S240 140 300 80 S400 20 460 60 S560 40 600 20 V170 H0Z" fill="url(#a)"/>
+          <path class="line" d="M0 130 C60 120 90 70 150 90 S240 140 300 80 S400 20 460 60 S560 40 600 20" fill="none" stroke="url(#l)" stroke-width="3.5" stroke-linecap="round"/>
+        </svg></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap logos"><span>ORBITAL</span><span>QUANTUM·IO</span><span>HELIX</span><span>NEBULA</span><span>VERTEX</span></div>
+
+<section class="s wrap" id="features">
+  <div class="hd rv"><small>Features</small><h2>Everything you need,<br><span class="grad">nothing you don't</span></h2></div>
+  <div class="bento">
+    <div class="bc glass rv"><div class="ic">⚡</div><h3>Instant inference</h3><p>Deploy any model to the edge in one command and get responses in under 40ms, anywhere on earth.</p>
+      <div class="code mono"><span class="k">await</span> nova.<span class="s">deploy</span>({ model: <span class="s">"atlas-2"</span> })<span class="cur"></span></div></div>
+    <div class="bc glass rv"><div class="ic">🛡</div><h3>Private by design</h3><p>End-to-end encryption and zero data retention.</p><div class="orbit"><i></i><i></i></div></div>
+    <div class="bc glass rv"><div class="ic">📈</div><h3>Live analytics</h3><p>Watch usage, cost and quality in real time.</p></div>
+    <div class="bc glass rv"><div class="ic">🧠</div><h3>Adaptive learning</h3><p>Nova tunes itself on your feedback so every answer gets sharper over time.</p>
+      <div class="meter"><div><i style="--w:92%"></i></div><div><i style="--w:74%"></i></div><div><i style="--w:58%"></i></div></div></div>
+  </div>
+</section>
+
+<section class="s wrap" id="pricing">
+  <div class="hd rv"><small>Pricing</small><h2>Simple plans that <span class="grad">scale with you</span></h2></div>
+  <div class="price-t"><div class="tog glass" id="tog"><button class="on" data-m="1">Monthly</button><button data-m="0">Yearly −20%</button></div></div>
+  <div class="pg">
+    <div class="pc glass rv"><h3>Starter</h3><div class="amt">$<span data-p="19">19</span><small>/mo</small></div><ul><li>100K requests</li><li>2 team members</li><li>Community support</li></ul><a class="btn ghost" href="#">Choose Starter</a></div>
+    <div class="pc glass hot rv" style="transition-delay:.12s"><h3 style="color:var(--c)">Pro · Most popular</h3><div class="amt">$<span data-p="59">59</span><small>/mo</small></div><ul><li>5M requests</li><li>Unlimited members</li><li>Priority edge network</li><li>Advanced analytics</li></ul><a class="btn" href="#">Choose Pro</a></div>
+    <div class="pc glass rv" style="transition-delay:.24s"><h3>Enterprise</h3><div class="amt">Custom</div><ul><li>Unlimited everything</li><li>Dedicated cluster</li><li>SSO &amp; audit logs</li></ul><a class="btn ghost" href="#">Contact sales</a></div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-bottom:60px"><div class="final glass rv"><h2>Ready to build the <span class="grad">future?</span></h2><a class="btn" href="#">Start for free →</a></div></section>
+<footer class="wrap"><span>© 2026 Nova Labs</span><span class="mono">A portfolio design study</span></footer>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+// cursor glow on glass
+document.querySelectorAll('.glass').forEach(g=>g.addEventListener('pointermove',e=>{const r=g.getBoundingClientRect();g.style.setProperty('--mx',e.clientX-r.left+'px');g.style.setProperty('--my',e.clientY-r.top+'px')}));
+// count up
+document.querySelectorAll('[data-n]').forEach(el=>{const n=+el.dataset.n,t0=performance.now();
+  (function f(t){const p=Math.min((t-t0)/1800,1),v=Math.round(n*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString();if(p<1)requestAnimationFrame(f)})(t0)});
+// pricing toggle
+document.querySelectorAll('#tog button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tog button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('[data-p]').forEach(s=>s.textContent=b.dataset.m==='1'?s.dataset.p:Math.round(s.dataset.p*.8));
+});
+</script>
+</body>
+</html>

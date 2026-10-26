@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier Noma — Architecture &amp; Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bp:#0e2a5c;--bp2:#0a1d40;--paper:#eee9df;--ink:#171715;--acc:#ff5a1f;--line:rgba(255,255,255,.18);--m:clamp(18px,4vw,64px);--t:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:70px}
+body{background:var(--bp2);color:#eef3ff;font-family:'Space Grotesk',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;border:0;background:none}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.ser{font-family:Fraunces,serif;font-weight:300}
+.wrap{width:min(1280px,100% - 2*var(--m));margin-inline:auto}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:20px var(--m);mix-blend-mode:difference;color:#fff}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2em;font-size:15px}
+.logo svg{width:28px;height:28px}
+nav ul{display:flex;gap:clamp(18px,3vw,40px);list-style:none}
+nav ul a{position:relative;padding:4px 0}
+nav ul a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.7,0,.2,1)}
+nav ul a:hover::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:14px 22px;border:1px solid currentColor;position:relative;overflow:hidden;transition:color .5s;cursor:pointer}
+.btn::before{content:"";position:absolute;inset:0;background:var(--acc);transform:translateY(101%);transition:transform .5s cubic-bezier(.7,0,.2,1);z-index:-1}
+.btn{isolation:isolate}.btn:hover{color:#fff;border-color:var(--acc)}.btn:hover::before{transform:none}
+
+/* pinned scrollytelling stage */
+#story{height:560vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden;background:color-mix(in srgb,var(--paper) calc(var(--t)*100%),var(--bp))}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.grid{position:absolute;inset:0;pointer-events:none;opacity:calc(1 - var(--t)*.85);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px}
+.tb{position:absolute;z-index:3;font-size:12px}
+.title{left:var(--m);top:clamp(86px,12vh,120px);max-width:640px;pointer-events:none;color:color-mix(in srgb,var(--ink) calc(var(--t)*100%),#fff)}
+.title .mono{color:var(--acc)}
+.title h1{font-family:Fraunces,serif;font-weight:300;font-size:clamp(44px,7.4vw,118px);line-height:.94;letter-spacing:-.025em;margin-top:14px}
+.title h1 em{font-style:italic;color:var(--acc)}
+.sheet{right:var(--m);bottom:clamp(24px,5vh,50px);border:1px solid color-mix(in srgb,var(--ink) calc(var(--t)*100%),rgba(255,255,255,.5));display:grid;grid-template-columns:auto auto;color:color-mix(in srgb,var(--ink) calc(var(--t)*100%),#fff)}
+.sheet div{padding:8px 14px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;opacity:.9}
+.sheet div:nth-child(2n){border-right:0}.sheet div:nth-last-child(-n+2){border-bottom:0}
+.sheet b{font-weight:500}
+.step{position:absolute;z-index:3;left:var(--m);bottom:clamp(24px,5vh,50px);display:flex;gap:18px;align-items:flex-end;color:color-mix(in srgb,var(--ink) calc(var(--t)*100%),#fff);width:min(520px,60vw);height:150px}
+.step .n{font-family:Fraunces;font-weight:300;font-size:clamp(70px,9vw,140px);line-height:.8;color:var(--acc)}
+.step .txt{padding-bottom:6px;flex:1;min-width:0}
+.step h3{font-size:clamp(20px,2vw,28px);font-weight:500;letter-spacing:-.01em}
+.step p{opacity:.8;margin-top:6px;line-height:1.5;font-size:15px}
+.step .c{transition:opacity .7s,transform .7s;position:absolute;left:0;bottom:0;display:flex;gap:18px;align-items:flex-end;opacity:0;transform:translateY(16px);width:100%}
+.step .c.on{opacity:1;transform:none}
+.bar{position:absolute;z-index:3;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,60vw);height:3px;background:rgba(255,255,255,.2)}
+.bar i{display:block;height:100%;width:0;background:var(--acc)}
+.dim{position:absolute;z-index:3;pointer-events:none;font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.06em;color:#bcd0ff;opacity:0;transition:opacity .6s;white-space:nowrap}
+.dim::before{content:"";position:absolute;left:-18px;right:-18px;top:100%;height:1px;background:currentColor;margin-top:3px}
+.dim::after{content:"";position:absolute;left:-18px;top:calc(100% - 3px);height:8px;width:1px;background:currentColor;box-shadow:calc(100% + 36px) 0 0 currentColor}
+.dim.on{opacity:1}
+.hint{position:absolute;z-index:3;left:50%;top:clamp(86px,12vh,120px);transform:translateX(-50%);color:#9db6ee;transition:opacity .6s}
+
+/* sections after the story */
+section.s{background:var(--paper);color:var(--ink);padding:clamp(90px,12vw,170px) 0 0}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px 40px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.hd h2{font-family:Fraunces,serif;font-weight:300;font-size:clamp(40px,6vw,92px);line-height:.96;letter-spacing:-.02em}
+.hd h2 em{font-style:italic;color:var(--acc)}
+.hd p{max-width:380px;color:#55544d;line-height:1.6}
+.k{color:var(--acc)}
+
+/* project list */
+.list{border-top:1px solid var(--ink)}
+.pr{display:grid;grid-template-columns:60px 1.4fr 1fr 80px 40px;gap:16px;align-items:baseline;padding:clamp(16px,2vw,26px) 4px;border-bottom:1px solid #17171555;position:relative;cursor:default;transition:padding .5s cubic-bezier(.2,.8,.2,1),background .4s,color .4s}
+.pr .nm{font-family:Fraunces,serif;font-weight:300;font-size:clamp(28px,4.4vw,64px);line-height:1;letter-spacing:-.02em}
+.pr .mono{color:#6b6a62}
+.pr .ar{justify-self:end;font-size:26px;transition:transform .5s}
+.pr:hover{background:var(--ink);color:var(--paper);padding-inline:20px}
+.pr:hover .mono{color:#b5b3a8}.pr:hover .ar{transform:rotate(-45deg);color:var(--acc)}
+.peek{position:fixed;left:0;top:0;z-index:60;width:clamp(220px,24vw,360px);aspect-ratio:4/3;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.9);transition:opacity .3s,transform .5s cubic-bezier(.2,.8,.2,1);border:1px solid var(--ink);background:var(--paper)}
+.peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.peek svg{width:100%;height:100%;display:block}
+
+/* process */
+.proc{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-left:1px solid var(--ink)}
+.pc{border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:clamp(20px,2.4vw,34px);min-height:clamp(260px,26vw,380px);display:flex;flex-direction:column;justify-content:space-between;transition:background .5s,color .5s}
+.pc:hover{background:var(--bp);color:#fff}
+.pc .big{font-family:Fraunces,serif;font-weight:300;font-size:clamp(60px,8vw,120px);line-height:.8;color:var(--acc)}
+.pc h3{font-size:22px;font-weight:500}.pc p{margin-top:8px;color:#55544d;line-height:1.5;font-size:15px;transition:color .5s}
+.pc:hover p{color:#b8c8ee}
+.pc svg{width:100%;height:70px;margin-top:10px}
+.pc svg *{stroke:currentColor;fill:none;stroke-width:1.2}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:clamp(60px,8vw,110px) 0}
+.nums b{display:block;font-family:Fraunces,serif;font-weight:300;font-size:clamp(54px,7vw,110px);line-height:1;letter-spacing:-.03em}
+.nums span{color:#55544d}
+
+/* contact */
+.ct{background:var(--bp);color:#fff;padding:clamp(80px,10vw,140px) 0 30px;position:relative;overflow:hidden}
+.ct::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:80px 80px;opacity:.5}
+.ct .in{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(30px,6vw,100px);align-items:start}
+.ct h2{font-family:Fraunces,serif;font-weight:300;font-size:clamp(44px,6.4vw,100px);line-height:.95;letter-spacing:-.025em}
+.ct h2 em{font-style:italic;color:var(--acc)}
+.ct p{opacity:.8;max-width:420px;margin-top:20px;line-height:1.6}
+form{display:grid;gap:22px}
+.f{display:grid;gap:4px}.f label{opacity:.7}
+.f input,.f select{border-bottom:1px solid rgba(255,255,255,.5);padding:10px 0;font-size:18px;outline:0;border-radius:0;appearance:none;transition:border-color .4s}
+.f input:focus,.f select:focus{border-color:var(--acc)}
+.f select option{background:#0e2a5c}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+#msg{color:var(--acc);min-height:22px}
+.fbig{position:relative;font-family:Fraunces,serif;font-weight:300;font-size:clamp(60px,15vw,260px);line-height:.9;letter-spacing:-.04em;margin-top:clamp(60px,8vw,110px);color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.5)}
+.frow{position:relative;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;margin-top:30px;padding-top:18px;border-top:1px solid var(--line);opacity:.8}
+
+.rv{opacity:0;transform:translateY(30px);transition:opacity 1s,transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(max-width:900px){
+  nav ul{display:none}
+  .pr{grid-template-columns:34px 1fr auto;gap:8px}.pr .mono:nth-of-type(2),.pr .mono:nth-of-type(3){display:none}.pr .ar{display:none}
+  .proc{grid-template-columns:1fr 1fr}.nums{grid-template-columns:1fr 1fr}.ct .in{grid-template-columns:1fr}
+  .sheet{display:none}.step{max-width:calc(100% - 2*var(--m))}.step .n{font-size:64px}.bar{width:60vw}.dim{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+</head>
+<body>
+<nav class="mono"><a class="logo" href="#"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="22" height="22"/><path d="M3 14h14V3M14 25V14"/></svg>NOMA</a>
+  <ul><li><a href="#projects">Projects</a></li><li><a href="#process">Process</a></li><li><a href="#contact">Contact</a></li></ul>
+  <a class="btn" href="#contact"><span>Start a project</span></a></nav>
+
+<section id="story">
+  <div class="stage" id="stage">
+    <div class="grid"></div>
+    <canvas id="gl"></canvas>
+    <div class="tb title"><span class="mono">Atelier Noma · Architecture &amp; Design · Oslo</span><h1>We draw<br>what <em>endures.</em></h1></div>
+    <div class="hint mono" id="hint">↓ Scroll to build</div>
+    <div class="dim" id="d1">12.0 m</div><div class="dim" id="d2">18.6 m</div>
+    <div class="tb sheet mono"><div>Project</div><div><b>Villa Fjord</b></div><div>Scale</div><div><b>1:200</b></div><div>Sheet</div><div><b id="sh">A-001</b></div></div>
+    <div class="step">
+      <div class="c on"><div class="n">01</div><div class="txt"><span class="mono k">Site</span><h3>Read the land</h3><p>Every building begins as a quiet conversation with its site — light, slope, wind and view.</p></div></div>
+      <div class="c"><div class="n">02</div><div class="txt"><span class="mono k">Structure</span><h3>Raise the slabs</h3><p>Four cantilevered floors step along the ridge, each one reaching toward the fjord.</p></div></div>
+      <div class="c"><div class="n">03</div><div class="txt"><span class="mono k">Skin</span><h3>Wrap it in light</h3><p>Floor-to-ceiling glass and timber fins soften the edge between room and landscape.</p></div></div>
+      <div class="c"><div class="n">04</div><div class="txt"><span class="mono k">Landscape</span><h3>Plant the roof</h3><p>A green roof, a reflecting pool and silver birches stitch the house back into the hill.</p></div></div>
+    </div>
+    <div class="bar"><i id="pb"></i></div>
+  </div>
+</section>
+
+<section class="s" id="projects"><div class="wrap">
+  <div class="hd"><div><span class="mono k rv">Selected work</span><h2 class="rv" style="margin-top:14px">Buildings that<br><em>listen</em></h2></div><p class="rv">Twenty years of houses, galleries and public spaces — each one drawn from the ground up. Hover a project to preview its plan.</p></div>
+  <div class="list" id="list"></div>
+</div></section>
+<div class="peek" id="peek"></div>
+
+<section class="s" id="process"><div class="wrap">
+  <div class="hd"><div><span class="mono k rv">How we work</span><h2 class="rv" style="margin-top:14px">From sketch<br>to <em>site</em></h2></div><p class="rv">Four phases, one continuous thread — and the same small team from the first line to the last brick.</p></div>
+  <div class="proc">
+    <div class="pc rv"><div class="big">01</div><div><h3>Listen</h3><p>Site visits, brief and many cups of coffee.</p><svg viewBox="0 0 200 70"><path d="M0 60 Q50 10 100 40 T200 20"/><circle cx="100" cy="40" r="4"/></svg></div></div>
+    <div class="pc rv" style="transition-delay:.1s"><div class="big">02</div><div><h3>Sketch</h3><p>Hand drawings and cardboard models first.</p><svg viewBox="0 0 200 70"><path d="M10 60L10 20 60 10 60 60ZM60 10L120 20 120 60 60 60M120 20L190 8 190 58 120 60"/></svg></div></div>
+    <div class="pc rv" style="transition-delay:.2s"><div class="big">03</div><div><h3>Detail</h3><p>Every joint, junction and shadow line resolved.</p><svg viewBox="0 0 200 70"><rect x="10" y="10" width="80" height="50"/><path d="M10 35H90M50 10V60"/><circle cx="150" cy="35" r="24"/><path d="M126 35H174"/></svg></div></div>
+    <div class="pc rv" style="transition-delay:.3s"><div class="big">04</div><div><h3>Build</h3><p>We stay on site until the last key is turned.</p><svg viewBox="0 0 200 70"><path d="M10 62H190M30 62V30H70V62M90 62V16H140V62M150 62V40H180V62"/></svg></div></div>
+  </div>
+  <div class="nums" id="nums">
+    <div class="rv"><b data-n="64">0</b><span class="mono">Buildings completed</span></div>
+    <div class="rv"><b data-n="12">0</b><span class="mono">Design awards</span></div>
+    <div class="rv"><b data-n="9">0</b><span class="mono">Countries</span></div>
+    <div class="rv"><b data-n="20">0</b><span class="mono">Years of practice</span></div>
+  </div>
+</div></section>
+
+<section class="ct" id="contact"><div class="wrap">
+  <div class="in"><div><span class="mono" style="color:var(--acc)">Contact</span><h2 style="margin-top:14px">Let's draw<br>something <em>lasting.</em></h2><p>Tell us about your site and what you dream of building on it. We reply to every enquiry within three working days.</p></div>
+    <form id="f"><div class="f"><label class="mono" for="n">Name</label><input id="n" required></div><div class="f"><label class="mono" for="e">Email</label><input id="e" type="email" required></div>
+      <div class="row2"><div class="f"><label class="mono" for="t">Project type</label><select id="t"><option>Private house</option><option>Gallery / culture</option><option>Public building</option><option>Interior</option></select></div>
+        <div class="f"><label class="mono" for="b">Budget</label><select id="b"><option>€0.5 – 1M</option><option>€1 – 3M</option><option>€3M+</option></select></div></div>
+      <div><button class="btn" type="submit"><span>Send enquiry →</span></button></div><div id="msg" class="mono"></div></form></div>
+  <div class="fbig">Atelier Noma</div>
+  <div class="frow mono"><span>© 2026 Atelier Noma · Oslo</span><span>Instagram · Journal · Careers</span><span>A portfolio design study</span></div>
+</div></section>
+
+<script type="module">
+import * as THREE from 'three';
+const $=id=>document.getElementById(id);
+const stage=$('stage'),canvas=$('gl'),story=$('story');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.outputColorSpace=THREE.SRGBColorSpace;
+const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(32,1,.1,500);
+const hemi=new THREE.HemisphereLight(0xffffff,0x8a8576,0);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff1dc,0);sun.position.set(-22,30,16);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:90});sun.shadow.bias=-.0004;sun.shadow.radius=5;scene.add(sun);
+
+// ---- building: every part is a solid box with drawn edges; "solid" fades in at the end ----
+const parts=[];const root=new THREE.Group();scene.add(root);
+const WHITE=new THREE.Color('#ffffff'),INK=new THREE.Color('#171715');
+function box(w,h,d,x,y,z,o={}){const g=new THREE.BoxGeometry(w,h,d);g.translate(0,h/2,0);
+  const mat=new THREE.MeshStandardMaterial({color:o.color||'#d9d4c8',roughness:o.rough??.85,metalness:o.metal||0,transparent:true,opacity:0});
+  if(o.glass){mat.roughness=.08;mat.metalness=.1;mat.color.set('#9fc6d8')}
+  const m=new THREE.Mesh(g,mat);m.castShadow=!o.glass;m.receiveShadow=true;
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:1}));
+  const grp=new THREE.Group();grp.add(m,e);grp.position.set(x,y,z);root.add(grp);
+  parts.push({grp,m,e,at:o.at,len:o.len??.1,fill:o.fill??1,glass:!!o.glass,h,tx:o.dir});return grp}
+// ground / site
+const SITE=[];
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(80,60),new THREE.MeshStandardMaterial({color:'#cfc9b8',roughness:1,transparent:true,opacity:0}));gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;gnd.position.y=-.02;root.add(gnd);
+// plinth + terrace
+box(18,.5,10,0,0,0,{at:0.0,len:.1,color:'#b9b3a3'});
+// 4 stepped floors (slab + glass + fins)
+const FL=[{w:15,d:7.2,x:-.5,z:0},{w:16.5,d:6.8,x:1.2,z:-.3},{w:14.5,d:6.4,x:-1,z:.4},{w:12,d:6,x:1.4,z:0}];
+FL.forEach((f,i)=>{const y=.5+i*3.3,at=.08+i*.1;
+  box(f.w,.35,f.d,f.x,y+2.95,f.z,{at:at+.04,len:.1,color:'#e4dfd3'});                                    // slab above
+  box(f.w-1.2,2.8,f.d-1.2,f.x,y+.15,f.z,{at:at+.02,len:.1,glass:true,fill:.55});                      // glass volume
+  for(let k=0;k<=8;k++)box(.22,2.8,.22,f.x-f.w/2+.7+k*(f.w-1.4)/8,y+.15,f.z+f.d/2-.5,{at:at+.05,len:.08,color:'#c9a371'}); // timber fins
+  box(.4,2.95,.4,f.x-f.w/2+.5,y,f.z-f.d/2+.5,{at:at,len:.08,color:'#9c978a'});box(.4,2.95,.4,f.x+f.w/2-.5,y,f.z-f.d/2+.5,{at:at,len:.08,color:'#9c978a'});
+});
+// core
+box(3,13.8,3.2,-5.5,.5,-1.6,{at:.1,len:.25,color:'#a9a496'});
+// roof garden + pergola + pool
+box(12,.35,6,1.4,.5+12.3+.2,0,{at:.52,len:.1,color:'#6f8a52'});
+for(let k=0;k<5;k++)box(.18,2.4,.18,-3+k*2.4,13.35,2.2,{at:.58,len:.06,color:'#2b2a27'});
+box(11,.15,.5,1,15.7,2.2,{at:.62,len:.06,color:'#2b2a27'});
+box(10,.12,5,-1,.02,8.4,{at:.7,len:.08,color:'#4f7f93',rough:.1,metal:.2});
+// trees (cones + trunks)
+const TREES=[];
+function tree(x,z,s,at){const g=new THREE.Group();const tr=new THREE.Mesh(new THREE.CylinderGeometry(.08*s,.12*s,1.8*s,8),new THREE.MeshStandardMaterial({color:'#e8e2d3',roughness:.9,transparent:true,opacity:0}));tr.position.y=.9*s;tr.castShadow=true;g.add(tr);
+  const cr=new THREE.Mesh(new THREE.IcosahedronGeometry(1.1*s,1),new THREE.MeshStandardMaterial({color:'#7c9a52',roughness:.9,flatShading:true,transparent:true,opacity:0}));cr.position.y=2.5*s;cr.castShadow=true;g.add(cr);
+  const ed=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.1*s,1)),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:1}));ed.position.y=2.5*s;g.add(ed);
+  g.position.set(x,0,z);g.scale.setScalar(.001);root.add(g);TREES.push({g,tr,cr,ed,at})}
+[[-11,6,1.3,.68],[-9,9,1,.72],[12,7,1.2,.7],[10.5,10,.9,.76],[-12.5,-4,1.4,.74],[13,-5,1.1,.78],[-6,-8,1,.8],[7,-9,1.2,.82],[-14,1,1,.84]].forEach(a=>tree(...a));
+// site outline lines (always visible, the "plan")
+const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(34,.01,22)),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.7}));outline.position.y=.01;root.add(outline);
+const ring=new THREE.Mesh(new THREE.RingGeometry(26,26.1,160),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.35,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.02;root.add(ring);
+
+let narrow=false;
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;narrow=w/h<1;camera.fov=narrow?48:32;camera.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const sm=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+let target=0,p=0,mx=0,tx=0,vis=true;
+const read=()=>{const r=story.getBoundingClientRect();target=clamp(-r.top/(r.height-innerHeight))};
+addEventListener('scroll',read,{passive:true});read();p=target;
+addEventListener('pointermove',e=>tx=e.clientX/innerWidth-.5);
+new IntersectionObserver(([e])=>vis=e.isIntersecting).observe(stage);
+const BP=new THREE.Color('#0e2a5c'),PAPER=new THREE.Color('#eee9df'),cs=[...document.querySelectorAll('.step .c')],d1=$('d1'),d2=$('d2');
+const v=new THREE.Vector3();
+function proj(o,x,y,z){v.set(x,y,z).applyMatrix4(root.matrixWorld).project(camera);o.style.left=(v.x*.5+.5)*stage.clientWidth+'px';o.style.top=(-v.y*.5+.5)*stage.clientHeight+'px'}
+(function loop(){requestAnimationFrame(loop);if(!vis)return;
+  p+=(target-p)*.07;mx+=(tx-mx)*.05;
+  const t=sm(.62,.94,p);stage.style.setProperty('--t',t.toFixed(3));
+  // lighting + background
+  hemi.intensity=t*1.1;sun.intensity=t*2.6;
+  // camera orbit
+  const a=-.9+p*1.5+mx*.3,r=narrow?64:52-p*6,h=narrow?26:20+p*8;
+  camera.position.set(Math.sin(a)*r,h,Math.cos(a)*r);camera.lookAt(0,narrow?9:7+p*1,0);
+  // build-up
+  parts.forEach(o=>{const k=sm(o.at,o.at+o.len,p),rise=1-Math.pow(1-k,3);
+    o.grp.scale.y=Math.max(.001,rise);o.grp.visible=k>0;
+    o.m.material.opacity=sm(.58,.9,p)*(o.glass?.55:1);
+    o.e.material.opacity=1-t*(o.glass?.4:.75);o.e.material.color.copy(WHITE).lerp(INK,t)});
+  gnd.material.opacity=t;
+  TREES.forEach(o=>{const k=sm(o.at,o.at+.06,p);o.g.scale.setScalar(Math.max(.001,k));o.tr.material.opacity=o.cr.material.opacity=sm(.58,.9,p);o.ed.material.opacity=1-t*.8;o.ed.material.color.copy(WHITE).lerp(INK,t)});
+  outline.material.opacity=.7*(1-t);ring.material.opacity=.35*(1-t);outline.material.color.copy(WHITE);
+  renderer.render(scene,camera);
+  // UI
+  const si=Math.min(3,Math.floor(p*4.0001));cs.forEach((c,i)=>c.classList.toggle('on',i===si));$('pb').style.width=p*100+'%';
+  $('hint').style.opacity=1-sm(0,.05,p);$('sh').textContent='A-00'+(si+1);
+  root.updateMatrixWorld();proj(d1,-9,.6,-5.4);proj(d2,9,.6,5.6);d1.classList.toggle('on',p>.04&&p<.58);d2.classList.toggle('on',p>.04&&p<.58);
+})();
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+// project list with live plan previews
+const PR=[['Villa Fjord','Private house','Oslo, NO','2026','plan'],['Kunsthall Nord','Gallery','Bergen, NO','2025','vault'],['Birch Library','Public building','Helsinki, FI','2024','grid'],['Studio Ellipse','Interior','Copenhagen, DK','2023','ellipse'],['Terrace House','Private house','Lofoten, NO','2022','stairs']];
+const plan=k=>{const l='stroke="#171715" fill="none" stroke-width="1.4"';let s='';
+  if(k==='plan')s=`<rect x="30" y="30" width="200" height="120" ${l}/><path d="M30 80H140M140 30V100M140 100H230M90 80V150" ${l}/><rect x="150" y="110" width="70" height="30" ${l} stroke-dasharray="4 3"/><path d="M60 30A20 20 0 0 1 80 50" ${l}/>`;
+  if(k==='vault')s=Array.from({length:6},(_,i)=>`<path d="M${30+i*36} 150V90A18 40 0 0 1 ${66+i*36} 90V150" ${l}/>`).join('')+`<path d="M20 150H240" ${l}/>`;
+  if(k==='grid')s=Array.from({length:5},(_,i)=>Array.from({length:3},(_,j)=>`<rect x="${34+i*42}" y="${34+j*38}" width="34" height="30" ${l}/>`).join('')).join('');
+  if(k==='ellipse')s=`<ellipse cx="130" cy="90" rx="100" ry="58" ${l}/><ellipse cx="130" cy="90" rx="64" ry="34" ${l}/><path d="M30 90H230M130 32V148" ${l} stroke-dasharray="4 3"/>`;
+  if(k==='stairs')s=Array.from({length:8},(_,i)=>`<path d="M${30+i*26} ${150-i*14}H${56+i*26}V${136-i*14}" ${l}/>`).join('')+`<path d="M30 150H240" ${l}/>`;
+  return `<svg viewBox="0 0 260 180"><rect width="260" height="180" fill="#eee9df"/>${Array.from({length:12},(_,i)=>`<path d="M${i*22} 0V180" stroke="#17171512"/>`).join('')}${s}<text x="12" y="170" font-family="IBM Plex Mono" font-size="9" fill="#171715">PLAN · 1:200</text></svg>`};
+$('list').innerHTML=PR.map(([n,t,l,y,k],i)=>`<div class="pr rv" data-k="${k}" style="transition-delay:${i*.07}s"><span class="mono">0${i+1}</span><span class="nm">${n}</span><span class="mono">${t} · ${l}</span><span class="mono">${y}</span><span class="ar">→</span></div>`).join('');
+const peek=$('peek');let px=0,py=0,cx=0,cy=0;addEventListener('pointermove',e=>{px=e.clientX;py=e.clientY});
+(function f(){cx+=(px-cx)*.16;cy+=(py-cy)*.16;peek.style.left=cx+'px';peek.style.top=cy+'px';requestAnimationFrame(f)})();
+document.querySelectorAll('.pr').forEach(r=>{r.addEventListener('pointerenter',()=>{peek.innerHTML=plan(r.dataset.k);peek.classList.add('on')});r.addEventListener('pointerleave',()=>peek.classList.remove('on'))});
+// reveal + count
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);const b=e.target.querySelector('[data-n]');
+  if(b){const n=+b.dataset.n,t0=performance.now();(function g(t){const p=Math.min((t-t0)/1800,1);b.textContent=Math.round(n*(1-Math.pow(1-p,4)));if(p<1)requestAnimationFrame(g)})(t0)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+$('f').onsubmit=e=>{e.preventDefault();$('msg').textContent=`Thank you, ${$('n').value.split(' ')[0]}. We'll reply within three working days.`};
+</script>
+</body>
+</html>

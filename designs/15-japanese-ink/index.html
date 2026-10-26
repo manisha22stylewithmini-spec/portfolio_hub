@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shizuku 雫 — Ryokan &amp; Tea House, Kyoto</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3ede2;--paper2:#ebe3d4;--ink:#1d1b19;--gray:#6b655c;--shu:#c8402e;--line:#1d1b1922;--m:clamp(20px,5vw,80px);--slow:cubic-bezier(.22,.61,.36,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;line-height:1.8}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit;border:0;background:none}
+.min{font-family:'Shippori Mincho',serif}
+.brush{font-family:'Yuji Syuku',serif}
+.cap{font-size:11px;letter-spacing:.3em;text-transform:uppercase}
+.wrap{width:min(1180px,100% - 2*var(--m));margin-inline:auto}
+.v{writing-mode:vertical-rl;letter-spacing:.3em}
+/* washi paper: fine grain + long fibres */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.55;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .4  0 0 0 0 .33  0 0 0 .22 0'/%3E%3C/filter%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .18' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6  0 0 0 0 .55  0 0 0 0 .45  0 0 0 -1.6 1.05'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='.22'/%3E%3C/svg%3E")}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:24px var(--m);transition:background 1s,padding 1s}
+nav.solid{background:#f3ede2e8;backdrop-filter:blur(8px);padding-block:14px;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:12px;font-family:'Shippori Mincho';font-size:20px;letter-spacing:.24em}
+.hanko{width:34px;height:34px;display:grid;place-items:center;background:var(--shu);color:#fbe9e4;font-family:'Yuji Syuku';font-size:20px;border-radius:4px;transform:rotate(-4deg);box-shadow:inset 0 0 0 2px #fbe9e433;filter:url(#rough)}
+nav ul{display:flex;gap:clamp(18px,3vw,44px);list-style:none}
+nav ul a{position:relative;padding:4px 0}
+nav ul a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transition:transform 1s var(--slow)}
+nav ul a:hover::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:14px 28px;border:1px solid var(--ink);position:relative;overflow:hidden;transition:color .9s var(--slow);cursor:pointer}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateX(-101%);transition:transform .9s var(--slow)}
+.btn span{position:relative}
+.btn:hover{color:var(--paper)}.btn:hover::before{transform:none}
+.btn.shu{border-color:var(--shu);color:var(--shu)}.btn.shu::before{background:var(--shu)}
+
+/* hero */
+.hero{position:relative;height:100vh;min-height:680px;overflow:hidden}
+#ink{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.enso{position:absolute;left:50%;top:40%;width:min(56vh,78vw);aspect-ratio:1;transform:translate(-50%,-50%);z-index:1}
+.enso svg{width:100%;height:100%;overflow:visible}
+.kanji{position:absolute;inset:0;display:grid;place-items:center;font-family:'Yuji Syuku';font-size:min(24vh,30vw);line-height:1;opacity:0;filter:blur(14px);animation:appear 2.6s var(--slow) 2.6s forwards}
+@keyframes appear{to{opacity:.92;filter:blur(0)}}
+.hero .side{position:absolute;z-index:2;top:50%;transform:translateY(-50%);color:var(--gray)}
+.hero .side.l{left:var(--m)}.hero .side.r{right:var(--m);font-family:'Shippori Mincho';font-size:15px;color:var(--ink)}
+.hero .copy{position:absolute;z-index:4;left:0;right:0;bottom:clamp(90px,15vh,150px);text-align:center;opacity:0;animation:fade 2s var(--slow) 3.6s forwards}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.copy h1{font-family:'Shippori Mincho';font-weight:400;font-size:clamp(28px,3.4vw,50px);letter-spacing:.06em;line-height:1.3;text-shadow:0 0 24px var(--paper),0 0 12px var(--paper)}
+.copy p{color:#3a3632;margin:10px auto 0;display:inline-block;padding:2px 14px;background:#f3ede2cc;border-radius:20px}
+.mountains{position:absolute;left:0;right:0;bottom:0;height:34%;z-index:2;pointer-events:none}
+.mountains svg{position:absolute;bottom:0;left:-5%;width:110%;height:100%;will-change:transform}
+.mist{position:absolute;left:-20%;right:-20%;height:120px;background:radial-gradient(50% 50% at 50% 50%,#f3ede2f0,#f3ede200 70%);animation:drift 40s linear infinite}
+@keyframes drift{from{transform:translateX(-10%)}50%{transform:translateX(10%)}to{transform:translateX(-10%)}}
+.petal{position:absolute;top:-20px;z-index:3;width:12px;height:9px;background:#e9b7b4;border-radius:80% 0 80% 0;opacity:.75;pointer-events:none;animation:fall linear infinite}
+@keyframes fall{0%{transform:translate(0,-20px) rotate(0)}25%{transform:translate(40px,25vh) rotate(90deg)}50%{transform:translate(-10px,50vh) rotate(180deg)}75%{transform:translate(50px,75vh) rotate(270deg)}100%{transform:translate(0,105vh) rotate(360deg)}}
+.hint{position:absolute;z-index:4;left:50%;bottom:28px;transform:translateX(-50%);color:var(--gray);opacity:0;animation:fade 2s var(--slow) 4.4s forwards}
+
+/* intro */
+.intro{display:grid;grid-template-columns:auto 1fr;gap:clamp(30px,8vw,140px);padding:clamp(120px,16vw,220px) 0}
+.intro .v{font-family:'Shippori Mincho';font-size:clamp(20px,2.2vw,30px);line-height:2.2;height:clamp(360px,38vw,480px);align-self:start}
+.intro h2{font-family:'Shippori Mincho';font-weight:400;font-size:clamp(34px,4.6vw,72px);line-height:1.2;margin:18px 0 30px;max-width:760px}
+.intro h2 em{font-style:normal;color:var(--shu)}
+.intro p{color:var(--gray);max-width:560px;font-size:16px}
+.k{color:var(--shu);display:flex;align-items:center;gap:14px}
+.k::before{content:"";width:34px;height:1px;background:currentColor}
+
+/* rooms */
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px 40px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,70px)}
+.hd h2{font-family:'Shippori Mincho';font-weight:400;font-size:clamp(34px,4.4vw,64px);line-height:1.15;margin-top:14px}
+.hd p{max-width:360px;color:var(--gray)}
+.rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,44px)}
+.room .art{aspect-ratio:3/4;background:var(--paper2);position:relative;overflow:hidden;border:1px solid var(--line)}
+.room .art svg{position:absolute;inset:0;width:100%;height:100%;transition:transform 2.4s var(--slow)}
+.room:hover .art svg{transform:scale(1.05)}
+.room .art .stamp{position:absolute;right:16px;bottom:16px;width:30px;height:30px;background:var(--shu);color:#fbe9e4;display:grid;place-items:center;font-family:'Yuji Syuku';font-size:17px;border-radius:3px;filter:url(#rough)}
+.room h3{font-family:'Shippori Mincho';font-weight:500;font-size:clamp(22px,2vw,28px);margin:22px 0 4px;display:flex;justify-content:space-between;align-items:baseline}
+.room h3 small{font-family:'Yuji Syuku';font-size:18px;color:var(--gray)}
+.room p{color:var(--gray);font-size:15px}
+.room .meta{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+
+/* seasons */
+.seasons{display:flex;height:clamp(380px,48vw,540px);border-block:1px solid var(--line);margin-top:clamp(120px,15vw,200px)}
+.sea{flex:1;position:relative;overflow:hidden;border-right:1px solid var(--line);transition:flex 1.4s var(--slow);cursor:default;padding:clamp(20px,3vw,40px)}
+.sea:last-child{border-right:0}
+.sea::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 40%,var(--c),transparent 70%);opacity:0;transition:opacity 1.4s var(--slow)}
+.sea:hover,.sea.on{flex:2.6}.sea:hover::before,.sea.on::before{opacity:.35}
+.sea .kj{position:relative;font-family:'Yuji Syuku';font-size:clamp(70px,9vw,140px);line-height:1}
+.sea .nm{position:relative;margin-top:10px;color:var(--gray)}
+.sea .tx{position:absolute;left:clamp(20px,3vw,40px);right:clamp(20px,3vw,40px);bottom:clamp(20px,3vw,40px);opacity:0;transform:translateY(16px);transition:all 1.2s var(--slow) .2s;max-width:360px}
+.sea:hover .tx,.sea.on .tx{opacity:1;transform:none}
+.sea .tx h4{font-family:'Shippori Mincho';font-weight:500;font-size:22px;margin-bottom:6px}
+.sea .tx p{color:var(--gray);font-size:15px}
+
+/* tea ritual with a scroll-drawn ink line */
+.ritual{position:relative;padding:clamp(120px,15vw,200px) 0}
+.ritual .path{position:absolute;left:50%;top:clamp(260px,26vw,340px);bottom:120px;width:120px;transform:translateX(-50%);pointer-events:none}
+.ritual .path svg{width:100%;height:100%;overflow:visible}
+.steps{display:grid;gap:clamp(70px,10vw,140px);position:relative}
+.step{display:grid;grid-template-columns:1fr 1fr;gap:clamp(60px,12vw,200px);align-items:center}
+.step .n{font-family:'Yuji Syuku';font-size:clamp(60px,7vw,110px);line-height:1;color:var(--ink);opacity:.9}
+.step h3{font-family:'Shippori Mincho';font-weight:500;font-size:clamp(24px,2.4vw,34px);margin:6px 0 10px}
+.step p{color:var(--gray);max-width:420px}
+.step:nth-child(even) .a{order:2;text-align:left}.step:nth-child(odd) .a{text-align:right}
+.step:nth-child(odd) .b p{margin-left:0}
+.step .a .cap{color:var(--shu)}
+
+/* reservation */
+.resv{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,8vw,120px);padding:clamp(80px,10vw,140px) 0;border-top:1px solid var(--line)}
+.resv h2{font-family:'Shippori Mincho';font-weight:400;font-size:clamp(36px,4.6vw,68px);line-height:1.15;margin:16px 0 20px}
+.resv .haiku{font-family:'Shippori Mincho';color:var(--gray);line-height:2.1;margin-top:30px;padding-left:20px;border-left:2px solid var(--shu)}
+form{display:grid;gap:26px;align-content:center}
+.f{display:grid;gap:4px}
+.f label{color:var(--gray)}
+.f input,.f select{border-bottom:1px solid #1d1b1955;padding:10px 0;font-size:17px;outline:0;border-radius:0;appearance:none;font-family:'Shippori Mincho';transition:border-color .8s}
+.f input:focus,.f select:focus{border-color:var(--shu)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+#msg{font-family:'Shippori Mincho';color:var(--shu);min-height:28px;opacity:0;transition:opacity 1.6s}
+#msg.on{opacity:1}
+footer{border-top:1px solid var(--line);padding:clamp(60px,8vw,110px) 0 30px;text-align:center}
+.fk{font-family:'Yuji Syuku';font-size:clamp(90px,14vw,200px);line-height:1;opacity:.9}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;margin-top:40px;color:var(--gray)}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity 1.8s var(--slow),transform 1.8s var(--slow)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav ul{display:none}.hero .side{display:none}
+  .intro{grid-template-columns:1fr}.intro .v{writing-mode:horizontal-tb;letter-spacing:.1em;height:auto}
+  .rooms{grid-template-columns:1fr}
+  .seasons{flex-direction:column;height:auto}.sea{border-right:0;border-bottom:1px solid var(--line);min-height:150px}.sea .tx{position:relative;left:auto;right:auto;bottom:auto;opacity:1;transform:none;margin-top:14px}.sea::before{opacity:.25}
+  .step{grid-template-columns:1fr;gap:10px}.step .a,.step:nth-child(even) .a{order:0;text-align:left}.ritual .path{display:none}
+  .resv{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.kanji,.copy,.hint{opacity:1;filter:none;transform:none}.petal{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="2"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+  <filter id="brush" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="4" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="9" result="d"/><feGaussianBlur in="d" stdDeviation=".5"/></filter>
+  <filter id="wash" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="4" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="26" result="d"/><feGaussianBlur in="d" stdDeviation="1.6"/></filter>
+  <filter id="dry"><feTurbulence type="fractalNoise" baseFrequency=".9 .02" numOctaves="2" seed="3" result="t"/><feColorMatrix in="t" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.6" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter>
+</defs></svg>
+
+<nav id="nav" class="cap"><a class="logo" href="#"><span class="hanko">雫</span>SHIZUKU</a>
+  <ul><li><a href="#rooms">Rooms</a></li><li><a href="#seasons">Seasons</a></li><li><a href="#ritual">Tea ritual</a></li></ul>
+  <a class="btn" href="#stay"><span>Reserve</span></a></nav>
+
+<header class="hero" id="hero">
+  <div class="enso"><svg viewBox="0 0 400 400" id="enso"></svg><div class="kanji">雫</div></div>
+  <div class="side l cap v">Ryokan &amp; Tea House · Est. 1897</div>
+  <div class="side r v">静けさの中に　ひとしずく</div>
+  <div class="mountains" id="mnt"></div>
+  <canvas id="ink"></canvas>
+  <div class="copy"><h1>A single drop of stillness.</h1><p>Eleven rooms in the hills above Kyoto. Nothing more.</p></div>
+  <div class="hint cap">move to paint with ink</div>
+</header>
+
+<main>
+  <section class="wrap intro">
+    <div class="v rv">一期一会 ― 一生に一度の出会い</div>
+    <div><span class="k cap rv">Ichigo ichie · one time, one meeting</span>
+      <h2 class="rv">Quiet is the rarest <em>luxury</em> left in the world.</h2>
+      <p class="rv">For four generations our family has kept the same promise: tatami that smell of fresh rushes, a cedar bath under the stars and a cup of tea made slowly, as if it were the only one. Leave your watch at the door. Here, time is measured in steam and birdsong.</p></div>
+  </section>
+
+  <section class="wrap" id="rooms">
+    <div class="hd"><div><span class="k cap rv">Rooms</span><h2 class="rv">Eleven rooms,<br>eleven silences</h2></div><p class="rv">Each room faces its own garden and is named after the painting that hangs in its alcove.</p></div>
+    <div class="rooms" id="roomList"></div>
+  </section>
+
+  <section class="seasons" id="seasons">
+    <div class="sea on" style="--c:#efb7bd"><div class="kj">春</div><div class="nm cap">Haru · Spring</div><div class="tx"><h4>Under the cherry trees</h4><p>Breakfast on the engawa as petals fall into the koi pond. Hanami picnics prepared by our kitchen.</p></div></div>
+    <div class="sea" style="--c:#a9c7a0"><div class="kj">夏</div><div class="nm cap">Natsu · Summer</div><div class="tx"><h4>Fireflies and cold soba</h4><p>Evening walks along the stream, yukata cool against the skin, lanterns floating on the river.</p></div></div>
+    <div class="sea" style="--c:#d98a5f"><div class="kj">秋</div><div class="nm cap">Aki · Autumn</div><div class="tx"><h4>Maple fire</h4><p>The hills turn crimson. Moon-viewing on the roof with chestnut sweets and warm sake.</p></div></div>
+    <div class="sea" style="--c:#c9d3dd"><div class="kj">冬</div><div class="nm cap">Fuyu · Winter</div><div class="tx"><h4>Snow on the bath</h4><p>The cedar onsen steams under falling snow. Hot pot by the irori hearth until midnight.</p></div></div>
+  </section>
+
+  <section class="wrap ritual" id="ritual">
+    <div class="hd" style="justify-content:center;text-align:center"><div><span class="k cap rv" style="justify-content:center">Chanoyu</span><h2 class="rv">The way of tea</h2></div></div>
+    <div class="path"><svg viewBox="0 0 120 1000" preserveAspectRatio="none"><path id="inkpath" d="M60 0 C10 120 110 220 60 340 S10 560 60 680 S110 880 60 1000" fill="none" stroke="#1d1b19" stroke-width="5" stroke-linecap="round" filter="url(#brush)"/></svg></div>
+    <div class="steps">
+      <div class="step rv"><div class="a"><div class="n">一</div><span class="cap">Purify</span></div><div class="b"><h3>Wash the hands, quiet the mind</h3><p>At the stone basin in the garden, cold mountain water marks the threshold between the world and the tea room.</p></div></div>
+      <div class="step rv"><div class="a"><div class="n">二</div><span class="cap">Prepare</span></div><div class="b"><h3>Water, fire and bamboo</h3><p>Our tea master warms the bowl and measures the matcha with a bamboo scoop carved by her grandfather.</p></div></div>
+      <div class="step rv"><div class="a"><div class="n">三</div><span class="cap">Whisk</span></div><div class="b"><h3>A green, living foam</h3><p>Fifteen seconds of whisking. The sound is part of the ceremony — like rain on a paper screen.</p></div></div>
+      <div class="step rv"><div class="a"><div class="n">四</div><span class="cap">Receive</span></div><div class="b"><h3>Turn the bowl, and drink</h3><p>Turn the bowl twice so its most beautiful side faces your host. Drink in three slow sips. Bow.</p></div></div>
+    </div>
+  </section>
+
+  <section class="wrap resv" id="stay">
+    <div class="rv"><span class="k cap">Reservation</span><h2>Stay with us</h2><p style="color:var(--gray);max-width:420px">We welcome a small number of guests each night. Tell us when you would like to arrive and we will prepare your room.</p>
+      <div class="haiku">古池や<br>蛙飛び込む<br>水の音<br><span class="cap" style="color:var(--gray)">— Matsuo Bashō</span></div></div>
+    <form id="f" class="rv">
+      <div class="f"><label class="cap" for="nm">Name</label><input id="nm" required></div>
+      <div class="row2"><div class="f"><label class="cap" for="dt">Arrival</label><input id="dt" type="date" required></div>
+        <div class="f"><label class="cap" for="nt">Nights</label><select id="nt"><option>1 night</option><option selected>2 nights</option><option>3 nights</option><option>A full week</option></select></div></div>
+      <div class="row2"><div class="f"><label class="cap" for="gs">Guests</label><select id="gs"><option>1 guest</option><option selected>2 guests</option><option>3 guests</option></select></div>
+        <div class="f"><label class="cap" for="rm">Room</label><select id="rm"><option>Bamboo</option><option>Moon</option><option>Plum</option></select></div></div>
+      <div><button class="btn shu" type="submit"><span>Request a stay</span><span>→</span></button></div>
+      <div id="msg"></div>
+    </form>
+  </section>
+</main>
+
+<footer class="wrap"><div class="fk">静</div><p class="min" style="color:var(--gray);margin-top:10px">Stillness</p>
+  <div class="frow cap"><span>© 2026 Shizuku Ryokan · Kyoto</span><span>Instagram · Journal · Access</span><span>A portfolio design study</span></div></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+
+// ---------- ensō: a tapered brush circle revealed by an animated mask ----------
+(function(){
+  const cx=200,cy=200,R=150,start=-1.95,sweep=Math.PI*1.86,N=180,outer=[],inner=[];
+  for(let i=0;i<=N;i++){const t=i/N,a=start+t*sweep;
+    const w=(t<.05?t/.05:1)*(34*(1-t*.78))+Math.sin(t*23)*1.6+2;  // heavy start, thinning tail
+    const r=R+Math.sin(t*9)*2.5;
+    outer.push([cx+Math.cos(a)*(r+w/2),cy+Math.sin(a)*(r+w/2)]);inner.push([cx+Math.cos(a)*(r-w/2),cy+Math.sin(a)*(r-w/2)])}
+  const d='M'+outer.map(p=>p.join(' ')).join(' L')+' L'+inner.reverse().map(p=>p.join(' ')).join(' L')+'Z';
+  const arc=`M${cx+Math.cos(start)*R} ${cy+Math.sin(start)*R} A${R} ${R} 0 1 1 ${cx+Math.cos(start+sweep)*R} ${cy+Math.sin(start+sweep)*R}`;
+  $('enso').innerHTML=`<defs><mask id="em"><path d="${arc}" fill="none" stroke="#fff" stroke-width="70" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"><animate attributeName="stroke-dashoffset" from="1" to="0" dur="2.4s" begin=".5s" fill="freeze" calcMode="spline" keySplines=".4 0 .2 1" keyTimes="0;1"/></path></mask></defs>
+    <g mask="url(#em)"><path d="${d}" fill="#1d1b19" opacity=".14" filter="url(#wash)" transform="translate(3 4)"/><path d="${d}" fill="#1d1b19" filter="url(#brush)"/><path d="${d}" fill="#3a3632" opacity=".55" filter="url(#dry)"/></g>`;
+})();
+
+// ---------- ink-wash mountains (3 misty layers) ----------
+(function(){
+  const layers=[[.62,.18,'#5d5850',3],[.45,.32,'#3a3632',7],[.3,.55,'#1d1b19',13]];let h='';
+  layers.forEach(([amp,base,col,seed],i)=>{
+    let d='M0 400 ';for(let x=0;x<=1200;x+=10){const t=x/1200;
+      const y=400-(base*400+amp*400*(.5+.5*Math.sin(t*6.3+seed)*Math.sin(t*2.1+seed*.7))*Math.max(.2,1-Math.abs(t-.2*i-.3)*1.1)+Math.sin(t*40+seed)*6);d+=`L${x} ${y.toFixed(1)} `}
+    d+='L1200 400Z';
+    h+=`<svg viewBox="0 0 1200 400" preserveAspectRatio="none" data-depth="${(i+1)*.12}"><defs><linearGradient id="mg${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="${.85-i*.12}"/><stop offset=".7" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${d}" fill="url(#mg${i})" filter="url(#wash)"/></svg>`;
+    h+=`<div class="mist" style="bottom:${10+i*22}%;animation-duration:${36+i*14}s;animation-delay:-${i*9}s"></div>`});
+  $('mnt').innerHTML=h;
+})();
+
+// ---------- falling petals ----------
+for(let i=0;i<12;i++){const p=document.createElement('i');p.className='petal';p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=14+Math.random()*12+'s';p.style.animationDelay=-Math.random()*20+'s';p.style.transform=`scale(${.6+Math.random()*.8})`;$('hero').appendChild(p)}
+
+// ---------- sumi ink trail: brush stamps with bristles, slowly fading ----------
+const cv=$('ink'),cx=cv.getContext('2d');let W,H,dpr,last=null,width=10,idle=0;
+function fit(){dpr=Math.min(devicePixelRatio,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+fit();addEventListener('resize',fit);
+const bristles=Array.from({length:16},()=>({o:Math.random()*2-1,r:.5+Math.random()*1.6,a:.05+Math.random()*.1}));
+function stamp(x,y,nx,ny,w){
+  cx.fillStyle='rgba(29,27,25,.05)';cx.beginPath();cx.arc(x,y,w*.45,0,7);cx.fill();
+  bristles.forEach(b=>{const ox=x+nx*b.o*w*.5,oy=y+ny*b.o*w*.5;cx.fillStyle=`rgba(29,27,25,${b.a})`;cx.beginPath();cx.arc(ox,oy,b.r*(w/14+.4),0,7);cx.fill()})}
+$('hero').addEventListener('pointermove',e=>{
+  const r=cv.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top,t:performance.now()};idle=0;
+  if(last&&p.t-last.t<220){const dx=p.x-last.x,dy=p.y-last.y,dist=Math.hypot(dx,dy);if(dist<1)return;
+    const sp=dist/Math.max(1,p.t-last.t);width+=((Math.max(3,Math.min(24,26-sp*9)))-width)*.25;
+    const nx=-dy/dist,ny=dx/dist,steps=Math.ceil(dist/1.5);
+    for(let i=0;i<steps;i++){const t=i/steps;stamp(last.x+dx*t,last.y+dy*t,nx,ny,width)}}
+  last=p},{passive:true});
+(function fade(){idle++;cx.globalCompositeOperation='destination-out';cx.fillStyle=`rgba(0,0,0,${idle>150?.08:.018})`;cx.fillRect(0,0,W,H);cx.globalCompositeOperation='source-over';requestAnimationFrame(fade)})();
+
+// ---------- rooms with brush paintings ----------
+const art={
+  bamboo:()=>{let s='';[[110,0],[170,30],[230,10]].forEach(([x,o],k)=>{for(let y=420-o;y>-20;y-=70){s+=`<rect x="${x-7+k}" y="${y-64}" width="${14-k*2}" height="62" rx="5" fill="#2b2825" opacity="${.85-k*.18}"/>`}});
+    [[124,150,-30],[124,160,20],[182,90,-40],[182,96,15],[240,210,-20],[240,220,30],[124,280,25]].forEach(([x,y,a])=>s+=`<path d="M${x} ${y} q40 ${-8} 80 4 q-40 10 -80 -4Z" fill="#2b2825" opacity=".8" transform="rotate(${a} ${x} ${y})"/>`);
+    return `<g filter="url(#brush)">${s}</g>`},
+  moon:()=>`<circle cx="200" cy="170" r="92" fill="#1d1b19" opacity=".1" filter="url(#wash)"/><circle cx="200" cy="170" r="74" fill="none" stroke="#1d1b19" stroke-width="3" opacity=".7" filter="url(#brush)"/>
+    <g filter="url(#brush)" stroke="#1d1b19" stroke-linecap="round">${[330,352,372,392,410].map((y,i)=>`<path d="M${60+i*18} ${y} H${340-i*22}" stroke-width="${5-i*.7}" opacity="${.75-i*.12}"/>`).join('')}</g>
+    <path d="M40 300 Q200 280 360 300" stroke="#1d1b19" stroke-width="2" fill="none" opacity=".3" filter="url(#wash)"/>`,
+  plum:()=>`<g filter="url(#brush)"><path d="M20 470 C90 380 70 300 150 250 S260 190 300 110 S360 50 390 30" stroke="#1d1b19" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M150 250 C120 200 140 160 110 120" stroke="#1d1b19" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M300 110 C320 160 300 200 330 230" stroke="#1d1b19" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+    <g fill="#c8402e" filter="url(#rough)">${[[110,118],[130,170],[200,215],[255,170],[305,120],[330,232],[350,70],[180,240],[290,90]].map(([x,y])=>`<g transform="translate(${x} ${y})">${[0,72,144,216,288].map(a=>`<circle cx="${Math.cos(a*Math.PI/180)*6}" cy="${Math.sin(a*Math.PI/180)*6}" r="5.5" opacity=".85"/>`).join('')}<circle r="2.5" fill="#f3d36a"/></g>`).join('')}</g>`};
+const ROOMS=[['bamboo','Bamboo','竹','A quiet room facing the bamboo grove. Wind becomes music here.','2 guests','¥68,000'],
+  ['moon','Moon','月','Our highest room, with a private veranda for moon-viewing over the pond.','2 guests','¥92,000'],
+  ['plum','Plum','梅','A corner room beside the old plum tree, with its own cedar bath.','3 guests','¥84,000']];
+$('roomList').innerHTML=ROOMS.map(([k,n,j,d,g,p],i)=>`<article class="room rv" style="transition-delay:${i*.2}s"><div class="art"><svg viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">${art[k]()}</svg><span class="stamp">${j}</span></div>
+  <h3>${n} <small>${j}の間</small></h3><p>${d}</p><div class="meta cap"><span>${g}</span><span>From ${p} / night</span></div></article>`).join('');
+
+// ---------- seasons: hover/tap to open ----------
+document.querySelectorAll('.sea').forEach(s=>{const on=()=>document.querySelectorAll('.sea').forEach(x=>x.classList.toggle('on',x===s));s.addEventListener('pointerenter',on);s.addEventListener('click',on)});
+
+// ---------- scroll: nav, mountain parallax, ink path drawing ----------
+const path=$('inkpath'),len=path.getTotalLength();path.style.strokeDasharray=len;path.style.strokeDashoffset=len;
+const rit=$('ritual'),mts=[...document.querySelectorAll('#mnt svg')];
+function onScroll(){
+  $('nav').classList.toggle('solid',scrollY>innerHeight*.5);
+  mts.forEach(m=>m.style.transform=`translateY(${scrollY*+m.dataset.depth}px)`);
+  const r=rit.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight*.6-r.top)/(r.height*.85)));
+  path.style.strokeDashoffset=len*(1-p);
+}
+addEventListener('scroll',()=>requestAnimationFrame(onScroll),{passive:true});onScroll();
+
+// ---------- slow reveals ----------
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+// ---------- reservation ----------
+const d=new Date(Date.now()+14*864e5);$('dt').value=d.toISOString().slice(0,10);$('dt').min=new Date().toISOString().slice(0,10);
+$('f').onsubmit=e=>{e.preventDefault();const m=$('msg');m.textContent=`ありがとうございます — we will prepare the ${$('rm').value} room for ${$('nm').value||'you'}.`;m.classList.add('on')};
+</script>
+</body>
+</html>
