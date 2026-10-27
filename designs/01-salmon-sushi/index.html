@@ -152,7 +152,25 @@ footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
   .fork{height:380px}.blob-wrap{min-height:340px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,h1 .w span,.fade{opacity:1;transform:none}}
+
+/* ---------- real 3D sushi canvases (SVG art stays as a no-WebGL fallback) ---------- */
+.gl3d{position:absolute;display:block;pointer-events:auto;opacity:0;transition:opacity 1.2s}
+.gl3d.ready{opacity:1}
+#glHero{inset:-12% -10% -8% -6%;width:116%;height:120%;z-index:2;cursor:grab}
+.has3d .plate,.has3d .plate-in{display:none}
+#glStory{left:10%;top:12%;width:92%;height:88%;z-index:3;cursor:grab}
+.has3d .blob-wrap .nig,.has3d .blob-wrap .sprig{display:none}
+#glBand{inset:-6%;width:112%;height:112%;z-index:2}
+.has3d .plate2,.has3d .plate2-wrap .sprig{display:none}
+.has3d .plate2-wrap{aspect-ratio:1/1;width:100%}
+.card .dish img{position:relative;width:100%;height:auto;display:block;filter:drop-shadow(0 14px 12px rgba(42,77,65,.28));transition:transform .6s cubic-bezier(.2,.9,.3,1.2)}
+.card:hover .dish img{transform:translateY(-8px) rotate(-3deg) scale(1.06)}
+.has3d .card .dish{width:230px;height:170px}
+.has3d .card .dish svg{display:none}
 </style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
 </head>
 <body>
 
@@ -215,6 +233,7 @@ footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
       </div>
 
       <div class="plate-stage" id="stage">
+        <canvas class="gl3d" id="glHero" aria-label="A 3D plate of salmon nigiri"></canvas>
         <svg class="stamp" viewBox="0 0 150 90" aria-hidden="true">
           <rect x="3" y="3" width="144" height="84" fill="none" stroke="#cfe0d5" stroke-width="2"/><rect x="9" y="9" width="132" height="72" fill="none" stroke="#cfe0d5" stroke-width="1"/>
           <text x="75" y="42" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="22" fill="#cfe0d5">FRESH</text>
@@ -255,6 +274,7 @@ footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
         <path d="M4 80 H52 Q52 118 34 130 L34 506 Q34 516 28 516 Q22 516 22 506 L22 130 Q4 118 4 80Z" fill="url(#gold)"/>
         <path d="M27 130 V500" stroke="#fff6cf" stroke-width="2" opacity=".6"/>
       </svg>
+      <canvas class="gl3d" id="glStory" aria-label="A 3D salmon nigiri you can turn"></canvas>
       <div class="cap">The art<br>of Umami</div>
       <svg class="nig" viewBox="0 0 300 170"><use href="#nigiri"/></svg>
       <div class="sprig" style="left:24%;top:62%;width:90px;transform:rotate(-20deg)" data-sprig="1"></div>
@@ -291,6 +311,7 @@ footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
       <ul><li>Line-caught only</li><li>Zero freezer time</li><li>Traceable to the dock</li></ul>
     </div>
     <div class="plate2-wrap rv d1">
+      <canvas class="gl3d" id="glBand" aria-hidden="true"></canvas>
       <svg class="plate2" viewBox="0 0 560 560" width="100%">
         <circle cx="280" cy="300" r="250" fill="#10231c" opacity=".4" filter="url(#blotch)"/>
         <circle cx="280" cy="280" r="260" fill="url(#pl)"/><circle cx="280" cy="280" r="205" fill="url(#plin)"/>
@@ -314,9 +335,9 @@ footer{background:var(--green-dd);color:var(--cream);padding:46px 0}
     <h2 class="rv">Plates from the Tide</h2>
     <p class="sub rv d1">A small menu, changed with the season.</p>
     <div class="grid3">
-      <article class="card rv"><div class="dish"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Classic Nigiri</h3><p>Two pieces of line-caught salmon over warm rice with fresh dill.</p><span class="price">$14</span></article>
-      <article class="card rv d1"><div class="dish"><svg viewBox="0 0 300 170" style="transform:scaleX(-1)"><use href="#nigiri"/></svg></div><h3>Sunrise Sashimi</h3><p>Five delicate slices, yuzu zest, and pickled ginger on the side.</p><span class="price">$18</span></article>
-      <article class="card rv d2"><div class="dish"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Chef's Tide Set</h3><p>Our tasting of six nigiri, miso soup and a seasonal garden salad.</p><span class="price">$32</span></article>
+      <article class="card rv"><div class="dish" data-still="nigiri"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Classic Nigiri</h3><p>Two pieces of line-caught salmon over warm rice with fresh dill.</p><span class="price">$14</span></article>
+      <article class="card rv d1"><div class="dish" data-still="sashimi"><svg viewBox="0 0 300 170" style="transform:scaleX(-1)"><use href="#nigiri"/></svg></div><h3>Sunrise Sashimi</h3><p>Five delicate slices, yuzu zest, and pickled ginger on the side.</p><span class="price">$18</span></article>
+      <article class="card rv d2"><div class="dish" data-still="set"><svg viewBox="0 0 300 170"><use href="#nigiri"/></svg></div><h3>Chef's Tide Set</h3><p>Our tasting of six nigiri, miso soup and a seasonal garden salad.</p><span class="price">$32</span></article>
     </div>
   </div>
 </section>
@@ -359,6 +380,203 @@ addEventListener('mousemove',e=>{
     const d=+el.dataset.depth; el.style.translate=`${x*d}px ${y*d}px`;
   });
 });
+</script>
+<script type="module" id="sushi3d">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+/* =====================================================================
+   PROCEDURAL SUSHI — everything below is generated in code, no model files.
+   ===================================================================== */
+function rng(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return()=>(s=s*16807%2147483647)/2147483647}
+function cnv(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
+function tex(c,srgb=false,rep){const t=new THREE.CanvasTexture(c);t.anisotropy=8;if(srgb)t.colorSpace=THREE.SRGBColorSpace;if(rep){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rep[0],rep[1])}return t}
+
+// ---- salmon: colour map + bump map with diagonal fat marbling and muscle fibres ----
+function fishTextures(seed){
+  const W=1024,H=512,r=rng(seed),c1=cnv(W,H),c2=cnv(W,H),x=c1.getContext('2d'),b=c2.getContext('2d');
+  const g=x.createLinearGradient(0,0,W,H*.4);g.addColorStop(0,'#ff6a26');g.addColorStop(.5,'#f04a12');g.addColorStop(1,'#d93a0c');x.fillStyle=g;x.fillRect(0,0,W,H);
+  b.fillStyle='#808080';b.fillRect(0,0,W,H);
+  // myomere blocks: soft darker/lighter bands
+  for(let i=0;i<9;i++){const px=(i/9)*W*1.2-120;x.fillStyle=`rgba(${i%2?'190,50,20':'255,170,110'},.10)`;x.beginPath();x.moveTo(px,0);x.lineTo(px+230,0);x.lineTo(px+330,H);x.lineTo(px+100,H);x.fill()}
+  // fat lines (white-pink ribbons) with halo
+  const lines=[];for(let i=0;i<14;i++)lines.push({o:-260+i*(W+520)/13+(r()-.5)*40,w:5+r()*12,bow:(r()-.5)*70,a:.62+r()*.25});
+  x.lineCap=b.lineCap='round';
+  lines.forEach(L=>{const path=ctx=>{ctx.beginPath();ctx.moveTo(L.o,-20);ctx.bezierCurveTo(L.o+L.bow+80,H*.33,L.o-L.bow+190,H*.66,L.o+290,H+20)};
+    x.filter='blur(8px)';x.strokeStyle='rgba(255,140,90,.5)';x.lineWidth=L.w*3;path(x);x.stroke();
+    x.filter='blur(1.8px)';x.strokeStyle=`rgba(255,214,190,${L.a})`;x.lineWidth=L.w;path(x);x.stroke();
+    x.filter='none';x.strokeStyle='rgba(255,240,228,.8)';x.lineWidth=L.w*.28;path(x);x.stroke();
+    b.filter='blur(2px)';b.strokeStyle='rgba(215,215,215,.95)';b.lineWidth=L.w*1.1;path(b);b.stroke();b.filter='none'});
+  // fine muscle fibres
+  for(let i=0;i<520;i++){const o=r()*W*1.5-250,len=H*(.6+r()*.5);x.strokeStyle=`rgba(${r()<.5?'150,35,15':'255,205,170'},${.05+r()*.07})`;x.lineWidth=.6+r()*1.2;
+    x.beginPath();x.moveTo(o,r()*H*.2);x.lineTo(o+len*.55,r()*H*.2+len);x.stroke();
+    b.strokeStyle=`rgba(${r()<.5?60:200},${r()<.5?60:200},${r()<.5?60:200},.18)`;b.lineWidth=.8+r();b.beginPath();b.moveTo(o,0);b.lineTo(o+len*.55,len);b.stroke()}
+  // glossy mottling
+  for(let i=0;i<180;i++){x.fillStyle=`rgba(255,${160+r()*70|0},${100+r()*60|0},.05)`;x.beginPath();x.arc(r()*W,r()*H,10+r()*40,0,7);x.fill()}
+  return {map:tex(c1,true),bump:tex(c2)}
+}
+function riceTexture(){const c=cnv(512,512),x=c.getContext('2d');x.fillStyle='#808080';x.fillRect(0,0,512,512);const r=rng(9);
+  for(let i=0;i<1400;i++){const px=r()*512,py=r()*512;x.save();x.translate(px,py);x.rotate(r()*3.14);x.fillStyle=`rgba(${r()<.5?255:70},${r()<.5?255:70},${r()<.5?255:70},.22)`;x.beginPath();x.ellipse(0,0,7+r()*5,3.2+r()*1.5,0,0,7);x.fill();x.restore()}
+  return tex(c,false,[3,3])}
+function speckle(col,n=1800){const c=cnv(512,512),x=c.getContext('2d'),r=rng(3);x.fillStyle=col;x.fillRect(0,0,512,512);for(let i=0;i<n;i++){x.fillStyle=`rgba(${r()<.5?0:255},${r()<.5?0:255},${r()<.5?0:255},${.03+r()*.06})`;x.beginPath();x.arc(r()*512,r()*512,.6+r()*2.2,0,7);x.fill()}return tex(c,true,[2,2])}
+function bumpNoise(rep=[2,2]){const c=cnv(256,256),x=c.getContext('2d'),r=rng(21);x.fillStyle='#808080';x.fillRect(0,0,256,256);for(let i=0;i<900;i++){const g=90+r()*80|0;x.fillStyle=`rgba(${g},${g},${g},.5)`;x.beginPath();x.arc(r()*256,r()*256,1+r()*4,0,7);x.fill()}return tex(c,false,rep)}
+
+// ---- shared materials (built per renderer-owner scene via function) ----
+function makeMats(){
+  const ft=fishTextures(5);
+  return {
+    fish:new THREE.MeshPhysicalMaterial({map:ft.map,bumpMap:ft.bump,bumpScale:1.6,roughness:.16,metalness:0,clearcoat:1,clearcoatRoughness:.05,sheen:1,sheenColor:new THREE.Color('#ffa070'),sheenRoughness:.4,
+      emissive:new THREE.Color('#ff3300'),emissiveIntensity:.18,ior:1.4,envMapIntensity:.95}),
+    rice:new THREE.MeshPhysicalMaterial({color:'#fbf7ec',roughness:.5,sheen:1,sheenColor:new THREE.Color('#fff8e6'),sheenRoughness:.5,clearcoat:.2,clearcoatRoughness:.5}),
+    riceBase:new THREE.MeshPhysicalMaterial({color:'#eee4cf',roughness:.7,bumpMap:riceTexture(),bumpScale:2.4}),
+    drop:new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:0,metalness:0,transparent:true,opacity:.32,clearcoat:1,clearcoatRoughness:0,envMapIntensity:2.6,specularIntensity:1}),
+    plate:new THREE.MeshPhysicalMaterial({map:speckle('#2e4538'),bumpMap:bumpNoise(),bumpScale:.8,roughness:.38,clearcoat:.45,clearcoatRoughness:.22,envMapIntensity:.38}),
+    plateIn:new THREE.MeshPhysicalMaterial({map:speckle('#33493d'),roughness:.34,clearcoat:.5,clearcoatRoughness:.15,envMapIntensity:.4}),
+    wasabi:new THREE.MeshPhysicalMaterial({color:'#8fc24c',roughness:.42,bumpMap:bumpNoise([3,3]),bumpScale:2.2,sheen:1,sheenColor:new THREE.Color('#d6f58f'),clearcoat:.25}),
+    ginger:new THREE.MeshPhysicalMaterial({color:'#f3a3b4',roughness:.4,side:THREE.DoubleSide,transmission:.25,thickness:.2,sheen:1,sheenColor:new THREE.Color('#ffd5de')}),
+    wood:new THREE.MeshPhysicalMaterial({color:'#caa46c',roughness:.55,clearcoat:.15}),
+    ceramic:new THREE.MeshPhysicalMaterial({color:'#e9e2d2',roughness:.3,clearcoat:.8}),
+    soy:new THREE.MeshPhysicalMaterial({color:'#1e0d06',roughness:.03,clearcoat:1,clearcoatRoughness:0,envMapIntensity:2}),
+    dill:new THREE.MeshStandardMaterial({color:'#62b46d',roughness:.6}),
+    board:new THREE.MeshPhysicalMaterial({color:'#2c2f2d',roughness:.5,bumpMap:bumpNoise([4,2]),bumpScale:1.2,clearcoat:.2}),
+  }}
+
+/* ---- rice mound ---- */
+const RA=1.95,RB=.82,RC=1.0,FLOOR=-.52;
+function moundPt(x,y,z,n){const k=1+n*.035;return new THREE.Vector3(x*RA*k,Math.max(y*RB*k,FLOOR),z*RC*k)}
+function riceGeo(){const g=new THREE.SphereGeometry(1,72,52),p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),n=Math.sin(x*5.3+z*3.1)*Math.sin(y*4.7+x*2.3);const v=moundPt(x,y,z,n);p.setXYZ(i,v.x,v.y,v.z)}
+  g.computeVertexNormals();return g}
+function riceGrains(count,seed){const r=rng(seed),geo=new THREE.SphereGeometry(.5,10,8);geo.scale(.36,.15,.15);
+  const m=new THREE.InstancedMesh(geo,makeMats().rice,count),d=new THREE.Object3D();let i=0;
+  while(i<count){const u=(r()-.5)*2,v=(r()-.5)*2,w=(r()-.5)*2,l=Math.hypot(u,v,w);if(l<.3)continue;const x=u/l,y=v/l,z=w/l;if(y<-.55)continue;
+    const P=moundPt(x,y,z,0),N=new THREE.Vector3(P.x/(RA*RA),P.y/(RB*RB),P.z/(RC*RC)).normalize();
+    d.position.copy(P).addScaledVector(N,-.02+ r()*.035);
+    const t=new THREE.Vector3(r()-.5,r()-.5,r()-.5).cross(N).normalize();const bt=new THREE.Vector3().crossVectors(N,t);
+    d.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(t,N,bt));d.rotateY((r()-.5)*.6);
+    const s=.8+r()*.5;d.scale.set(s,s*(.9+r()*.3),s);d.updateMatrix();m.setMatrixAt(i++,d.matrix)}
+  m.castShadow=true;m.receiveShadow=true;return m}
+
+/* ---- the fish slice, draped over the rice ---- */
+function surf(x,z){const e=1-(x/2.0)**2-(z/1.04)**2;return e>0?RB*Math.sqrt(e)*.99:-.5*Math.min(1,-e)**.8}
+function fishGeo(W=4.35,D=1.78,T=.46,seed=1){
+  const g=new THREE.BoxGeometry(W,T,D,128,10,56),p=g.attributes.position,r=rng(seed*7+3),ph=r()*6;
+  for(let i=0;i<p.count;i++){let x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+    const u=x/(W/2),v=z/(D/2),n=2.7,s=Math.pow(Math.abs(u)**n+Math.abs(v)**n,1/n)||1,f=Math.max(Math.abs(u),Math.abs(v))/s;x*=f;z*=f;
+    const uu=x/(W/2),vv=z/(D/2),edge=Math.max(Math.abs(uu),Math.abs(vv)),thick=.5+.5*(1-Math.pow(edge,2.4));   // thin, rounded edge
+    const yMid=(y+T/2)*thick;                                                   // 0 at the underside
+    const noise=Math.sin(uu*6+ph)*Math.sin(vv*5+ph*1.7)*.025+Math.sin(uu*13+vv*9)*.012;
+    const arch=(1-vv*vv)*.1;                                                    // slight arch across the width
+    const curl=Math.pow(Math.max(0,uu*.9),3)*.16;                               // one end lifts a little
+    p.setXYZ(i,x,surf(x,z)+yMid+noise+arch*.4+curl-.03,z)}
+  g.computeVertexNormals();return g}
+function pickTop(geo,n,seed){const r=rng(seed),p=geo.attributes.position,nm=geo.attributes.normal,out=[];let guard=0;
+  while(out.length<n&&guard++<9000){const i=r()*p.count|0;if(nm.getY(i)>.85&&Math.abs(p.getX(i))<1.9&&Math.abs(p.getZ(i))<.8)out.push(new THREE.Vector3(p.getX(i),p.getY(i),p.getZ(i)))}return out}
+
+function nigiri(M,seed=1){
+  const g=new THREE.Group(),rice=new THREE.Mesh(riceGeo(),M.riceBase);rice.castShadow=rice.receiveShadow=true;g.add(rice);g.add(riceGrains(950,seed*11));
+  const fg=fishGeo(4.35,1.78,.46,seed),fish=new THREE.Mesh(fg,M.fish);fish.castShadow=fish.receiveShadow=true;g.add(fish);
+  // water droplets on the glossy fish
+  const r=rng(seed*5);pickTop(fg,16,seed*3).forEach(P=>{const s=.035+r()*.07,d=new THREE.Mesh(new THREE.SphereGeometry(1,20,14),M.drop);d.scale.set(s*(1+r()*.8),s*.55,s*(1+r()*.5));d.position.copy(P).add(new THREE.Vector3(0,s*.25,0));g.add(d)});
+  g.userData.fish=fish;g.position.y=-FLOOR;return g}
+function sashimiSlice(M,seed=1){const fg=fishGeo(3.2,1.7,.42,seed),m=new THREE.Mesh(fg,M.fish);
+  // flat slice: undo the drape so it lies on the dish
+  const p=fg.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,p.getY(i)-surf(x*1.4,z*1.4)*0+0)}
+  const g=new THREE.Group();g.add(m);m.castShadow=m.receiveShadow=true;return g}
+
+/* ---- plate, soy dish, chopsticks, wasabi, ginger, dill ---- */
+function plate(M,R=6.2){const pts=[[0,0],[R*.6,0],[R*.84,.1],[R*.98,.5],[R,.64],[R*.975,.68],[R*.93,.62],[R*.82,.32],[R*.7,.25],[0,.25]].map(a=>new THREE.Vector2(a[0],a[1]));
+  const m=new THREE.Mesh(new THREE.LatheGeometry(pts,128),M.plate);m.receiveShadow=m.castShadow=true;
+  const inner=new THREE.Mesh(new THREE.CircleGeometry(R*.74,96),M.plateIn);inner.rotation.x=-Math.PI/2;inner.position.y=.255;inner.receiveShadow=true;const g=new THREE.Group();g.add(m,inner);return g}
+function board(M,w=13,d=6.4){const g=new THREE.Group(),b=new THREE.Mesh(new THREE.BoxGeometry(w,.4,d,1,1,1),M.board);b.position.y=.2;b.castShadow=b.receiveShadow=true;
+  const bev=new THREE.Mesh(new THREE.BoxGeometry(w-.3,.08,d-.3),M.board);bev.position.y=.42;bev.receiveShadow=true;g.add(b,bev);[-1,1].forEach(s=>{const f=new THREE.Mesh(new THREE.BoxGeometry(.5,.28,d*.8),M.board);f.position.set(s*(w/2-1.2),-.1,0);g.add(f)});g.position.y=.1;return g}
+function wasabi(M){const g=new THREE.SphereGeometry(.5,40,28),p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),n=1+Math.sin(x*11)*Math.sin(z*9)*.05+Math.sin(y*14+x*6)*.04;p.setXYZ(i,x*n*1.1,Math.max(y*n*.8,-.2),z*n*1.0)}g.computeVertexNormals();const m=new THREE.Mesh(g,M.wasabi);m.castShadow=m.receiveShadow=true;return m}
+function ginger(M){const g=new THREE.Group(),r=rng(4);for(let i=0;i<5;i++){const geo=new THREE.CylinderGeometry(.42,.34,1.2,28,1,true,0,Math.PI*(1.2+r()*.5)),m=new THREE.Mesh(geo,M.ginger);
+    m.scale.set(1,1,.55);m.rotation.set(Math.PI/2+(r()-.5)*.6,r()*6,(r()-.5)*.5);m.position.set((r()-.5)*.55,.35+i*.07,(r()-.5)*.45);m.castShadow=true;g.add(m)}return g}
+function dill(M,seed=2){const g=new THREE.Group(),r=rng(seed);
+  const stem=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(.35,.5,.1),new THREE.Vector3(.2,1.2,-.1),new THREE.Vector3(.7,1.9,.1)]),24,.022,6),M.dill);g.add(stem);
+  const geo=new THREE.CylinderGeometry(.006,.002,1,5),inst=new THREE.InstancedMesh(geo,M.dill,150),d=new THREE.Object3D();
+  for(let i=0;i<150;i++){const t=r(),base=new THREE.Vector3(.7*t*t+.2*t,1.9*t,.1*t),len=.35+r()*.5*(1.1-t*.6);d.position.copy(base);
+    d.rotation.set((r()-.5)*1.4,r()*6.3,(r()<.5?-1:1)*(1.0+r()*.6));d.scale.set(1,len,1);d.translateY(len/2);d.updateMatrix();inst.setMatrixAt(i,d.matrix)}
+  g.add(inst);return g}
+function chopsticks(M){const g=new THREE.Group();[0,1].forEach(i=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.1,8.4,14),M.wood);m.rotation.z=Math.PI/2;m.position.set(0,.1,i*.42);m.rotation.y=(i?.02:-.02);m.castShadow=true;g.add(m)});
+  const rest=new THREE.Mesh(new THREE.CylinderGeometry(.2,.26,.9,20),M.ceramic);rest.rotation.x=Math.PI/2;rest.position.set(-2.4,-.04,.2);rest.castShadow=true;g.add(rest);return g}
+function soy(M){const g=new THREE.Group(),pts=[[0,0],[.9,0],[1.35,.18],[1.5,.55],[1.42,.55],[1.28,.3],[.9,.12],[0,.12]].map(a=>new THREE.Vector2(a[0],a[1]));
+  const bowl=new THREE.Mesh(new THREE.LatheGeometry(pts,48),M.ceramic);bowl.castShadow=bowl.receiveShadow=true;const liq=new THREE.Mesh(new THREE.CircleGeometry(1.22,40),M.soy);liq.rotation.x=-Math.PI/2;liq.position.y=.4;g.add(bowl,liq);return g}
+
+/* =====================================================================
+   SCENES
+   ===================================================================== */
+function heroScene(M){const root=new THREE.Group(),pl=plate(M,6.3);root.add(pl);
+  [[-1.6,1.9,.3,1],[2.1,.7,-.34,2],[-.9,-2.3,.46,3]].forEach(([x,z,ry,sd])=>{const n=nigiri(M,sd);n.position.set(x,.25+.52*1.04,z);n.rotation.y=ry;n.scale.setScalar(1.04);root.add(n)});
+  const w=wasabi(M);w.position.set(4.0,.5,-1.2);w.scale.setScalar(1.15);root.add(w);const gi=ginger(M);gi.position.set(3.7,.25,2.5);gi.scale.setScalar(1.2);root.add(gi);
+  const d=dill(M);d.position.set(2.4,.27,-2.4);d.rotation.set(.05,2.3,1.42);d.scale.setScalar(1.7);root.add(d);
+  const c=chopsticks(M);c.position.set(.2,.2,6.7);c.rotation.y=-.07;root.add(c);const sy=soy(M);sy.position.set(-6.9,0,-4.2);root.add(sy);return root}
+function storyScene(M){const root=new THREE.Group(),n=nigiri(M,4);n.position.y=.6;n.scale.setScalar(1.35);root.add(n);
+  return root}
+function bandScene(M){const root=new THREE.Group(),pl=plate(M,6.3);root.add(pl);
+  [[0,-1.8,0,1],[-2.4,1.1,2.1,2],[2.4,1.1,-2.1,3]].forEach(([x,z,ry,sd],i)=>{const n=nigiri(M,sd);n.position.set(x*.9,.77,z*1.05);n.rotation.y=ry+Math.PI*.15;n.scale.setScalar(.84);root.add(n)});
+  const w=wasabi(M);w.position.set(0,.5,3.3);root.add(w);const gi=ginger(M);gi.position.set(-4.0,.25,-2.7);root.add(gi);const d=dill(M,6);d.position.set(4,.25,-2);d.rotation.set(.1,2.8,1.35);root.add(d);return root}
+function stillScene(kind,M){const root=new THREE.Group();
+  if(kind==='nigiri'){const b=board(M,10,5);root.add(b);[[-2.2,-.5],[2.0,.7]].forEach(([x,z],i)=>{const n=nigiri(M,i+7);n.position.set(x,.55,z);n.rotation.y=i?-.5:.3;n.scale.setScalar(.78);root.add(n)});const w=wasabi(M);w.position.set(3.9,.55,-1.4);w.scale.setScalar(.7);root.add(w)}
+  if(kind==='sashimi'){const pl=plate(M,5.2);root.add(pl);const r=rng(5);for(let i=0;i<5;i++){const s=sashimiSlice(M,i+2);s.position.set(-2.2+i*1.0,.34+i*.05,-.4+Math.sin(i)*.15);s.rotation.set(0,.0,.0);s.rotation.z=-.5;s.scale.setScalar(.72);root.add(s)}
+    const w=wasabi(M);w.position.set(2.7,.5,2.0);w.scale.setScalar(.7);root.add(w);const gi=ginger(M);gi.position.set(-2.8,.25,2.1);gi.scale.setScalar(.8);root.add(gi);const d=dill(M,3);d.position.set(0,.3,2.2);d.rotation.set(.1,1.4,1.4);d.scale.setScalar(.7);root.add(d)}
+  if(kind==='set'){const b=board(M,13,7);root.add(b);let k=0;for(let j=0;j<2;j++)for(let i=0;i<3;i++){const n=nigiri(M,20+k++);n.position.set(-3.4+i*3.45,.55,-1.5+j*2.9);n.rotation.y=(k%2?-.12:.14);n.scale.setScalar(.56);root.add(n)}
+    const w=wasabi(M);w.position.set(5.2,.55,.2);w.scale.setScalar(.55);root.add(w)}
+  return root}
+
+/* =====================================================================
+   RENDERER HELPERS
+   ===================================================================== */
+function mkRenderer(canvas,opts={}){const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:!!opts.still});r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputColorSpace=THREE.SRGBColorSpace;
+  r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=.82;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;return r}
+function studio(renderer,scene){scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer),.03).texture;
+  scene.add(new THREE.HemisphereLight(0xfff4e6,0x6f8a7c,.22));
+  const key=new THREE.DirectionalLight(0xfff0dc,2.8);key.position.set(5,16,9);key.castShadow=true;key.shadow.mapSize.set(2048,2048);
+  Object.assign(key.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:2,far:50});key.shadow.bias=-.0004;key.shadow.normalBias=.02;key.shadow.radius=6;scene.add(key);
+  const rim=new THREE.DirectionalLight(0xffc89a,2.2);rim.position.set(-9,6,-8);scene.add(rim);
+  const glint=new THREE.PointLight(0xfff3e4,95,28,2);glint.position.set(3.5,7.5,5);scene.add(glint);const glint2=new THREE.PointLight(0xffe2c4,50,24,2);glint2.position.set(-5,6,3);scene.add(glint2);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.ShadowMaterial({color:0x0b1a14,opacity:.42}));floor.rotation.x=-Math.PI/2;floor.position.y=-.02;floor.receiveShadow=true;scene.add(floor)}
+function fit(camera,w,h,dist,elev,look,width){camera.aspect=w/h;const need=width/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*Math.max(camera.aspect,.2));
+  const d=Math.max(dist,need);camera.position.set(0,look.y+Math.sin(elev)*d,Math.cos(elev)*d);camera.lookAt(look);camera.updateProjectionMatrix()}
+
+function liveView(canvas,build,cfg){
+  let renderer;try{renderer=mkRenderer(canvas)}catch(e){return null}
+  const scene=new THREE.Scene(),M=makeMats(),camera=new THREE.PerspectiveCamera(cfg.fov||28,1,.1,200);studio(renderer,scene);
+  const root=build(M),pivot=new THREE.Group();pivot.add(root);scene.add(pivot);
+  const look=new THREE.Vector3(0,cfg.lookY??.6,0);let mx=0,my=0,tx=0,ty=0,spin=0,drag=null,vis=true,t0=0;
+  function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);fit(camera,w,h,cfg.dist,cfg.elev,look,cfg.width)}
+  new ResizeObserver(resize).observe(canvas);resize();
+  addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+  if(cfg.drag){canvas.addEventListener('pointerdown',e=>{drag=e.clientX;canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing'});
+    canvas.addEventListener('pointermove',e=>{if(drag!==null){spin+=(e.clientX-drag)*.012;drag=e.clientX}});
+    const up=()=>{drag=null;canvas.style.cursor='grab'};canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up)}
+  new IntersectionObserver(([e])=>vis=e.isIntersecting).observe(canvas);
+  const clock=new THREE.Clock();let first=true;
+  (function loop(){requestAnimationFrame(loop);if(!vis&&!first)return;const t=clock.getElapsedTime();mx+=(tx-mx)*.05;my+=(ty-my)*.05;
+    pivot.rotation.y=(cfg.base||0)+mx*(cfg.tilt||.35)+spin+(cfg.auto?t*cfg.auto:0);pivot.rotation.x=my*.08;pivot.position.y=Math.sin(t*1.1)*.12;
+    if(cfg.onFrame)cfg.onFrame(root,t,scrollY);
+    renderer.render(scene,camera);if(first){first=false;canvas.classList.add('ready')}})();
+  return true}
+
+function stills(){
+  const els=[...document.querySelectorAll('[data-still]')];if(!els.length)return;
+  const c=document.createElement('canvas'),W=520,H=380;c.width=W;c.height=H;let r;try{r=mkRenderer(c,{still:true})}catch(e){return}
+  r.setPixelRatio(1);r.setSize(W,H,false);
+  els.forEach(el=>{const scene=new THREE.Scene(),M=makeMats(),cam=new THREE.PerspectiveCamera(26,W/H,.1,200);studio(r,scene);const root=stillScene(el.dataset.still,M);scene.add(root);
+    const wide=el.dataset.still==='set'?11.4:el.dataset.still==='nigiri'?9.4:11.6;fit(cam,W,H,10,.78,new THREE.Vector3(0,.4,0),wide);r.render(scene,cam);
+    const img=new Image();img.alt='';img.src=c.toDataURL('image/png');img.onload=()=>{el.querySelector('svg')&&(el.querySelector('svg').style.display='none');el.prepend(img)}});
+  r.dispose()}
+
+try{
+  const a=liveView(document.getElementById('glHero'),heroScene,{dist:18,elev:.62,width:13.6,lookY:.3,base:-.35,tilt:.5,drag:true,
+    onFrame:(root,t,sy)=>{root.rotation.y=Math.sin(t*.3)*.06}});
+  const b=liveView(document.getElementById('glStory'),storyScene,{dist:12,elev:.42,width:8.4,lookY:.55,base:.2,auto:.18,drag:true,fov:26});
+  const c=liveView(document.getElementById('glBand'),bandScene,{dist:20,elev:.95,width:15,lookY:.1,tilt:.2,auto:.12,fov:28});
+  if(a||b||c){document.documentElement.classList.add('has3d');stills()}
+}catch(e){console.warn('3D sushi unavailable, using the illustrated fallback',e)}
+
 </script>
 </body>
 </html>
