@@ -162,3 +162,16 @@ The gallery has a dark and a light theme. The first visit follows your system se
 - Typefaces from [Google Fonts](https://fonts.google.com) (SIL Open Font License).
 - 3D by [three.js](https://threejs.org) (MIT). Physics by [Matter.js](https://brm.io/matter-js/) (MIT).
 - All artwork, textures, planets, products and sounds are generated in code.
+
+## Find me
+
+- [LinkedIn](https://www.linkedin.com/in/manisha-baroliya-488016265/)
+- [Behance](https://www.behance.net/manishabarol2023)
+- [Dribbble](https://dribbble.com/manisha_baroliya)
+- [Instagram](https://www.instagram.com/offical_manisha_baroliya/)
+- [Facebook](https://www.facebook.com/uxdesignermanisha/)
+- [X](https://x.com/Manisha_Offical)
+- [Pinterest](https://in.pinterest.com/uxdesignermanisha/)
+- [GitHub](https://github.com/manisha22stylewithmini-spec)
+- [UI.Live](https://ui.live/profile/Manishabaroliya)
+- [Muzli](https://me.muz.li/manisha_baroliya)
