@@ -1,6 +1,6 @@
-# Landing Page Studies — 20 designs, 20 styles
+# Landing Page Studies — 26 designs, 26 styles
 
-A portfolio of 20 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
+A portfolio of 26 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
 
 Everything is **plain HTML, CSS and JavaScript**. There is no build step, no framework and no `node_modules`.
 
@@ -28,6 +28,12 @@ Everything is **plain HTML, CSS and JavaScript**. There is no build step, no fra
 | 18 | `18-synthwave` | Sunset Drive | Synthwave with a live synth (WebAudio) |
 | 19 | `19-fintech-aurora` | Kova | Premium fintech, 3D card (WebGL) |
 | 20 | `20-architecture-blueprint` | Atelier Noma | Architecture, scroll-built 3D (WebGL) |
+| 21 | `21-poke-bowl-builder` | Tidebowl | Build-your-own order app: drag toppings onto the bowl, live receipt, checkout |
+| 22 | `22-lemon-learning` | Zest | Personal site: a photo-real sticker lemon that turns and travels as you scroll; footer lists all projects |
+| 23 | `23-kibori` | Kibori 木彫 | Kyoto woodshop landing page with eight interactive 3D crafts, fire transitions and a commission finale (source from ThreeUI) |
+| 24 | `24-kage` | Kage 影 | Japanese temple scroll world: local Three.js scene, layered foreground, moonlit scenes (source from ThreeUI) |
+| 25 | `25-dark-souls-card` | The Ashen One | Holographic 3D collector card beside a candlelit shrine, custom GLSL (source from ThreeUI) |
+| 26 | `26-delhi-dusk` | Dilli दिल्ली | Scroll journey across Delhi at dusk: seven landmarks drawn as layered SVG parallax, no photos |
 
 ## Project structure
 
