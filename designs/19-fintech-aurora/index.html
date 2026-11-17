@@ -392,5 +392,6 @@ const FQ=[['Is my money safe with Kova?','Yes. Eligible deposits are protected b
 $('faqs').innerHTML=FQ.map(([q,a])=>`<div class="q glass rv"><button>${q}<i>+</i></button><div class="a"><p>${a}</p></div></div>`).join('');
 document.querySelectorAll('.q').forEach(q=>{io.observe(q);q.querySelector('button').onclick=()=>q.classList.toggle('open')});
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>

@@ -296,5 +296,6 @@ document.querySelectorAll('.rv').forEach(e=>io.observe(e));
 const d=new Date(Date.now()+14*864e5);$('dt').value=d.toISOString().slice(0,10);$('dt').min=new Date().toISOString().slice(0,10);
 $('f').onsubmit=e=>{e.preventDefault();const m=$('msg');m.textContent=`ありがとうございます — we will prepare the ${$('rm').value} room for ${$('nm').value||'you'}.`;m.classList.add('on')};
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>

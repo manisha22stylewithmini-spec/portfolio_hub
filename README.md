@@ -182,3 +182,7 @@ The gallery has a dark and a light theme. The first visit follows your system se
 - [GitHub](https://github.com/manisha22stylewithmini-spec)
 - [UI.Live](https://ui.live/profile/Manishabaroliya)
 - [Muzli](https://me.muz.li/manisha_baroliya)
+
+## Designer's Kitchen signature
+
+Every design page loads `designs/_shared/dk.js`, which adds my logo (`designs/_shared/logo.webp`) in the bottom-left corner and a **My take** card: a short first-person note about that design's theme, plus links back to the gallery and to the previous and next design. The notes live in the `NOTES` object at the top of `dk.js`; edit them there to change the wording. The script stays out of the gallery's live-preview iframes.

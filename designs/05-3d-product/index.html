@@ -571,5 +571,6 @@ $('rtrack').innerHTML=[...R,...R].map(card).join('');
 let n=0;$('add').onclick=()=>{n++;const b=$('bag');b.textContent=n;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');setTimeout(()=>b.classList.remove('bump'),400);
   $('add').firstChild.textContent=n===1?'added ✓ ':`added ×${n} `};
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>

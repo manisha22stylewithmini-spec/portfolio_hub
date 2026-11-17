@@ -203,5 +203,6 @@ document.querySelectorAll('.rv').forEach(e=>io.observe(e));
 let c=1;document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click',()=>{if(b.type==='submit')return;c=Math.min(c+1,99);cr.textContent=String(c).padStart(2,'0')}));
 f.onsubmit=e=>{e.preventDefault();msg.textContent='★ WELCOME, '+f.querySelector('input').value.toUpperCase()+'! GAME STARTING... ★'};
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>

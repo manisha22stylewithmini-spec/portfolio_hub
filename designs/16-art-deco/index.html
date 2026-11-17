@@ -321,5 +321,6 @@ $('d').value=new Date(Date.now()+7*864e5).toISOString().slice(0,10);
 $('f').onsubmit=e=>{e.preventDefault();$('seal').classList.remove('on');void $('seal').offsetWidth;$('seal').classList.add('on');
   $('msg').textContent=`Splendid, ${$('n').value.split(' ')[0]||'darling'}. Your table for ${$('g').value.toLowerCase()} awaits — knock three times.`};
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>

@@ -327,5 +327,6 @@ function fx(){cx2.clearRect(0,0,cc.width,cc.height);parts.forEach(p=>{p.vy+=.32;
   cx2.fillStyle=p.c;cx2.strokeStyle='#111';cx2.lineWidth=2;cx2.beginPath();if(p.t===0)cx2.arc(0,0,p.s/2,0,7);else if(p.t===1)cx2.rect(-p.s/2,-p.s/2,p.s,p.s);else{cx2.moveTo(0,-p.s/2);cx2.lineTo(p.s/2,p.s/2);cx2.lineTo(-p.s/2,p.s/2);cx2.closePath()}cx2.fill();cx2.stroke();cx2.restore()});
   parts=parts.filter(p=>p.l>0);if(parts.length)requestAnimationFrame(fx);else cx2.clearRect(0,0,cc.width,cc.height)}
 </script>
+<script src="../_shared/dk.js" defer></script>
 </body>
 </html>
