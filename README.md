@@ -1,6 +1,6 @@
-# Landing Page Studies — 26 designs, 26 styles
+# Landing Page Studies — 27 designs, 27 styles
 
-A portfolio of 26 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
+A portfolio of 27 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
 
 Everything is **plain HTML, CSS and JavaScript**. There is no build step, no framework and no `node_modules`.
 
@@ -34,6 +34,7 @@ Everything is **plain HTML, CSS and JavaScript**. There is no build step, no fra
 | 24 | `24-kage` | Kage 影 | Japanese temple scroll world: local Three.js scene, layered foreground, moonlit scenes (source from ThreeUI) |
 | 25 | `25-dark-souls-card` | The Ashen One | Holographic 3D collector card beside a candlelit shrine, custom GLSL (source from ThreeUI) |
 | 26 | `26-delhi-dusk` | Dilli दिल्ली | Scroll journey across Delhi at dusk: seven landmarks drawn as layered SVG parallax, no photos |
+| 27 | `27-toastie` | Toastie | A playable grilled-cheese diner game built from real food photos: spread, stack, grill, peek, serve and earn stars |
 
 ## Project structure
 
