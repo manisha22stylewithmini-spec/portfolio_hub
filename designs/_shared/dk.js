@@ -29,9 +29,11 @@
    '24':['Kage 影','Quiet is hard to design. A moonlit approach, layered depth and one vermilion accent: I wanted the site to feel like walking towards something.'],
    '25':['The Ashen One','A collector card is a tiny stage. Tilt, rotate, flip: I wanted a hover to feel like you are holding something rare.'],
    '26':['Dilli दिल्ली','Delhi at dusk is a palette I never tire of: stone, marigold and a violet sky. I drew every landmark in code instead of using photos, so it feels like my sketchbook.'],
-   '27':['Toastie','A game is the honest test of UX: if an interaction is not clear in five seconds, players leave. I built Toastie to practise feedback, sound and motion, and every drag, scrub and sizzle is a design decision.']
+   '27':['Toastie','A game is the honest test of UX: if an interaction is not clear in five seconds, players leave. I built Toastie to practise feedback, sound and motion, and every drag, scrub and sizzle is a design decision.'],
+   '28':['Lucky','I love code as a medium. This clover is only text: rows of “good luck” in 77 languages, turned in 3D by a little maths. I keep the source on screen because showing how something is made is part of the design for me. A study after a reel by @jin_22ee, rebuilt from scratch.'],
+   '29':['Merry Toastie','Seasonal design should feel like a gift, not a banner. I took the Toastie engine and dressed it for Christmas: gingerbread toast, cookie butter, candy you can place and move. The fun is in the small tactile moments. A study after a gingerbread-toast reel by @mikeesbored.']
   };
-  var FOLDERS=['01-salmon-sushi','02-brutalist-coffee','03-glass-saas','04-retro-arcade','05-3d-product','06-editorial-luxury','07-playful-bento','08-swiss-typographic','09-y2k-chrome','10-luxury-watch','11-cyberpunk-neon','12-clay-kids','13-cosmic-journey','14-memphis-pop','15-japanese-ink','16-art-deco','17-organic-nature','18-synthwave','19-fintech-aurora','20-architecture-blueprint','21-poke-bowl-builder','22-lemon-learning','23-kibori','24-kage','25-dark-souls-card','26-delhi-dusk','27-toastie'];
+  var FOLDERS=['01-salmon-sushi','02-brutalist-coffee','03-glass-saas','04-retro-arcade','05-3d-product','06-editorial-luxury','07-playful-bento','08-swiss-typographic','09-y2k-chrome','10-luxury-watch','11-cyberpunk-neon','12-clay-kids','13-cosmic-journey','14-memphis-pop','15-japanese-ink','16-art-deco','17-organic-nature','18-synthwave','19-fintech-aurora','20-architecture-blueprint','21-poke-bowl-builder','22-lemon-learning','23-kibori','24-kage','25-dark-souls-card','26-delhi-dusk','27-toastie','28-lucky-clover','29-christmas-gingerbread'];
   var m=location.pathname.match(/designs\/(\d\d)-[^\/]+/),num=m?m[1]:'',idx=num?parseInt(num,10)-1:-1;
   var n=NOTES[num]||['This design','One of my landing-page studies, designed and built by me.'];
   var here=document.currentScript?new URL('.',document.currentScript.src).href:'../_shared/';
@@ -62,7 +64,7 @@
      '@media (max-width:520px){.bar img{height:28px}.card p{font-size:16px}}'+
      '</style>'+
      '<div class="wrap"><div class="card" role="dialog" aria-label="My take on '+esc(n[0])+'" id="card">'+
-       '<div class="k">Designer’s note · '+(num?num+' / 27':'')+'</div><h3>'+esc(n[0])+'</h3><p>'+esc(n[1])+'</p><div class="sig">— Manisha Baroliya</div>'+
+       '<div class="k">Designer’s note · '+(num?num+' / '+FOLDERS.length:'')+'</div><h3>'+esc(n[0])+'</h3><p>'+esc(n[1])+'</p><div class="sig">— Manisha Baroliya</div>'+
        '<div class="row"><a class="pill" href="'+gallery+'">← Designer’s Kitchen</a>'+(prev?'<a class="pill alt" href="'+prev+'" aria-label="Previous design">‹</a>':'')+(next?'<a class="pill alt" href="'+next+'" aria-label="Next design">Next ›</a>':'')+'</div></div>'+
      '<div class="bar"><a class="logo" href="'+gallery+'" aria-label="Manisha Baroliya – Designer’s Kitchen"><img src="'+here+'logo.webp" alt="Manisha Baroliya"></a><button id="t" aria-expanded="false" aria-controls="card">My take ✎</button></div></div>';
     document.body.appendChild(host);

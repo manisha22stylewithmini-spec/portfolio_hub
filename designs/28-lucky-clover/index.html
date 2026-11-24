@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Lucky — good luck, in 77 languages</title>
+<meta name="description" content="A four-leaf clover built from the words “good luck” in 77 languages, spinning in 3D while its own Python source types itself out underneath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;overflow:hidden;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{color:#cfd6e2;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;justify-content:center;user-select:none;-webkit-user-select:none}
+main{position:relative;width:min(100vw,560px);height:100svh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#art{position:relative;flex:0 0 54%;touch-action:none;cursor:grab}
+#art:active{cursor:grabbing}
+#c{position:absolute;inset:0;width:100%;height:100%}
+#clock{position:absolute;right:7%;top:12%;font-size:11px;color:#d4789a;letter-spacing:.03em;font-variant-numeric:tabular-nums}
+#clock::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#d4789a;margin-right:7px;vertical-align:1px;animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.hud{padding:0 22px;font-size:11px;line-height:1.55;color:#6d7787;letter-spacing:.01em}
+.hud b{font-weight:400;color:#8a95a8}
+.hud .cr{opacity:.85}
+.cmd{display:flex;justify-content:space-between;margin:10px 14px 0;padding:6px 8px 9px;font-size:11px;color:#8a95a8;border-bottom:1px solid rgba(255,255,255,.1)}
+.term{position:relative;flex:1;min-height:0;overflow:hidden;margin:0 14px;
+  -webkit-mask-image:linear-gradient(transparent 0,#000 18%,#000 62%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 18%,#000 62%,transparent 100%)}
+#win{position:absolute;left:0;right:0;top:0;padding-top:4px}
+.ln{display:flex;gap:14px;height:22px;line-height:22px;font-size:12.5px;white-space:pre;overflow:hidden;padding:0 4px;border-left:3px solid transparent;color:#d6deea}
+.ln b{flex:0 0 28px;text-align:right;font-weight:400;color:#3a4254}
+.ln span{overflow:hidden}
+.ln.cur{background:rgba(255,80,130,.13);border-left-color:#ff5a8a}
+.ln.cur b{color:#ff6e9c;font-weight:700}
+.ln i{font-style:normal}.k{color:#ff7aa8}.f{color:#8fb4ff}.n{color:#ffb070}.c{color:#566077}.s{color:#9be3a1}
+.ln u{display:inline-block;width:8px;height:14px;margin-left:1px;vertical-align:-2px;background:#ff6e9c;text-decoration:none;animation:cur 1s steps(2) infinite}
+@keyframes cur{50%{opacity:0}}
+#back{position:fixed;left:14px;top:calc(12px + env(safe-area-inset-top));z-index:5;font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.06em;color:#8a95a8;text-decoration:none;padding:8px 12px;border-radius:99px;background:rgba(255,255,255,.07);transition:background .15s,color .15s}
+@media (hover:hover) and (pointer:fine){#back:hover{background:rgba(255,255,255,.15);color:#fff}}
+@media (prefers-reduced-motion:reduce){#clock::before,.ln u{animation:none}}
+</style>
+</head>
+<body>
+<a id="back" href="../../index.html">← designer's kitchen</a>
+<main>
+  <section id="art" aria-label="A four-leaf clover made of the words good luck in 77 languages, rotating in 3D">
+    <canvas id="c"></canvas>
+    <div id="clock">t 00.00s</div>
+  </section>
+  <div class="hud">
+    <div class="cr">Manisha Baroliya · 2026 · a study after @jin_22ee</div>
+    <div>languages <b id="hl">77</b> &nbsp; phrases <b id="hp">0</b></div>
+    <div>letters <b id="hc">0</b></div>
+  </div>
+  <div class="cmd"><span>$ py art.py</span><span id="run">running · 30 fps</span></div>
+  <section class="term" aria-hidden="true"><div id="win"></div></section>
+</main>
+
+<script>
+(()=>{
+'use strict';
+/* ================= content ================= */
+const LANGS=['Good luck','Buena suerte','Bonne chance','Viel Glück','Buona fortuna','Boa sorte','Veel geluk','Lycka till','Lykke til','Held og lykke','Onnea','Powodzenia','Hodně štěstí','Veľa šťastia','Sok szerencsét','Mult noroc','Успех','Удачи','Щасти','Срећно','Sretno','Srečno','Καλή τύχη','İyi şanslar','בהצלחה','حظ سعيد','موفق باشی','शुभकामनाएँ','শুভকামনা','நல்வாழ்த்துகள்','శుభాకాంక్షలు','शुभेच्छा','શુભકામનાઓ','ਸ਼ੁਭਕਾਮਨਾਵਾਂ','نیک تمنائیں','ขอให้โชคดี','Chúc may mắn','Semoga berhasil','Semoga berjaya','Sana palarin ka','祝你好运','幸運を祈る','행운을 빌어요','Bahati njema','Ngikufisela inhlanhla','Sterkte','Ẹ ku orire','Sa’a','መልካም ዕድል','Go n-éirí leat','Pob lwc','Gangi þér vel','Edu','Veiksmi','Sėkmės','Paç fat','Среќно','Bix-xorti','Zorte on','Molta sort','Fortuna faveat','Bonŝancon','წარმატებებს','Հաջողություն','Uğurlar','Сәттілік','Omad','Амжилт','सुभकामना','සුබ පැතුම්','សំណាងល្អ','ໂຊກດີ','ကံကောင်းပါစေ','Pōmaikaʻi','Manuia','Ka pai','Deagh fhortan'];
+const SRC=`import numpy as np
+
+TURN = 6.0                    # seconds per full spin
+BUILD = 2.8                   # seconds to type the clover out
+WALL = 13                     # how thick the clover is
+H, W = 420, 320
+CX = W // 2
+
+LANGS = load_phrases("good_luck.txt")     # one phrase per language
+RUNS = scan_runs(MASK)                    # where each row starts and ends
+
+def ink(line, t):
+    # the glow a phrase gets while it is still being typed
+    fresh = np.clip(1 - (t - line.born) * 4, 0, 1)
+    return line.rgb * (0.7 + 0.3 * fresh)
+
+def texture(t, i):
+    # a wall of "good luck", one language per run
+    img = np.zeros((H, W, 3), np.float32)
+    n = 0
+    for y, line in enumerate(PAGES[i]):
+        if line.born > t:
+            continue
+        img[y, :len(line)] = ink(line, t)
+        n += 1
+    return img, n
+
+def side_texture(t):
+    # the thin edge of the clover is the same words, just dimmer
+    img, n = texture(t, 3)
+    return img * 0.45, n
+
+def glass(ry, rx, edge):
+    # fake glass: bend the light by how steep the surface is
+    spec = np.clip(1 - np.hypot(ry, rx) * 1.6, 0, 1) ** 3
+    return 0.55 + 0.45 * spec + 0.25 * edge
+
+def render(t):
+    front, n1 = texture(t, 0)
+    back, n2 = texture(t, 1)
+    side, n3 = side_texture(t)
+    th = 2 * np.pi * t / TURN
+    c, s = np.cos(th), np.sin(th)
+    out = np.zeros((H, W, 3), np.float32)
+    for y, run in RUNS:
+        fx = np.arange(run[0], run[-1] + 1, 0.5, dtype=np.float32)
+        ix = np.round(fx).astype(int).clip(run[0], run[-1])
+        x = fx - CX
+        z = np.full(len(fx), WALL / 2, np.float32)
+        norm = np.sqrt(x * x + z * z + 1)
+        # front face and back face of this row of the clover
+        X = np.concatenate([x, x])
+        D = np.concatenate([z, -z])
+        tex = np.concatenate([front[y, ix], back[y, ix]])
+        nx = np.concatenate([-x / norm, x / norm])
+        nz = np.concatenate([1 / norm, -1 / norm])
+        # the flat side at each end of this row
+        for end, xe in ((0, run[0]), (1, run[-1])):
+            ze = WALL * 0.5
+            zs = np.arange(-ze, ze, 0.7, dtype=np.float32)
+            u = ((ze - zs) if end == 0 else (zs + ze)) / (2 * ze)
+            X = np.concatenate([X, np.full(len(zs), xe - CX, np.float32)])
+            D = np.concatenate([D, zs])
+            tex = np.concatenate([tex, side[y, (u * 8).astype(int)]])
+        sx = X * c + D * s + CX            # where it lands on screen
+        depth = -X * s + D * c             # how near it is to the viewer
+        ry, rx = 2 * nz * nz - 1, 2 * nz * nx
+        col = glass(ry, rx, edge)
+        val = tex * col[:, None]
+        ok = (sx >= 0) & (sx < W) & (nz > -0.05)
+        order = np.argsort(depth[ok])      # far first, near last
+        out[y, sx[ok][order].astype(int)] = val[ok][order]
+    out = sweep(out, t)
+    sparkle(out, t)
+    return out, {"languages": 77, "phrases": n1 + n2 + n3}
+
+def sweep(img, t):
+    # a band of light runs across the glass every few seconds
+    pos = (t - BUILD) % 4.5 / 4.5 * 1900 - 300
+    band = np.exp(-((XX + YY * 0.7 - pos) ** 2) / 900)
+    lit = img.max(2, keepdims=True)
+    return img * (1 + 0.9 * band[..., None]) + lit * 0.4 * band[..., None]
+
+def sparkle(img, t):
+    # tiny stars that blink in and out around the clover
+    rng = np.random.default_rng(int(t * 3))
+    for _ in range(14):
+        y, x = rng.integers(0, H), rng.integers(0, W)
+        img[y, x] = 1.0
+
+while True:
+    t = clock() - t0
+    frame, stats = render(t % (CYCLE + DISSOLVE))
+    show(frame, stats)                    # 30 fps
+`.split('\n');
+const L0=238,S0=SRC.findIndex(l=>l.startsWith('def render')),LOOP0=S0+3,LOOP1=SRC.findIndex(l=>l.startsWith('    return out'));
+const TYPE_LINES=17;
+const FONT="'Noto Sans','Segoe UI',system-ui,sans-serif";
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= geometry ================= */
+const TW=320,TH=420,TS=2,CX=160,CY=165,R=168,GAP=11,THICK=26,PS=3;
+const BUILD=2.8,CYC=reduce?1e9:14.6,DIS=1.0,TURN=reduce?18:6;
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+function leaf(c,r){c.moveTo(0,0);c.bezierCurveTo(-.10*r,-.16*r,-.50*r,-.28*r,-.47*r,-.68*r);c.bezierCurveTo(-.45*r,-1.0*r,-.12*r,-1.04*r,0,-.76*r);c.bezierCurveTo(.12*r,-1.04*r,.45*r,-1.0*r,.47*r,-.68*r);c.bezierCurveTo(.50*r,-.28*r,.10*r,-.16*r,0,0);c.closePath()}
+const MKc=document.createElement('canvas');MKc.width=TW*TS;MKc.height=TH*TS;
+{const m=MKc.getContext('2d');m.scale(TS,TS);m.fillStyle='#fff';
+ [-45,45,135,-135].forEach(deg=>{const a=deg*Math.PI/180;m.save();m.translate(CX+Math.sin(a)*GAP,CY-Math.cos(a)*GAP);m.rotate(a);m.beginPath();leaf(m,R);m.fill();m.restore()});
+ m.globalCompositeOperation='destination-out';m.strokeStyle='#000';m.lineWidth=4.5;m.lineCap='butt';m.beginPath();m.moveTo(CX,CY-R*1.2);m.lineTo(CX,CY+R*1.2);m.moveTo(CX-R*1.2,CY);m.lineTo(CX+R*1.2,CY);m.stroke();m.globalCompositeOperation='source-over';
+ m.strokeStyle='#fff';m.lineWidth=17;m.lineCap='round';m.beginPath();m.moveTo(CX,CY+20);m.quadraticCurveTo(CX+4,CY+110,CX+34,TH-14);m.stroke()}
+const MKB=document.createElement('canvas');MKB.width=MKc.width;MKB.height=MKc.height;
+{const m=MKB.getContext('2d');m.translate(MKB.width,0);m.scale(-1,1);m.drawImage(MKc,0,0)}
+const MKd=MKc.getContext('2d').getImageData(0,0,MKc.width,MKc.height).data,MKBd=MKB.getContext('2d').getImageData(0,0,MKB.width,MKB.height).data,MW=MKc.width;
+function scanRow(d,y){const runs=[];let st=-1;for(let x=0;x<MW;x++){const on=d[(y*MW+x)*4+3]>60;if(on&&st<0)st=x;else if(!on&&st>=0){runs.push([st,x-1]);st=-1}}if(st>=0)runs.push([st,MW-1]);
+  const m=[];runs.forEach(r=>{if(m.length&&r[0]-m[m.length-1][1]<=2)m[m.length-1][1]=r[1];else m.push(r)});return m}
+const RUNS=[];for(let y=0;y+PS<=TH*TS;y+=PS){const rs=scanRow(MKd,y+1);if(rs.length)RUNS.push({y,runs:rs})}
+
+/* ================= words ================= */
+const scratch=document.createElement('canvas').getContext('2d');
+function genWords(seed,data){
+  const r=rng(seed),words=[];let y=10;
+  while(y<TH-4){
+    const fs=6.2+r()*3.4,yc=y+fs*.5,runs=scanRow(data,Math.min(MKc.height-1,Math.floor(yc*TS)));
+    runs.forEach(([a,b])=>{
+      const x0=a/TS,x1=b/TS;let x=x0-3;scratch.font=`500 ${fs}px ${FONT}`;
+      while(x<x1+2){const txt=LANGS[(r()*LANGS.length)|0],w=scratch.measureText(txt).width;
+        words.push({t:txt,x,y:y+fs*.82,s:fs,c:(r()*5)|0,r:Math.pow(r(),.9)*BUILD*.93,d:r()*DIS*.85,n:txt.length});x+=w+fs*.42}
+    });
+    y+=fs*1.1;
+  }
+  return words;
+}
+const WF=genWords(11,MKd),WB=genWords(23,MKBd);
+const PAL=['#6dffae','#3fe58f','#8affc4','#33c47a','#b4ffd8'];
+function mkTex(){const c=document.createElement('canvas');c.width=TW*TS;c.height=TH*TS;return c}
+const FR=mkTex(),BK=mkTex();
+function drawTex(cv,words,mask,t){
+  const x=cv.getContext('2d');x.setTransform(1,0,0,1,0,0);x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.setTransform(TS,0,0,TS,0,0);x.textBaseline='alphabetic';
+  let lastFont='';
+  for(const w of words){if(t<w.r||t>=CYC+w.d)continue;const f=`500 ${w.s}px ${FONT}`;if(f!==lastFont){x.font=f;lastFont=f}x.fillStyle=(t-w.r<.22)?'#eafff3':PAL[w.c];x.fillText(w.t,w.x,w.y)}
+  x.setTransform(1,0,0,1,0,0);x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);
+  x.globalCompositeOperation='source-atop';const g=x.createLinearGradient(0,0,cv.width,cv.height);g.addColorStop(0,'rgba(255,255,255,.24)');g.addColorStop(.55,'rgba(120,255,190,.0)');g.addColorStop(1,'rgba(0,28,10,.42)');x.fillStyle=g;x.fillRect(0,0,cv.width,cv.height);x.globalCompositeOperation='source-over';
+}
+const SIDE=document.createElement('canvas');SIDE.width=96;SIDE.height=TH*TS;
+{const x=SIDE.getContext('2d'),r=rng(5);x.fillStyle='#041a0f';x.fillRect(0,0,96,SIDE.height);x.textBaseline='alphabetic';let y=8;
+ while(y<SIDE.height){const fs=11+r()*8;x.font=`500 ${fs}px ${FONT}`;x.fillStyle=r()<.5?'#2fbf73':'#1f8f55';x.globalAlpha=.8;x.fillText(LANGS[(r()*LANGS.length)|0],-r()*30,y+fs*.8);y+=fs*1.12}
+ x.globalAlpha=1;const g=x.createLinearGradient(0,0,96,0);g.addColorStop(0,'rgba(0,0,0,.45)');g.addColorStop(.5,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.45)');x.fillStyle=g;x.fillRect(0,0,96,SIDE.height)}
+
+/* ================= clover renderer ================= */
+const LAY=document.createElement('canvas');LAY.width=(TW+80)*TS;LAY.height=TH*TS;const lc=LAY.getContext('2d');
+function drawClover(th,t){
+  lc.setTransform(1,0,0,1,0,0);lc.globalCompositeOperation='source-over';lc.clearRect(0,0,LAY.width,LAY.height);
+  const c=Math.cos(th),s=Math.sin(th),ox=40*TS,CXt=CX*TS,Tt=THICK*TS/2;
+  for(const row of RUNS){
+    const y=row.y,D=c>=0?Tt:-Tt;
+    const rs=row.runs.map(([a,b])=>({a,b,dep:-((a+b)/2-CXt)*s+D*c}));if(rs.length>1)rs.sort((p,q)=>p.dep-q.dep);
+    for(const r of rs){
+      const a=r.a,b=r.b+1;
+      if(s>0){const xf=(a-CXt)*c+Tt*s,xb=(a-CXt)*c-Tt*s,w=Math.abs(xf-xb);if(w>=.8)lc.drawImage(SIDE,0,y,96,PS,ox+CXt+Math.min(xf,xb),y,w,PS)}
+      else if(s<0){const xf=(b-CXt)*c+Tt*s,xb=(b-CXt)*c-Tt*s,w=Math.abs(xf-xb);if(w>=.8)lc.drawImage(SIDE,0,y,96,PS,ox+CXt+Math.min(xf,xb),y,w,PS)}
+      if(c>=0){const w=(b-a)*c;if(w>=.6)lc.drawImage(FR,a,y,b-a,PS,ox+CXt+(a-CXt)*c+Tt*s,y,w,PS)}
+      else{const w=(b-a)*-c;if(w>=.6)lc.drawImage(BK,2*CXt-b,y,b-a,PS,ox+CXt+(b-CXt)*c-Tt*s,y,w,PS)}
+    }
+  }
+  lc.globalCompositeOperation='source-atop';
+  lc.fillStyle='rgba(0,12,6,'+((1-Math.abs(c))*.5)+')';lc.fillRect(0,0,LAY.width,LAY.height);
+  if(t>BUILD&&t<CYC){const pos=((t-BUILD)%4.5)/4.5,W=LAY.width,H=LAY.height,cx0=-.25*W+pos*1.5*W;
+    const g=lc.createLinearGradient(cx0-.14*W,0,cx0+.14*W,.45*H);g.addColorStop(0,'rgba(200,255,225,0)');g.addColorStop(.5,'rgba(215,255,235,.55)');g.addColorStop(1,'rgba(200,255,225,0)');lc.fillStyle=g;lc.fillRect(0,0,W,H)}
+  lc.globalCompositeOperation='source-over';
+}
+
+/* ================= stage ================= */
+const art=document.getElementById('c'),ac=art.getContext('2d'),box=document.getElementById('art');
+const BL=document.createElement('canvas'),bl=BL.getContext('2d');
+let AW=0,AH=0,DPR=1,stars=[];
+function size(){const r=box.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);AW=r.width;AH=r.height;art.width=Math.round(AW*DPR);art.height=Math.round(AH*DPR);BL.width=Math.ceil(art.width/5);BL.height=Math.ceil(art.height/5);stars=[]}
+addEventListener('resize',size);size();
+function twinkle(t){
+  while(stars.length<14)stars.push({x:Math.random()*AW,y:AH*.04+Math.random()*AH*.9,age:-Math.random()*1.4,life:.9+Math.random()*1.6,r:2+Math.random()*3.5});
+  for(const s of stars){s.age+=1/30;if(s.age>s.life){s.x=Math.random()*AW;s.y=AH*.04+Math.random()*AH*.9;s.age=0;s.life=.9+Math.random()*1.6;s.r=2+Math.random()*3.5}}
+}
+function drawStars(){
+  ac.save();ac.strokeStyle='#e8fff2';ac.lineCap='round';
+  for(const s of stars){if(s.age<0)continue;const k=Math.sin(Math.PI*s.age/s.life),r=s.r*k;if(r<.3)continue;ac.globalAlpha=.9*k;ac.lineWidth=1.2;ac.beginPath();ac.moveTo(s.x-r,s.y);ac.lineTo(s.x+r,s.y);ac.moveTo(s.x,s.y-r);ac.lineTo(s.x,s.y+r);ac.stroke();ac.fillStyle='#fff';ac.beginPath();ac.arc(s.x,s.y,.9,0,7);ac.fill()}
+  ac.restore();
+}
+
+/* ================= code panel ================= */
+const KW=new Set('def return for in if else elif while import from as and or not is lambda with try except pass break continue True False None'.split(' '));
+const BI=new Set('np max min int float range len abs sum zip enumerate round print'.split(' '));
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function hl(s){
+  let o='',i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch==='#'){o+=`<i class="c">${esc(s.slice(i))}</i>`;break}
+    if(/[A-Za-z_]/.test(ch)){let j=i;while(j<s.length&&/\w/.test(s[j]))j++;const w=s.slice(i,j);const cls=KW.has(w)?'k':(BI.has(w)||s[j]==='(')?'f':'';o+=cls?`<i class="${cls}">${w}</i>`:esc(w);i=j}
+    else if(/[0-9]/.test(ch)){let j=i;while(j<s.length&&/[0-9.]/.test(s[j]))j++;o+=`<i class="n">${esc(s.slice(i,j))}</i>`;i=j}
+    else if(ch==='"'||ch==="'"){let j=i+1;while(j<s.length&&s[j]!==ch)j++;o+=`<i class="s">${esc(s.slice(i,j+1))}</i>`;i=j+1}
+    else{o+=esc(ch);i++}
+  }
+  return o;
+}
+const win=document.getElementById('win');let codeKey='',ROWS=13,CURROW=4;
+const TYPE_TOTAL=SRC.slice(S0,S0+TYPE_LINES).reduce((a,l)=>a+l.length+1,0);
+function renderCode(t){
+  let cur,typedChars=null,fade=1;
+  if(t<BUILD){
+    const target=Math.floor(TYPE_TOTAL*Math.min(1,t/(BUILD*.96)));let acc=0;cur=S0;
+    for(let i=0;i<TYPE_LINES;i++){const L=SRC[S0+i].length+1;if(acc+L>target){cur=S0+i;typedChars=target-acc;break}acc+=L;cur=S0+i;typedChars=L-1}
+  }else{
+    const step=Math.floor((t-BUILD)/.3),len=LOOP1-LOOP0+1;cur=LOOP0+(step%len);
+  }
+  if(t>=CYC)fade=Math.max(0,1-(t-CYC)/(DIS*.55));
+  const key=cur+':'+typedChars+':'+fade.toFixed(2);if(key===codeKey)return;codeKey=key;
+  let h='';
+  for(let r=0;r<ROWS;r++){
+    const idx=cur-CURROW+r;let show=idx>=0&&idx<SRC.length;
+    if(t<BUILD&&(idx<S0||idx>cur))show=false;
+    if(!show){h+='<div class="ln"><b></b><span></span></div>';continue}
+    let line=SRC[idx];const isCur=idx===cur;
+    if(t<BUILD&&isCur)line=line.slice(0,typedChars);
+    const op=idx>cur?.42:(.55+.45*(r/CURROW>1?1:r/CURROW));
+    h+=`<div class="ln${isCur?' cur':''}" style="opacity:${(op*fade).toFixed(2)}"><b>${L0+idx}</b><span>${hl(line)}${isCur?'<u></u>':''}</span></div>`;
+  }
+  win.innerHTML=h;
+}
+
+/* ================= HUD + loop ================= */
+const el={clock:document.getElementById('clock'),hl:document.getElementById('hl'),hp:document.getElementById('hp'),hc:document.getElementById('hc'),run:document.getElementById('run')};
+el.hl.textContent=LANGS.length;
+let clock=0,last=performance.now(),paused=false,userOff=0,fpsAcc=30,steady=false,texTick=0;
+const QS=new URLSearchParams(location.search),FORCE_TH=QS.has('th')?+QS.get('th'):null;if(QS.has('t')){clock=+QS.get('t');paused=true}
+const TOTAL_P=WF.length+WB.length,TOTAL_C=WF.reduce((a,w)=>a+w.n,0)+WB.reduce((a,w)=>a+w.n,0);
+function counts(t){
+  let p=0,c=0;for(const w of WF){if(t>=w.r&&t<CYC+w.d){p++;c+=w.n}}
+  for(const w of WB){if(t>=w.r&&t<CYC+w.d){p++;c+=w.n}}return[p,c];
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  const el_=now-last;if(el_<31)return;last=now;
+  fpsAcc+=(Math.min(60,1000/el_)-fpsAcc)*.1;
+  if(!paused)clock+=Math.min(el_,100)/1000;
+  if(clock>=CYC+DIS){clock=0;steady=false;codeKey=''}
+  const t=clock;
+  // texture rebuild only while words appear or vanish
+  const live=t<BUILD+.3||t>=CYC;
+  if(live||!steady){drawTex(FR,WF,MKc,t);drawTex(BK,WB,MKB,t);steady=!live}
+  // spin: ease in while the clover is typed, then constant speed
+  const w0=2*Math.PI/TURN,u=Math.min(t,BUILD),th=w0*(.15*u+.85*u*u/(2*BUILD))+(t>BUILD?w0*(t-BUILD):0)+userOff;
+  drawClover(FORCE_TH!==null?FORCE_TH:th,t);
+  twinkle(t);
+  ac.setTransform(DPR,0,0,DPR,0,0);ac.globalCompositeOperation='source-over';ac.globalAlpha=1;ac.fillStyle='#000';ac.fillRect(0,0,AW,AH);
+  drawStars();
+  const ks=Math.min(AH*.9/TH,AW*.94/TW),dx=AW/2-(40+CX)*ks,dy=(AH-TH*ks)/2-AH*.015;
+  ac.imageSmoothingEnabled=true;ac.drawImage(LAY,0,0,LAY.width,LAY.height,dx,dy,(TW+80)*ks,TH*ks);
+  // cheap bloom: shrink, then add back softened
+  bl.setTransform(1,0,0,1,0,0);bl.clearRect(0,0,BL.width,BL.height);bl.drawImage(art,0,0,BL.width,BL.height);
+  ac.setTransform(1,0,0,1,0,0);ac.globalCompositeOperation='lighter';ac.globalAlpha=.6;ac.drawImage(BL,0,0,art.width,art.height);ac.globalAlpha=1;ac.globalCompositeOperation='source-over';
+  // hud
+  el.clock.textContent='t '+t.toFixed(2).padStart(5,'0')+'s';
+  const [p,c]=(t<BUILD+.3||t>=CYC)?counts(t):[TOTAL_P,TOTAL_C];
+  el.hp.textContent=p;el.hc.textContent=c.toLocaleString('en-US');
+  el.run.textContent=(paused?'paused':'running')+' · '+Math.min(30,Math.round(fpsAcc))+' fps';
+  renderCode(t);
+}
+// drag to spin it by hand; tap to pause
+let drag=null;
+box.addEventListener('pointerdown',e=>{drag={x:e.clientX,moved:false};try{box.setPointerCapture(e.pointerId)}catch(_){}});
+box.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>3)drag.moved=true;userOff+=dx*.012;drag.x=e.clientX});
+const end=()=>{if(drag&&!drag.moved)paused=!paused;drag=null};
+box.addEventListener('pointerup',end);box.addEventListener('pointercancel',()=>{drag=null});
+renderCode(0);requestAnimationFrame(frame);
+window.__lucky={langs:LANGS.length,phrases:TOTAL_P,state:()=>({clock,paused,steady})};
+})();
+</script>
+<script src="../_shared/dk.js" defer></script>
+</body>
+</html>

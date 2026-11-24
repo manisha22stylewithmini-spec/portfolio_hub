@@ -1,6 +1,6 @@
-# Landing Page Studies — 27 designs, 27 styles
+# Landing Page Studies — 29 designs, 29 styles
 
-A portfolio of 27 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
+A portfolio of 29 single-page landing designs for imaginary brands. Each one is built from scratch in its own visual language, from neo-brutalist to Art Deco, claymorphism to live WebGL 3D.
 
 Everything is **plain HTML, CSS and JavaScript**. There is no build step, no framework and no `node_modules`.
 
@@ -35,6 +35,8 @@ Everything is **plain HTML, CSS and JavaScript**. There is no build step, no fra
 | 25 | `25-dark-souls-card` | The Ashen One | Holographic 3D collector card beside a candlelit shrine, custom GLSL (source from ThreeUI) |
 | 26 | `26-delhi-dusk` | Dilli दिल्ली | Scroll journey across Delhi at dusk: seven landmarks drawn as layered SVG parallax, no photos |
 | 27 | `27-toastie` | Toastie | A playable grilled-cheese diner game built from real food photos: spread, stack, grill, peek, serve and earn stars |
+| 28 | `28-lucky-clover` | Lucky | A four-leaf clover made of "good luck" in 77 languages, spinning in 3D beside its own typing Python source (a study after a reel by @jin_22ee) |
+| 29 | `29-christmas-gingerbread` | Merry Toastie | A Christmas gingerbread-toast decorating game on the Toastie engine (a study after a reel by @mikeesbored) |
 
 ## Project structure
 
